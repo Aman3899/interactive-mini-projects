@@ -50,16 +50,43 @@ This repository includes various **UI components**, **tools**, and **interactive
 
 ## 🗂️ Folder Structure
 
-interactive-mini-projects/
-│
-├── 404-page/
-├── analog_clock/
-├── calculator/
-├── countdown_timer/
-├── ...
-├── typing-rythm/
-├── zen-garden-scroll-effect/
+interactive-mini-projects/  <br>
+│   <br>
+├── 404-page/  <br>
+├── all-in-one/  <br>
+├── analog-thermometer/  <br>
+├── analog_clock/  <br>
+├── calculator/  <br>
+├── clipboard/  <br>
+├── countdown_timer/  <br>
+├── custom_cursor/  <br>
+├── daily-fact/ <br>
+├── decision-spinner/ <br>
+├── digital_clock/<br>
+├── fetch-github-info/<br>
+├── flashcard/<br>
+├── form-validation-demo/<br>
+├── glassmorphism/<br>
+├── image-silder/<br>
+├── json-formatter/<br>
+├── music-playing-ui/<br>
+├── noise-bg/<br>
+├── notes-app/<br>
+├── off-the-shelf-components/<br>
+├── periodic-table/<br>
+├── polygon-shapes-generator/<br>
+├── pomodoro-timer/<br>
+├── resume-builder/<br>
+├── speed_typing_test/<br>
+├── sticky-navbar-with-scroll-effects/<br>
+├── stopwatch/<br>
+├── theme-changer/<br>
+├── tip_calculator/<br>
+├── to-do-list/<br>
+├── typing-rythm/<br>
+├── zen-garden-scroll-effect/<br>
 └── README.md
+
 
 
 Each project folder contains its own independent HTML, CSS, and JS files for direct use and deployment.
@@ -76,10 +103,7 @@ Each project folder contains its own independent HTML, CSS, and JS files for dir
 
 
 🛠️ Built With
-HTML5
-
-CSS3
-
-JavaScript (Vanilla)
-
+* HTML5
+* CSS3
+* JavaScript (Vanilla)
 No libraries or frameworks — just clean, fast, and simple frontend.
