@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+{/* === HOW TO CHANGE THEME === */}
+{/* Change the class on the
+
+<body> tag below to one of: */}
+    {/* "theme-cyberpunk" | "theme-fantasy" | "theme-retro" | "theme-default" */}
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Enhanced Pure CSS Image Slider</title>
+        {/* Using Tailwind CSS v2 for broader compatibility if needed, can use v3 */}
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+        {/* Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&family=Cinzel+Decorative:wght@400;700&family=Exo+2:wght@400;700&display=swap"
+            rel="stylesheet">
+
+        <style>
+            /* --- THEME VARIABLES --- */
+            :root,
+            .theme-default {
+                --slider-bg: #f3f4f6;
+                /* Light gray background */
+                --slider-border: #e5e7eb;
+                --slider-shadow: rgba(0, 0, 0, 0.15);
+                --slider-glow: transparent;
+                --caption-bg: linear-gradient(0deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 100%);
+                --caption-text: #ffffff;
+                --caption-font: 'Exo 2', sans-serif;
+                --dot-inactive: rgba(0, 0, 0, 0.3);
+                --dot-hover: rgba(0, 0, 0, 0.6);
+                --dot-active: rgba(0, 0, 0, 0.9);
+                --dot-active-shadow: rgba(0, 0, 0, 0.3);
+                --body-bg-start: #e5e7eb;
+                --body-bg-end: #d1d5db;
+                --heading-color: #1f2937;
+                --text-color: #4b5563;
+                --transition-speed: 0.6s;
+                /* Smooth transition for manual nav */
+            }
+
+            .theme-cyberpunk {
+                --slider-bg: #1a1a2e;
+                /* Dark blue/purple */
+                --slider-border: #00f7f7;
+                /* Cyan */
+                --slider-shadow: rgba(0, 0, 0, 0.5);
+                --slider-glow: rgba(0, 247, 247, 0.3);
+                /* Cyan glow */
+                --caption-bg: linear-gradient(0deg, rgba(26, 26, 46, 0.95) 0%, rgba(26, 26, 46, 0) 100%);
+                --caption-text: #e0e1dd;
+                /* Off-white */
+                --caption-font: 'Orbitron', sans-serif;
+                --dot-inactive: rgba(0, 247, 247, 0.4);
+                --dot-hover: rgba(0, 247, 247, 0.8);
+                --dot-active: #00f7f7;
+                --dot-active-shadow: rgba(0, 247, 247, 0.5);
+                --body-bg-start: #0f0f1a;
+                --body-bg-end: #1a1a2e;
+                --heading-color: #00f7f7;
+                --text-color: #94a3b8;
+                --transition-speed: 0.5s;
+            }
+
+            .theme-fantasy {
+                --slider-bg: #2e2a24;
+                /* Dark brown */
+                --slider-border: #c89c4c;
+                /* Gold */
+                --slider-shadow: rgba(15, 10, 5, 0.6);
+                --slider-glow: rgba(200, 156, 76, 0.2);
+                /* Gold glow */
+                --caption-bg: linear-gradient(0deg, rgba(46, 42, 36, 0.95) 10%, rgba(46, 42, 36, 0) 100%);
+                --caption-text: #e0dacd;
+                /* Parchment */
+                --caption-font: 'Cinzel Decorative', cursive;
+                --dot-inactive: rgba(200, 156, 76, 0.4);
+                --dot-hover: rgba(200, 156, 76, 0.8);
+                --dot-active: #c89c4c;
+                --dot-active-shadow: rgba(200, 156, 76, 0.4);
+                --body-bg-start: #4d463d;
+                --body-bg-end: #2e2a24;
+                --heading-color: #c89c4c;
+                --text-color: #b0a090;
+                --transition-speed: 0.7s;
+            }
+
+            .theme-retro {
+                --slider-bg: #000000;
+                /* Black */
+                --slider-border: #ff4081;
+                /* Hot pink */
+                --slider-shadow: rgba(0, 0, 0, 0.7);
+                --slider-glow: rgba(255, 64, 129, 0.3);
+                /* Pink glow */
+                --caption-bg: linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+                --caption-text: #ffffff;
+                --caption-font: 'Press Start 2P', cursive;
+                --dot-inactive: rgba(255, 255, 255, 0.4);
+                --dot-hover: rgba(255, 255, 255, 0.8);
+                --dot-active: #ff4081;
+                /* Use border color for active dot */
+                --dot-active-shadow: rgba(255, 64, 129, 0.5);
+                --body-bg-start: #212121;
+                --body-bg-end: #000000;
+                --heading-color: #ff4081;
+                --text-color: #bdbdbd;
+                --transition-speed: 0.4s;
+            }
+
+            /* --- BASE SLIDER STYLES --- */
+            body {
+                background-color: var(--body-bg-start);
+                background-image: linear-gradient(to bottom, var(--body-bg-start), var(--body-bg-end));
+                transition: background 0.5s ease;
+            }
+
+            .main-heading {
+                color: var(--heading-color);
+                transition: color 0.5s ease;
+            }
+
+            .sub-text {
+                color: var(--text-color);
+                transition: color 0.5s ease;
+            }
+
+            .slider {
+                position: relative;
+                width: 100%;
+                max-width: 900px;
+                /* Slightly larger */
+                margin: 0 auto;
+                overflow: hidden;
+                border-radius: 12px;
+                /* More rounded */
+                border: 3px solid var(--slider-border);
+                /* Themed border */
+                background-color: var(--slider-bg);
+                box-shadow: 0 8px 25px var(--slider-shadow), 0 0 20px var(--slider-glow);
+                /* Themed shadow + glow */
+                transition: all 0.5s ease;
+                /* Theme transition */
+            }
+
+            .slider-wrapper {
+                position: relative;
+                width: 500%;
+                /* 100% * number of slides */
+                display: flex;
+                /* Animation applied here */
+                animation: slide 25s infinite ease-in-out;
+                /* Longer duration */
+                /* Transition for manual navigation smoothing */
+                transition: transform var(--transition-speed) ease-in-out;
+            }
+
+            .slider-item {
+                position: relative;
+                width: 20%;
+                /* 100% / number of slides */
+                height: 500px;
+                /* Increased height */
+                display: flex;
+                /* Use flex for alignment */
+                align-items: flex-end;
+                /* Align caption to bottom */
+                justify-content: center;
+                /* Center content (though img covers) */
+                overflow: hidden;
+                /* Clip image/caption */
+            }
+
+            .slider-img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+                transition: transform 0.8s ease;
+                /* Subtle zoom on item hover */
+            }
+
+            .slider-item:hover .slider-img {
+                transform: scale(1.05);
+                /* Zoom effect */
+            }
+
+            .slider-caption {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 25px 30px;
+                /* Increased padding */
+                background: var(--caption-bg);
+                color: var(--caption-text);
+                font-family: var(--caption-font);
+                text-align: center;
+                opacity: 0;
+                transform: translateY(100%);
+                /* Start fully below */
+                transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                /* Smoother ease */
+                z-index: 10;
+                backdrop-filter: blur(3px);
+                /* Subtle blur */
+            }
+
+            .theme-retro .slider-caption {
+                /* Pixel fonts need sharp edges */
+                backdrop-filter: none;
+                image-rendering: pixelated;
+                /* Keep text sharp */
+            }
+
+            .theme-retro .slider-caption h3 {
+                font-size: 1.1rem;
+                line-height: 1.4;
+            }
+
+            .theme-retro .slider-caption p {
+                font-size: 0.8rem;
+                line-height: 1.4;
+            }
+
+            .slider-item:hover .slider-caption {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .slider-caption h3 {
+                margin-bottom: 0.75rem;
+            }
+
+            /* More space */
+
+            /* Navigation dots */
+            .slider-nav {
+                position: absolute;
+                bottom: 25px;
+                /* Position higher */
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: center;
+                gap: 12px;
+                /* More space */
+                z-index: 20;
+            }
+
+            .slider-nav label {
+                width: 14px;
+                /* Slightly larger dots */
+                height: 14px;
+                border-radius: 50%;
+                background-color: var(--dot-inactive);
+                border: 2px solid rgba(0, 0, 0, 0.1);
+                /* Subtle border */
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            }
+
+            .slider-nav label:hover {
+                background-color: var(--dot-hover);
+                transform: scale(1.15);
+            }
+
+            /* Slider controls */
+            input[type="radio"] {
+                display: none;
+                /* Hide the actual radio buttons */
+            }
+
+            /* Apply transform based on checked radio for MANUAL navigation */
+            /* This overrides the animation temporarily */
+            #slide1:checked~.slider-wrapper {
+                animation: none;
+                transform: translateX(0%);
+            }
+
+            #slide2:checked~.slider-wrapper {
+                animation: none;
+                transform: translateX(-20%);
+            }
+
+            #slide3:checked~.slider-wrapper {
+                animation: none;
+                transform: translateX(-40%);
+            }
+
+            #slide4:checked~.slider-wrapper {
+                animation: none;
+                transform: translateX(-60%);
+            }
+
+            #slide5:checked~.slider-wrapper {
+                animation: none;
+                transform: translateX(-80%);
+            }
+
+            /* Style the ACTIVE navigation dot */
+            #slide1:checked~.slider-nav label:nth-child(1),
+            #slide2:checked~.slider-nav label:nth-child(2),
+            #slide3:checked~.slider-nav label:nth-child(3),
+            #slide4:checked~.slider-nav label:nth-child(4),
+            #slide5:checked~.slider-nav label:nth-child(5) {
+                background-color: var(--dot-active);
+                transform: scale(1.3);
+                /* Make active dot larger */
+                box-shadow: 0 0 8px var(--dot-active-shadow), 0 2px 5px rgba(0, 0, 0, 0.3);
+                /* Glow + shadow */
+                border: 2px solid color-mix(in srgb, var(--dot-active) 70%, black);
+                /* Darker border */
+            }
+
+            /* Animation keyframes */
+            /* Percentages define HOLD times */
+            @keyframes slide {
+
+                0%,
+                15% {
+                    /* Hold slide 1 */
+                    transform: translateX(0%);
+                    opacity: 1;
+                }
+
+                /* Transition 1 -> 2 */
+                19% {
+                    opacity: 1;
+                }
+
+                /* Start fade slightly before move */
+                20%,
+                35% {
+                    /* Hold slide 2 */
+                    transform: translateX(-20%);
+                    opacity: 1;
+                }
+
+                /* Transition 2 -> 3 */
+                39% {
+                    opacity: 1;
+                }
+
+                40%,
+                55% {
+                    /* Hold slide 3 */
+                    transform: translateX(-40%);
+                    opacity: 1;
+                }
+
+                /* Transition 3 -> 4 */
+                59% {
+                    opacity: 1;
+                }
+
+                60%,
+                75% {
+                    /* Hold slide 4 */
+                    transform: translateX(-60%);
+                    opacity: 1;
+                }
+
+                /* Transition 4 -> 5 */
+                79% {
+                    opacity: 1;
+                }
+
+                80%,
+                95% {
+                    /* Hold slide 5 */
+                    transform: translateX(-80%);
+                    opacity: 1;
+                }
+
+                /* Loop back to 1 */
+                99% {
+                    opacity: 1;
+                }
+
+                100% {
+                    transform: translateX(0%);
+                    /* Instant loop back */
+                    opacity: 1;
+                }
+            }
+
+            /* Note: True crossfade is very difficult with this structure in pure CSS */
+            /* We rely on the wrapper's CSS transition for smoothness on manual clicks */
+
+
+            /* Responsive styles */
+            @media (max-width: 768px) {
+                .slider-item {
+                    height: 400px;
+                }
+
+                .slider-caption {
+                    padding: 20px 25px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .slider-item {
+                    height: 300px;
+                }
+
+                .slider-caption {
+                    padding: 15px 20px;
+                }
+
+                .slider-caption h3 {
+                    font-size: 1.1rem;
+                    margin-bottom: 0.5rem;
+                }
+
+                .slider-caption p {
+                    font-size: 0.8rem;
+                }
+
+                .slider-nav {
+                    bottom: 15px;
+                    gap: 8px;
+                }
+
+                .slider-nav label {
+                    width: 10px;
+                    height: 10px;
+                }
+            }
+
+            /* Pause animation on hover */
+            .slider:hover .slider-wrapper {
+                animation-play-state: paused;
+            }
+        </style>
+    </head>
+    {/* !!! CHANGE THEME HERE by modifying the class !!! */}
+
+    <body class="theme-cyberpunk min-h-screen flex flex-col items-center justify-center py-12 px-4">
+
+        <div class="max-w-4xl w-full">
+            <h1 class="main-heading text-4xl font-black text-center mb-6">Enhanced CSS Slider</h1>
+            <p class="sub-text text-center text-lg mb-10">Pure CSS magic with themes and smoother transitions.</p>
+
+            <div class="slider">
+                {/* Radio buttons for manual control */}
+                <input type="radio" name="slider" id="slide1" checked>
+                <input type="radio" name="slider" id="slide2">
+                <input type="radio" name="slider" id="slide3">
+                <input type="radio" name="slider" id="slide4">
+                <input type="radio" name="slider" id="slide5">
+
+                {/* Slider wrapper */}
+                <div class="slider-wrapper">
+                    {/* Slide 1 - Theme dependent placeholder */}
+                    <div class="slider-item">
+                        <img class="slider-img"
+                            src="https://via.placeholder.com/900x500/1a1a2e/00f7f7?text=Cyberpunk+Cityscape"
+                            alt="Cyberpunk City">
+                        <div class="slider-caption">
+                            <h3 class="text-2xl font-bold">Neon Metropolis</h3>
+                            <p>Towering chrome and holographic dreams.</p>
+                        </div>
+                    </div>
+
+                    {/* Slide 2 */}
+                    <div class="slider-item">
+                        <img class="slider-img"
+                            src="https://via.placeholder.com/900x500/2e2a24/c89c4c?text=Fantasy+Castle"
+                            alt="Fantasy Castle">
+                        <div class="slider-caption">
+                            <h3 class="text-2xl font-bold">Dragon's Keep</h3>
+                            <p>Ancient fortress veiled in mist and magic.</p>
+                        </div>
+                    </div>
+
+                    {/* Slide 3 */}
+                    <div class="slider-item">
+                        <img class="slider-img"
+                            src="https://via.placeholder.com/900x500/000000/FF4081?text=Retro+Arcade"
+                            alt="Retro Arcade">
+                        <div class="slider-caption">
+                            <h3 class="text-xl font-bold">Pixel Power-Up</h3>
+                            <p class="text-sm">High scores and 8-bit adventures await.</p>
+                        </div>
+                    </div>
+
+                    {/* Slide 4 */}
+                    <div class="slider-item">
+                        <img class="slider-img" src="https://via.placeholder.com/900x500/1a1a2e/a78bfa?text=Data+Stream"
+                            alt="Data Stream">
+                        <div class="slider-caption">
+                            <h3 class="text-2xl font-bold">Digital Frontier</h3>
+                            <p>Navigating the endless flow of information.</p>
+                        </div>
+                    </div>
+
+                    {/* Slide 5 */}
+                    <div class="slider-item">
+                        <img class="slider-img"
+                            src="https://via.placeholder.com/900x500/2e2a24/77AA77?text=Enchanted+Forest"
+                            alt="Enchanted Forest">
+                        <div class="slider-caption">
+                            <h3 class="text-2xl font-bold">Whispering Woods</h3>
+                            <p>Where ancient trees hold forgotten secrets.</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Navigation dots */}
+                <div class="slider-nav">
+                    <label for="slide1" title="Slide 1"></label>
+                    <label for="slide2" title="Slide 2"></label>
+                    <label for="slide3" title="Slide 3"></label>
+                    <label for="slide4" title="Slide 4"></label>
+                    <label for="slide5" title="Slide 5"></label>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <h2 class="main-heading text-2xl font-semibold mb-4">Features & Instructions</h2>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-left sub-text space-y-3">
+                    <p><strong class="text-indigo-600 dark:text-indigo-400">Themes:</strong> Manually change the class
+                        on the <code><body></code> tag in the HTML source to <code>theme-cyberpunk</code>,
+                        <code>theme-fantasy</code>, <code>theme-retro</code>, or <code>theme-default</code> to see
+                        different styles.</p>
+                    <p><strong class="text-indigo-600 dark:text-indigo-400">Pure CSS:</strong> No JavaScript is used for
+                        the core slider functionality.</p>
+                    <p><strong class="text-indigo-600 dark:text-indigo-400">Automatic Sliding:</strong> Slides
+                        transition automatically using CSS keyframes.</p>
+                    <p><strong class="text-indigo-600 dark:text-indigo-400">Manual Control:</strong> Click the
+                        navigation dots for smooth, animated transitions to specific slides.</p>
+                    <p><strong class="text-indigo-600 dark:text-indigo-400">Hover Pause:</strong> The automatic
+                        animation pauses when you hover the mouse over the slider.</p>
+                    <p><strong class="text-indigo-600 dark:text-indigo-400">Animated Captions:</strong> Captions slide
+                        in smoothly from the bottom on hover.</p>
+                </div>
+            </div>
+        </div>
+        {/* Add a simple theme indicator if needed */}
+        <div id="theme-indicator"
+            class="fixed bottom-4 right-4 p-2 bg-gray-700 text-white text-xs rounded shadow-lg hidden">Current Theme:
+            <span id="current-theme-name"></span></div>
+        <script>
+            // Minimal JS just to display the current theme name for clarity
+            // Not needed for slider functionality
+            function updateThemeIndicator() {
+                const bodyClasses = document.body.className;
+                const themeIndicator = document.getElementById('theme-indicator');
+                const themeNameSpan = document.getElementById('current-theme-name');
+                let currentTheme = 'Default'; // Default assumption
+
+                if (bodyClasses.includes('theme-cyberpunk')) currentTheme = 'Cyberpunk';
+                else if (bodyClasses.includes('theme-fantasy')) currentTheme = 'Fantasy';
+                else if (bodyClasses.includes('theme-retro')) currentTheme = 'Retro';
+                // Add else if for other themes
+
+                if (themeIndicator && themeNameSpan) {
+                    themeNameSpan.textContent = currentTheme;
+                    themeIndicator.classList.remove('hidden');
+                }
+            }
+            // Run on load
+            document.addEventListener('DOMContentLoaded', updateThemeIndicator);
+        </script>
+    </body>
+
+    </html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-reactor-core"> {/* Default Theme Set */}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noise Texture Synthesizer</title>
+    {/* Tailwind CSS CDN */}
+    <script src="https://cdn.tailwindcss.com"></script>
+    {/* Font Awesome for icons (Optional, but good to have) */}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {/* Google Fonts */}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@400;600;800&family=Roboto+Mono:wght@500&family=Aldrich&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Base Styles & Font Definitions */
+        body {
+            font-family: 'Exo 2', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-exo {
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .font-roboto-mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .font-aldrich {
+            font-family: 'Aldrich', sans-serif;
+        }
+
+        /* --- CSS Variables for Themes --- */
+        :root,
+        .theme-default-light {
+            /* Basic Light Fallback */
+            --bg-gradient-start: #e5e7eb;
+            --bg-gradient-end: #d1d5db;
+            --bg-image: none;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(156, 163, 175, 0.6);
+            /* Thicker default border feel */
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --card-shadow-glow: none;
+            --text-primary: #1f2937;
+            --text-secondary: #3b82f6;
+            --text-accent: #1d4ed8;
+            --text-muted: #6b7280;
+            --button-bg: linear-gradient(145deg, #3b82f6, #2563eb);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #60a5fa, #3b82f6);
+            --button-shadow: 0 6px 18px rgba(59, 130, 246, 0.4);
+            --input-bg: #ffffff;
+            --input-border: #9ca3af;
+            --input-text: #1f2937;
+            --input-focus-ring: var(--text-secondary);
+            --slider-track-bg: #d1d5db;
+            --slider-thumb-bg: var(--text-secondary);
+            --noise-overlay-color: rgba(0, 0, 0, 0.1);
+            /* Default noise color/opacity basis */
+            --font-heading: 'Orbitron', sans-serif;
+            --font-body: 'Exo 2', sans-serif;
+            --transition-speed: 0.4s;
+        }
+
+        .theme-reactor-core {
+            /* Heavy, Dark, Fiery */
+            --bg-gradient-start: #6b1414;
+            --bg-gradient-end: #1a0000;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 0 50 Q 25 20, 50 50 T 100 50" stroke="%23fca5a520" stroke-width="2" fill="none"/><path d="M 0 70 Q 25 100, 50 70 T 100 70" stroke="%23fbbf2415" stroke-width="1.5" fill="none"/></svg>');
+            background-size: 80px 80px;
+            --card-bg: rgba(30, 10, 10, 0.94);
+            --card-border: rgba(239, 68, 68, 0.7);
+            /* Strong red border */
+            --card-shadow: 0 18px 60px rgba(0, 0, 0, 0.9);
+            --card-shadow-glow: 0 0 40px rgba(239, 68, 68, 0.45);
+            /* Intense glow */
+            --text-primary: #fee2e2;
+            --text-secondary: #f87171;
+            --text-accent: #ef4444;
+            --text-muted: #fca5a5;
+            --button-bg: linear-gradient(145deg, #ef4444, #dc2626);
+            --button-text: #fff1f2;
+            --button-hover-bg: linear-gradient(145deg, #f87171, #ef4444);
+            --button-shadow: 0 10px 30px rgba(239, 68, 68, 0.55);
+            --input-bg: rgba(40, 15, 15, 0.9);
+            --input-border: var(--text-secondary);
+            --input-text: #fee2e2;
+            --input-focus-ring: var(--text-accent);
+            --slider-track-bg: rgba(239, 68, 68, 0.3);
+            --slider-thumb-bg: var(--text-accent);
+            --noise-overlay-color: rgba(254, 226, 226, 0.15);
+            /* Light noise on dark */
+            --font-heading: 'Orbitron', sans-serif;
+            font-weight: 900;
+            --font-body: 'Exo 2', sans-serif;
+            font-weight: 600;
+            --transition-speed: 0.4s;
+        }
+
+        .theme-cryo-chamber {
+            /* Icy Blue, Dark */
+            --bg-gradient-start: #083344;
+            --bg-gradient-end: #0f172a;
+            --bg-image: linear-gradient(rgba(103, 232, 249, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(103, 232, 249, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            --card-bg: rgba(14, 45, 60, 0.92);
+            --card-border: rgba(103, 232, 249, 0.7);
+            /* Cyan border */
+            --card-shadow: 0 16px 55px rgba(0, 10, 15, 0.85);
+            --card-shadow-glow: 0 0 35px rgba(103, 232, 249, 0.4);
+            --text-primary: #ecfeff;
+            --text-secondary: #67e8f9;
+            --text-accent: #22d3ee;
+            --text-muted: #a5f3fc;
+            --button-bg: linear-gradient(145deg, #22d3ee, #06b6d4);
+            --button-text: #083344;
+            --button-hover-bg: linear-gradient(145deg, #67e8f9, #22d3ee);
+            --button-shadow: 0 9px 28px rgba(34, 211, 238, 0.5);
+            --input-bg: rgba(15, 55, 70, 0.9);
+            --input-border: var(--text-secondary);
+            --input-text: #ecfeff;
+            --input-focus-ring: var(--text-accent);
+            --slider-track-bg: rgba(103, 232, 249, 0.3);
+            --slider-thumb-bg: var(--text-accent);
+            --noise-overlay-color: rgba(236, 254, 255, 0.12);
+            /* Light blue noise */
+            --font-heading: 'Aldrich', sans-serif;
+            --font-body: 'Exo 2', sans-serif;
+            font-weight: 600;
+            --transition-speed: 0.4s;
+        }
+
+        /* Add more themes here if desired */
+
+
+        /* --- Apply Variables & Base Styles --- */
+        body {
+            background-color: var(--bg-gradient-start);
+            background-image: var(--bg-image), linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 750px;
+            /* Adjusted max width */
+        }
+
+        .component-card {
+            background-color: var(--card-bg);
+            border: 3px solid var(--card-border);
+            /* Heavy border */
+            box-shadow: var(--card-shadow), var(--card-shadow-glow), inset 0 0 20px color-mix(in srgb, black 30%, var(--card-bg));
+            /* Heavy shadows + inner */
+            backdrop-filter: blur(10px);
+            transition: background-color var(--transition-speed) ease-in-out, border-color var(--transition-speed) ease-in-out, box-shadow var(--transition-speed) ease-in-out;
+            border-radius: 1.75rem;
+            /* Heavier rounding */
+            padding: 2.5rem 3rem;
+            /* More padding */
+        }
+
+        .component-card h2 {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            border-bottom: 4px solid var(--card-border);
+            padding-bottom: 1rem;
+            margin-bottom: 2.5rem;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+            color: var(--text-primary);
+            text-align: center;
+            font-size: 2.75rem;
+            /* Larger heading */
+            text-transform: uppercase;
+        }
+
+        .themed-button {
+            background-image: var(--button-bg);
+            color: var(--button-text);
+            font-family: var(--font-heading);
+            font-weight: 800;
+            box-shadow: var(--button-shadow), 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+            /* Faster transition for heavy button */
+            border-radius: 1rem;
+            padding: 1rem 2rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            border: 2px solid color-mix(in srgb, var(--button-text) 30%, transparent);
+        }
+
+        .themed-button:hover {
+            background-image: var(--button-hover-bg);
+            transform: translateY(-5px) scale(1.04);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3), var(--button-shadow);
+        }
+
+        .themed-button:active {
+            transform: translateY(-2px) scale(0.98);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35), var(--button-shadow);
+        }
+
+        .control-group label {
+            font-weight: 700;
+            font-family: var(--font-heading);
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        .themed-input,
+        .themed-radio,
+        .themed-checkbox,
+        .themed-slider {
+            border-radius: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Slider Styles (Heavy) */
+        .themed-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 12px;
+            /* Thicker */
+            background: color-mix(in srgb, black 30%, var(--slider-track-bg));
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            outline: none;
+            opacity: 0.85;
+            transition: opacity .2s, background-color var(--transition-speed) ease;
+            border-radius: 6px;
+            cursor: grab;
+            border: 1px solid color-mix(in srgb, black 50%, var(--slider-track-bg));
+        }
+
+        .themed-slider:hover {
+            opacity: 1;
+        }
+
+        .themed-slider:active {
+            cursor: grabbing;
+        }
+
+        .themed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            /* Larger */
+            background: var(--slider-thumb-bg);
+            border-radius: 50%;
+            border: 4px solid var(--card-bg);
+            /* Heavy border */
+            cursor: grab;
+            box-shadow: 0 0 15px var(--slider-thumb-bg), 0 3px 6px rgba(0, 0, 0, 0.4);
+            margin-top: -8px;
+            /* Adjust for height */
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+        }
+
+        .themed-slider::-moz-range-thumb {
+            width: 26px;
+            height: 26px;
+            background: var(--slider-thumb-bg);
+            border-radius: 50%;
+            border: 3px solid var(--card-bg);
+            cursor: grab;
+            box-shadow: 0 0 12px var(--slider-thumb-bg);
+        }
+
+        /* Custom Radio/Checkbox (Heavy Feel) */
+        .radio-label,
+        .checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+
+        .radio-custom,
+        .checkbox-custom {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--input-border);
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            display: inline-block;
+            position: relative;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .checkbox-custom {
+            border-radius: 6px;
+        }
+
+        /* Square checkbox */
+        input[type="radio"]:checked+.radio-custom,
+        input[type="checkbox"]:checked+.checkbox-custom {
+            border-color: var(--text-accent);
+            background-color: var(--text-accent);
+        }
+
+        input[type="radio"]:checked+.radio-custom::after,
+        input[type="checkbox"]:checked+.checkbox-custom::after {
+            content: '';
+            display: block;
+            position: absolute;
+        }
+
+        input[type="radio"]:checked+.radio-custom::after {
+            /* Inner dot for radio */
+            width: 10px;
+            height: 10px;
+            background: var(--card-bg);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        input[type="checkbox"]:checked+.checkbox-custom::after {
+            /* Checkmark for checkbox */
+            width: 6px;
+            height: 12px;
+            border: solid var(--card-bg);
+            border-width: 0 3px 3px 0;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            transform-origin: center center;
+        }
+
+
+        /* --- Noise Generator Specific Styles --- */
+        .noise-preview {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            /* Maintain aspect ratio */
+            border: 4px solid var(--card-border);
+            /* Heavy border */
+            border-radius: 1rem;
+            overflow: hidden;
+            position: relative;
+            /* For overlay positioning */
+            background-color: color-mix(in srgb, black 10%, var(--card-bg));
+            /* Base color */
+            margin-bottom: 2rem;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .noise-preview::before {
+            /* CSS Noise Overlay */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: var(--noise-pattern-css);
+            /* Set by JS */
+            opacity: var(--noise-opacity-css);
+            /* Set by JS */
+            pointer-events: none;
+            z-index: 5;
+            mix-blend-mode: overlay;
+            /* Blend mode can create interesting effects */
+        }
+
+        #noiseCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            /* Hidden by default */
+            z-index: 4;
+            /* Below CSS overlay if both were visible */
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body class="transition-colors duration-500">
+
+    <!-- Theme Selector (Positioned Absolutely) -->
+    <div class="theme-selector-container absolute top-6 right-6 z-50">
+        <select id="theme-selector" class="themed-select">
+            <option value="reactor-core">Reactor Core</option>
+            <option value="cryo-chamber">Cryo Chamber</option>
+            <option value="molten-core">Molten Core (Alt)</option>
+            <option value="cyber-circuit">Cyber Circuit</option>
+            <option value="bio-hazard">Bio Hazard</option>
+            <option value="default-light">Default Light</option>
+            {/* Add more theme options if created */}
+        </select>
+    </div>
+
+    <main class="main-container">
+        <!-- Noise Background Generator Component -->
+        <section class="component-card" data-component-id="noise-generator">
+            <h2>Noise Synthesizer</h2>
+
+            {/* Preview Area */}
+            <div id="noise-preview" class="noise-preview shadow-lg">
+                {/* CSS noise is applied via ::before pseudo-element */}
+                <canvas id="noiseCanvas"></canvas>
+            </div>
+
+            {/* Controls Area */}
+            <div class="controls-area space-y-6">
+                {/* Method Selection */}
+                <div class="control-group">
+                    <label class="block mb-2 text-lg">Generation Method:</label>
+                    <div class="flex flex-wrap gap-x-6 gap-y-2">
+                        <label class="radio-label">
+                            <input type="radio" name="noiseMethod" value="css" class="sr-only" checked>
+                            <span class="radio-custom"></span> CSS (Subtle Texture)
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="noiseMethod" value="canvas" class="sr-only">
+                            <span class="radio-custom"></span> Canvas (Pixel Noise)
+                        </label>
+                    </div>
+                </div>
+
+                {/* Shared Controls */}
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label for="noise-opacity" class="block mb-1 text-lg">Opacity / Intensity:</label>
+                        <div class="flex items-center gap-4">
+                            <input type="range" id="noise-opacity" min="0" max="1" step="0.01" value="0.15"
+                                class="themed-slider flex-grow">
+                            <span id="noise-opacity-value" class="font-roboto-mono font-bold text-lg w-12 text-center"
+                                style="color: var(--text-accent);">0.15</span>
+                        </div>
+                    </div>
+
+                    {/* Canvas Specific Controls */}
+                    <div id="canvas-controls" class="control-group space-y-3 hidden">
+                        <label class="checkbox-label text-lg">
+                            <input type="checkbox" id="noise-monochrome" class="sr-only">
+                            <span class="checkbox-custom"></span> Monochrome
+                        </label>
+                        <button id="regenerate-btn" class="themed-button w-full py-2">
+                            <i class="fas fa-dice-d6 mr-2"></i> Regenerate Canvas
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- THEME SWITCHER ---
+        const themeSelector = document.getElementById('theme-selector');
+        const htmlElement = document.documentElement;
+
+        function applyTheme(themeName) {
+            const classList = htmlElement.classList;
+            for (let i = classList.length - 1; i >= 0; i--) { if (classList[i].startsWith('theme-')) classList.remove(classList[i]); }
+            htmlElement.classList.add(`theme-${themeName}`);
+            localStorage.setItem('noiseGenTheme', themeName);
+            if (themeSelector.value !== themeName) themeSelector.value = themeName;
+            console.log(`Theme applied: ${themeName}`);
+            // Re-apply noise after theme change as colors might be involved
+            updateNoise();
+        }
+
+        themeSelector?.addEventListener('change', (e) => applyTheme(e.target.value));
+
+        // --- Noise Generator Logic ---
+        (function initNoiseGenerator() {
+            const previewElement = document.getElementById('noise-preview');
+            const noiseCanvas = document.getElementById('noiseCanvas');
+            const ctx = noiseCanvas.getContext('2d', { willReadFrequently: true }); // Optimisation hint
+
+            const methodRadios = document.querySelectorAll('input[name="noiseMethod"]');
+            const opacitySlider = document.getElementById('noise-opacity');
+            const opacityValueSpan = document.getElementById('noise-opacity-value');
+            const monochromeCheckbox = document.getElementById('noise-monochrome');
+            const regenerateBtn = document.getElementById('regenerate-btn');
+            const canvasControls = document.getElementById('canvas-controls');
+
+            if (!previewElement || !noiseCanvas || !ctx || methodRadios.length === 0 || !opacitySlider || !opacityValueSpan || !monochromeCheckbox || !regenerateBtn || !canvasControls) {
+                console.error("Noise Generator elements not all found!");
+                return;
+            }
+
+            let currentMethod = 'css'; // Default
+            let currentOpacity = 0.15;
+            let isMonochrome = false;
+
+            // Store the generated SVG pattern to avoid regenerating it constantly
+            let cssNoisePatternUrl = '';
+
+            function generateCssNoisePattern() {
+                // Simple SVG turbulence filter for noise
+                const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+                                <filter id='noiseFilter'>
+                                    <feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/>
+                                </filter>
+                                <rect width='100%' height='100%' filter='url(#noiseFilter)' opacity='1'/>
+                              </svg>`;
+                // Base64 encode the SVG
+                cssNoisePatternUrl = `url("data:image/svg+xml;base64,${btoa(svg)}")`;
+            }
+
+            function applyCssNoise(opacity) {
+                if (!cssNoisePatternUrl) {
+                    generateCssNoisePattern(); // Generate if not already done
+                }
+                // Set CSS variables used by the ::before pseudo-element
+                previewElement.style.setProperty('--noise-pattern-css', cssNoisePatternUrl);
+                previewElement.style.setProperty('--noise-opacity-css', opacity);
+                noiseCanvas.style.display = 'none'; // Ensure canvas is hidden
+                console.log("Applied CSS Noise, Opacity:", opacity);
+            }
+
+            function generateCanvasNoise(opacity, monochrome) {
+                noiseCanvas.style.display = 'block'; // Show canvas
+                previewElement.style.setProperty('--noise-pattern-css', 'none'); // Hide CSS noise
+
+                const width = noiseCanvas.width = previewElement.clientWidth; // Match preview size
+                const height = noiseCanvas.height = previewElement.clientHeight;
+
+                if (width <= 0 || height <= 0) {
+                    console.warn("Canvas dimensions are zero, skipping draw.");
+                    return;
+                }
+
+                // Create ImageData only once if dimensions haven't changed drastically? For now, create each time.
+                const imageData = ctx.createImageData(width, height);
+                const data = imageData.data; // Access the pixel data array (RGBA)
+
+                for (let i = 0; i < data.length; i += 4) {
+                    // Generate random noise value (0-255)
+                    // Math.random() gives [0, 1), multiply and floor
+                    const noiseValue = Math.floor(Math.random() * 256);
+
+                    if (monochrome) {
+                        data[i] = noiseValue; // Red
+                        data[i + 1] = noiseValue; // Green
+                        data[i + 2] = noiseValue; // Blue
+                    } else {
+                        // Generate separate random values for color noise
+                        data[i] = Math.floor(Math.random() * 256); // Red
+                        data[i + 1] = Math.floor(Math.random() * 256); // Green
+                        data[i + 2] = Math.floor(Math.random() * 256); // Blue
+                    }
+                    // Set alpha based on opacity slider (0-255 range)
+                    // The noise value itself can also influence perceived intensity.
+                    // A simple approach: fixed alpha based on slider.
+                    data[i + 3] = Math.floor(opacity * 255); // Alpha
+                }
+
+                // Put the modified data back onto the canvas
+                ctx.putImageData(imageData, 0, 0);
+                console.log(`Generated Canvas Noise: ${width}x${height}, Opacity: ${opacity}, Monochrome: ${monochrome}`);
+            }
+
+            // Debounce function to limit rapid updates (e.g., from slider)
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            const debouncedGenerateCanvasNoise = debounce(generateCanvasNoise, 50); // 50ms debounce
+
+            function updateNoise() {
+                // Update state from controls
+                currentMethod = document.querySelector('input[name="noiseMethod"]:checked').value;
+                currentOpacity = parseFloat(opacitySlider.value);
+                isMonochrome = monochromeCheckbox.checked;
+
+                // Update UI elements
+                opacityValueSpan.textContent = currentOpacity.toFixed(2);
+                canvasControls.style.display = (currentMethod === 'canvas') ? 'grid' : 'none'; // Use grid display
+
+                // Call appropriate generator
+                if (currentMethod === 'css') {
+                    applyCssNoise(currentOpacity);
+                } else {
+                    // Use debounced version for slider input, immediate for regenerate button/method change
+                    if (event?.target === opacitySlider) {
+                        debouncedGenerateCanvasNoise(currentOpacity, isMonochrome);
+                    } else {
+                        generateCanvasNoise(currentOpacity, isMonochrome);
+                    }
+                }
+            }
+
+
+            // Event Listeners
+            methodRadios.forEach(radio => radio.addEventListener('change', updateNoise));
+            opacitySlider.addEventListener('input', updateNoise); // Live update for slider
+            monochromeCheckbox.addEventListener('change', updateNoise);
+            regenerateBtn.addEventListener('click', () => { // Force immediate regeneration for canvas
+                if (currentMethod === 'canvas') {
+                    generateCanvasNoise(currentOpacity, isMonochrome);
+                }
+            });
+
+            // Handle window resize for canvas
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    if (currentMethod === 'canvas') {
+                        console.log("Resizing canvas...");
+                        generateCanvasNoise(currentOpacity, isMonochrome);
+                    }
+                }, 250); // Debounce resize events
+            });
+
+
+            // Initial Setup on Load
+            function initialize() {
+                const savedTheme = localStorage.getItem('noiseGenTheme') || 'reactor-core'; // Default heavy theme
+                applyTheme(savedTheme); // Apply theme first
+                // applyTheme calls updateNoise, so noise generates after theme loads
+            }
+
+            initialize(); // Run initial setup
+
+        })();
+
+        // --- ON PAGE LOAD ---
+        // Moved initialization logic into the IIFE's initialize function
+        // to ensure it runs after the DOM is ready and theme is applied.
+        document.addEventListener('DOMContentLoaded', () => {
+            // The IIFE's initialize function handles theme loading and initial noise generation.
+            console.log("Noise Synthesizer Initialized.");
+        });
+
+    </script>
+
+</body>
+
+</html>

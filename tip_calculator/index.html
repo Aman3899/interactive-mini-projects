@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<!-- Default theme class set here, JS will override -->
+<html lang="en" class="theme-dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Tip Calculator with History</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Base font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.5s ease, color 0.5s ease;
+        }
+
+        /* --- CSS Variables for Theming --- */
+        :root,
+        .theme-light {
+            --bg-gradient-start: theme('colors.emerald.50');
+            --bg-gradient-via: theme('colors.cyan.50');
+            --bg-gradient-end: theme('colors.teal.100');
+            --calc-bg: rgba(255, 255, 255, 0.85);
+            --calc-border: theme('colors.gray.200');
+            --modal-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: theme('colors.gray.900');
+            --text-secondary: theme('colors.gray.600');
+            --text-accent: theme('colors.emerald.700');
+            --text-inverted: theme('colors.white');
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --input-border: theme('colors.gray.300');
+            --input-focus-border: theme('colors.emerald.500');
+            --input-focus-shadow: rgba(34, 197, 94, 0.4);
+            --button-bg: theme('colors.emerald.600');
+            --button-hover-bg: theme('colors.emerald.700');
+            --button-selected-bg: theme('colors.emerald.800');
+            --results-bg: theme('colors.emerald.700');
+            --results-text-primary: theme('colors.white');
+            --results-text-secondary: theme('colors.emerald.200');
+            --results-value-text: theme('colors.emerald.300');
+            --reset-bg: theme('colors.red.500');
+            --reset-hover-bg: theme('colors.red.600');
+            --reset-disabled-bg: theme('colors.red.300');
+            --reset-focus-shadow: rgba(239, 68, 68, 0.4);
+            --error-text: theme('colors.red.500');
+            --error-border: theme('colors.red.500');
+            --history-item-bg: theme('colors.gray.100');
+            --history-border: theme('colors.gray.300');
+            --history-button-bg: theme('colors.gray.500');
+            --history-button-hover-bg: theme('colors.gray.600');
+        }
+
+        .theme-dark {
+            --bg-gradient-start: theme('colors.gray.800');
+            --bg-gradient-via: #065f46;
+            /* emerald-800 */
+            --bg-gradient-end: theme('colors.gray.900');
+            --calc-bg: rgba(17, 24, 39, 0.85);
+            /* gray-900 */
+            --calc-border: rgba(55, 65, 81, 0.5);
+            /* gray-700 */
+            --modal-bg: rgba(31, 41, 55, 0.95);
+            /* gray-800 */
+            --text-primary: theme('colors.gray.100');
+            --text-secondary: theme('colors.gray.400');
+            --text-accent: theme('colors.emerald.400');
+            --text-inverted: theme('colors.gray.900');
+            --input-bg: rgba(55, 65, 81, 0.8);
+            /* gray-700 */
+            --input-border: theme('colors.gray.600');
+            --input-focus-border: theme('colors.emerald.400');
+            --input-focus-shadow: rgba(74, 222, 128, 0.4);
+            --button-bg: theme('colors.emerald.600');
+            --button-hover-bg: theme('colors.emerald.500');
+            --button-selected-bg: theme('colors.emerald.700');
+            --results-bg: rgba(6, 78, 59, 0.9);
+            /* emerald-800/90 */
+            --results-text-primary: theme('colors.white');
+            --results-text-secondary: theme('colors.emerald.300');
+            --results-value-text: theme('colors.emerald.200');
+            --reset-bg: theme('colors.red.600');
+            --reset-hover-bg: theme('colors.red.500');
+            --reset-disabled-bg: rgba(153, 27, 27, 0.5);
+            --reset-focus-shadow: rgba(248, 113, 113, 0.4);
+            --error-text: theme('colors.red.400');
+            --error-border: theme('colors.red.400');
+            --history-item-bg: theme('colors.gray.700');
+            --history-border: theme('colors.gray.600');
+            --history-button-bg: theme('colors.gray.600');
+            --history-button-hover-bg: theme('colors.gray.500');
+        }
+
+        .theme-ocean {
+            /* Variables from previous example */
+            --bg-gradient-start: #0077b6;
+            --bg-gradient-via: #00b4d8;
+            --bg-gradient-end: #ade8f4;
+            --calc-bg: rgba(255, 255, 255, 0.8);
+            --calc-border: #90e0ef;
+            --modal-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #03045e;
+            --text-secondary: #023e8a;
+            --text-accent: #0077b6;
+            --text-inverted: #ffffff;
+            --input-bg: rgba(202, 240, 248, 0.7);
+            --input-border: #90e0ef;
+            --input-focus-border: #00b4d8;
+            --input-focus-shadow: rgba(0, 180, 216, 0.4);
+            --button-bg: #0096c7;
+            --button-hover-bg: #0077b6;
+            --button-selected-bg: #023e8a;
+            --results-bg: #03045e;
+            --results-text-primary: #ffffff;
+            --results-text-secondary: #ade8f4;
+            --results-value-text: #caf0f8;
+            --reset-bg: #f77f00;
+            --reset-hover-bg: #d62828;
+            --reset-disabled-bg: #f77f0080;
+            --reset-focus-shadow: rgba(247, 127, 0, 0.4);
+            --error-text: #d62828;
+            --error-border: #d62828;
+            --history-item-bg: #e0fbfc;
+            --history-border: #90e0ef;
+            --history-button-bg: #0077b6;
+            --history-button-hover-bg: #023e8a;
+        }
+
+        .theme-sunset {
+            /* Variables from previous example */
+            --bg-gradient-start: #ffb703;
+            --bg-gradient-via: #fb8500;
+            --bg-gradient-end: #e63946;
+            --calc-bg: rgba(255, 253, 240, 0.85);
+            --calc-border: #ffb703;
+            --modal-bg: rgba(255, 250, 230, 0.95);
+            --text-primary: #d62828;
+            --text-secondary: #f77f00;
+            --text-accent: #e63946;
+            --text-inverted: #ffffff;
+            --input-bg: rgba(255, 253, 240, 0.8);
+            --input-border: #fb8500;
+            --input-focus-border: #e63946;
+            --input-focus-shadow: rgba(230, 57, 70, 0.4);
+            --button-bg: #fb8500;
+            --button-hover-bg: #e63946;
+            --button-selected-bg: #d62828;
+            --results-bg: #8d0801;
+            --results-text-primary: #ffffff;
+            --results-text-secondary: #ffb703;
+            --results-value-text: #fdc500;
+            --reset-bg: #219ebc;
+            --reset-hover-bg: #023047;
+            --reset-disabled-bg: #219ebc80;
+            --reset-focus-shadow: rgba(33, 158, 188, 0.4);
+            --error-text: #d62828;
+            --error-border: #d62828;
+            --history-item-bg: #fff1e6;
+            --history-border: #ffb703;
+            --history-button-bg: #f77f00;
+            --history-button-hover-bg: #d62828;
+        }
+
+        .theme-forest {
+            /* Variables from previous example */
+            --bg-gradient-start: #cad2c5;
+            --bg-gradient-via: #84a98c;
+            --bg-gradient-end: #52796f;
+            --calc-bg: rgba(242, 243, 244, 0.85);
+            --calc-border: #84a98c;
+            --modal-bg: rgba(248, 249, 250, 0.95);
+            --text-primary: #2f3e46;
+            --text-secondary: #354f52;
+            --text-accent: #52796f;
+            --text-inverted: #ffffff;
+            --input-bg: rgba(237, 241, 240, 0.8);
+            --input-border: #84a98c;
+            --input-focus-border: #52796f;
+            --input-focus-shadow: rgba(82, 121, 111, 0.4);
+            --button-bg: #52796f;
+            --button-hover-bg: #354f52;
+            --button-selected-bg: #2f3e46;
+            --results-bg: #2f3e46;
+            --results-text-primary: #ffffff;
+            --results-text-secondary: #cad2c5;
+            --results-value-text: #d4e0d6;
+            --reset-bg: #bc4749;
+            --reset-hover-bg: #a44a3f;
+            --reset-disabled-bg: #bc474980;
+            --reset-focus-shadow: rgba(188, 71, 73, 0.4);
+            --error-text: #bc4749;
+            --error-border: #bc4749;
+            --history-item-bg: #f0f3f1;
+            --history-border: #84a98c;
+            --history-button-bg: #354f52;
+            --history-button-hover-bg: #2f3e46;
+        }
+
+        .theme-lavender {
+            /* Variables from previous example */
+            --bg-gradient-start: #e0e1f0;
+            --bg-gradient-via: #c0b9dd;
+            --bg-gradient-end: #a09abc;
+            --calc-bg: rgba(248, 247, 252, 0.85);
+            --calc-border: #c0b9dd;
+            --modal-bg: rgba(250, 250, 252, 0.95);
+            --text-primary: #52528c;
+            --text-secondary: #6a6a9f;
+            --text-accent: #8c8cc2;
+            --text-inverted: #ffffff;
+            --input-bg: rgba(240, 239, 248, 0.8);
+            --input-border: #c0b9dd;
+            --input-focus-border: #8c8cc2;
+            --input-focus-shadow: rgba(140, 140, 194, 0.4);
+            --button-bg: #8c8cc2;
+            --button-hover-bg: #6a6a9f;
+            --button-selected-bg: #52528c;
+            --results-bg: #52528c;
+            --results-text-primary: #ffffff;
+            --results-text-secondary: #e0e1f0;
+            --results-value-text: #edeef8;
+            --reset-bg: #ff9b85;
+            --reset-hover-bg: #e97777;
+            --reset-disabled-bg: #ff9b8580;
+            --reset-focus-shadow: rgba(255, 155, 133, 0.4);
+            --error-text: #e97777;
+            --error-border: #e97777;
+            --history-item-bg: #f5f5fa;
+            --history-border: #c0b9dd;
+            --history-button-bg: #6a6a9f;
+            --history-button-hover-bg: #52528c;
+        }
+
+        .theme-monochrome {
+            /* Variables from previous example */
+            --bg-gradient-start: #e5e7eb;
+            --bg-gradient-via: #d1d5db;
+            --bg-gradient-end: #9ca3af;
+            --calc-bg: rgba(255, 255, 255, 0.9);
+            --calc-border: #d1d5db;
+            --modal-bg: rgba(255, 255, 255, 0.98);
+            --text-primary: #1f2937;
+            --text-secondary: #374151;
+            --text-accent: #4b5563;
+            --text-inverted: #ffffff;
+            --input-bg: rgba(243, 244, 246, 0.8);
+            --input-border: #d1d5db;
+            --input-focus-border: #4b5563;
+            --input-focus-shadow: rgba(75, 85, 99, 0.4);
+            --button-bg: #4b5563;
+            --button-hover-bg: #374151;
+            --button-selected-bg: #1f2937;
+            --results-bg: #1f2937;
+            --results-text-primary: #ffffff;
+            --results-text-secondary: #d1d5db;
+            --results-value-text: #e5e7eb;
+            --reset-bg: #ef4444;
+            --reset-hover-bg: #dc2626;
+            --reset-disabled-bg: #ef444480;
+            --reset-focus-shadow: rgba(239, 68, 68, 0.4);
+            --error-text: #ef4444;
+            --error-border: #ef4444;
+            --history-item-bg: #f3f4f6;
+            --history-border: #d1d5db;
+            --history-button-bg: #374151;
+            --history-button-hover-bg: #1f2937;
+        }
+
+        .theme-neon {
+            --bg-gradient-start: #1a1a2e;
+            --bg-gradient-via: #16213e;
+            --bg-gradient-end: #0f3460;
+            --calc-bg: rgba(22, 33, 62, 0.85);
+            --calc-border: #0f3460;
+            --modal-bg: rgba(27, 40, 70, 0.95);
+            --text-primary: #e94560;
+            --text-secondary: #c0c0e0;
+            --text-accent: #533483;
+            --text-inverted: #ffffff;
+            --input-bg: rgba(27, 40, 70, 0.8);
+            --input-border: #533483;
+            --input-focus-border: #e94560;
+            --input-focus-shadow: rgba(233, 69, 96, 0.4);
+            --button-bg: #533483;
+            --button-hover-bg: #e94560;
+            --button-selected-bg: #ff577f;
+            --results-bg: #0f3460;
+            --results-text-primary: #ffffff;
+            --results-text-secondary: #c0c0e0;
+            --results-value-text: #e94560;
+            --reset-bg: #f8b400;
+            --reset-hover-bg: #fc6a03;
+            --reset-disabled-bg: #f8b40080;
+            --reset-focus-shadow: rgba(248, 180, 0, 0.4);
+            --error-text: #ff577f;
+            --error-border: #ff577f;
+            --history-item-bg: #1f2b4d;
+            --history-border: #533483;
+            --history-button-bg: #533483;
+            --history-button-hover-bg: #e94560;
+        }
+
+        .theme-desert {
+            --bg-gradient-start: #f4a261;
+            --bg-gradient-via: #e76f51;
+            --bg-gradient-end: #d5bdaf;
+            --calc-bg: rgba(252, 248, 242, 0.85);
+            --calc-border: #e76f51;
+            --modal-bg: rgba(255, 253, 250, 0.95);
+            --text-primary: #264653;
+            --text-secondary: #2a9d8f;
+            --text-accent: #e76f51;
+            --text-inverted: #ffffff;
+            --input-bg: rgba(248, 243, 235, 0.8);
+            --input-border: #f4a261;
+            --input-focus-border: #e76f51;
+            --input-focus-shadow: rgba(231, 111, 81, 0.4);
+            --button-bg: #2a9d8f;
+            --button-hover-bg: #264653;
+            --button-selected-bg: #1d3557;
+            --results-bg: #264653;
+            --results-text-primary: #ffffff;
+            --results-text-secondary: #f4a261;
+            --results-value-text: #f5c09a;
+            --reset-bg: #e76f51;
+            --reset-hover-bg: #d06245;
+            --reset-disabled-bg: #e76f5180;
+            --reset-focus-shadow: rgba(231, 111, 81, 0.4);
+            --error-text: #e76f51;
+            --error-border: #e76f51;
+            --history-item-bg: #fff8f0;
+            --history-border: #f4a261;
+            --history-button-bg: #2a9d8f;
+            --history-button-hover-bg: #264653;
+        }
+
+        .theme-midnight {
+            --bg-gradient-start: #0b132b;
+            --bg-gradient-via: #1c2541;
+            --bg-gradient-end: #3a506b;
+            --calc-bg: rgba(28, 37, 65, 0.85);
+            --calc-border: #3a506b;
+            --modal-bg: rgba(40, 50, 80, 0.95);
+            --text-primary: #ffffff;
+            --text-secondary: #adb5bd;
+            --text-accent: #5bc0be;
+            --text-inverted: #0b132b;
+            --input-bg: rgba(58, 80, 107, 0.8);
+            --input-border: #3a506b;
+            --input-focus-border: #5bc0be;
+            --input-focus-shadow: rgba(91, 192, 190, 0.4);
+            --button-bg: #5bc0be;
+            --button-hover-bg: #6fffe9;
+            --button-selected-bg: #3a506b;
+            --results-bg: #0b132b;
+            --results-text-primary: #ffffff;
+            --results-text-secondary: #adb5bd;
+            --results-value-text: #6fffe9;
+            --reset-bg: #ff6b6b;
+            --reset-hover-bg: #f06565;
+            --reset-disabled-bg: #ff6b6b80;
+            --reset-focus-shadow: rgba(255, 107, 107, 0.4);
+            --error-text: #ff6b6b;
+            --error-border: #ff6b6b;
+            --history-item-bg: #1c2541;
+            --history-border: #3a506b;
+            --history-button-bg: #5bc0be;
+            --history-button-hover-bg: #6fffe9;
+        }
+
+
+        /* --- Apply Variables --- */
+        body {
+            background-image: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-via), var(--bg-gradient-end));
+            color: var(--text-primary);
+        }
+
+        .calculator-wrapper,
+        .history-modal-content {
+            background-color: var(--calc-bg);
+            border-color: var(--calc-border);
+        }
+
+        .history-modal-content {
+            background-color: var(--modal-bg);
+        }
+
+        h1,
+        label,
+        p,
+        .modal-title {
+            color: var(--text-secondary);
+        }
+
+        h1,
+        .modal-title {
+            color: var(--text-accent);
+            font-weight: 700;
+        }
+
+        /* Main title */
+        .results-section p {
+            color: var(--results-text-primary);
+        }
+
+        .results-section p+p {
+            color: var(--results-text-secondary);
+        }
+
+        #tip-amount,
+        #total-amount {
+            color: var(--results-value-text);
+        }
+
+        input,
+        select,
+        #custom-tip-input {
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+            color: var(--text-primary);
+        }
+
+        input::placeholder,
+        #custom-tip-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        input:focus,
+        select:focus,
+        #custom-tip-input:focus {
+            border-color: var(--input-focus-border) !important;
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .tip-button {
+            background-color: var(--button-bg);
+            color: var(--text-inverted);
+        }
+
+        .tip-button:hover {
+            background-color: var(--button-hover-bg);
+        }
+
+        .tip-button.selected {
+            background-color: var(--button-selected-bg);
+        }
+
+        .results-section {
+            background-color: var(--results-bg);
+        }
+
+        #reset-btn,
+        #clear-history-btn {
+            background-color: var(--reset-bg);
+            color: var(--text-inverted);
+        }
+
+        #reset-btn:hover:not(:disabled),
+        #clear-history-btn:hover:not(:disabled) {
+            background-color: var(--reset-hover-bg);
+        }
+
+        #reset-btn:disabled {
+            background-color: var(--reset-disabled-bg);
+        }
+
+        #reset-btn:focus-visible,
+        #clear-history-btn:focus-visible {
+            box-shadow: 0 0 0 3px var(--reset-focus-shadow);
+        }
+
+        #people-error {
+            color: var(--error-text);
+        }
+
+        input.border-error {
+            border-color: var(--error-border) !important;
+        }
+
+        .input-icon {
+            color: var(--text-secondary);
+        }
+
+        select {
+            color: var(--text-secondary);
+        }
+
+        /* Select arrow color */
+        .history-item {
+            background-color: var(--history-item-bg);
+            border-color: var(--history-border);
+        }
+
+        .history-button {
+            background-color: var(--history-button-bg);
+            color: var(--text-inverted);
+        }
+
+        .history-button:hover {
+            background-color: var(--history-button-hover-bg);
+        }
+
+        /* --- General Styles --- */
+        input[type='number']::-webkit-outer-spin-button,
+        input[type='number']::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type='number'] {
+            -moz-appearance: textfield;
+        }
+
+        .input-icon {
+            pointer-events: none;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        /* Modal styles */
+        .modal {
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            transform: scale(0.95);
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        .modal.open .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* Scrollbar for History */
+        #history-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #history-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #history-list::-webkit-scrollbar-thumb {
+            background-color: var(--text-secondary);
+            border-radius: 3px;
+            opacity: 0.6;
+        }
+    </style>
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { poppins: ['Poppins', 'sans-serif'] } } } }
+    </script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4 transition-colors duration-500">
+
+    <div class="app-container w-full max-w-xl mx-auto">
+
+        <!-- Controls Row -->
+        <div class="controls mb-4 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+            <!-- Theme & Currency Selectors -->
+            <div class="flex gap-4">
+                <div>
+                    <label for="theme-select" class="block text-xs font-medium mb-1 opacity-80">Theme</label>
+                    <select id="theme-select"
+                        class="form-select w-full p-2 text-sm rounded-md border shadow-sm focus:ring-2 focus:ring-opacity-50">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="ocean">Ocean</option>
+                        <option value="sunset">Sunset</option>
+                        <option value="forest">Forest</option>
+                        <option value="lavender">Lavender</option>
+                        <option value="monochrome">Monochrome</option>
+                        <option value="neon">Neon Funk</option>
+                        <option value="desert">Desert Oasis</option>
+                        <option value="midnight">Midnight</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="currency-select" class="block text-xs font-medium mb-1 opacity-80">Currency</label>
+                    <select id="currency-select"
+                        class="form-select w-full p-2 text-sm rounded-md border shadow-sm focus:ring-2 focus:ring-opacity-50">
+                        <option value="USD" selected>USD ($)</option>
+                    </select>
+                </div>
+            </div>
+            <!-- History Button -->
+            <div>
+                <!-- Spacer label for alignment or adjust margin -->
+                <label class="block text-xs font-medium mb-1 opacity-0">Action</label>
+                <button id="view-history-btn"
+                    class="history-button py-2 px-4 text-sm rounded-md font-semibold shadow-sm transition duration-200 flex items-center gap-2">
+                    <i class="fas fa-history"></i> History
+                </button>
+            </div>
+        </div>
+
+
+        <div
+            class="calculator-wrapper backdrop-blur-lg shadow-xl rounded-2xl border p-6 sm:p-8 flex flex-col gap-6 sm:gap-8">
+            <h1 class="text-2xl sm:text-3xl font-bold text-center">TipSplitter</h1>
+
+            <!-- Input Section -->
+            <div class="input-section flex flex-col gap-5">
+                <div>
+                    <label for="bill-input" class="block text-sm font-semibold mb-1">Bill Amount</label>
+                    <div class="relative"><span class="input-icon absolute inset-y-0 left-0 pl-3 flex items-center"><i
+                                class="fas fa-receipt"></i></span><input type="number" id="bill-input"
+                            placeholder="0.00" min="0" step="0.01"
+                            class="form-input w-full p-3 pl-10 rounded-lg border shadow-sm appearance-none"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Select Tip %</label>
+                    <div class="grid grid-cols-3 gap-2 sm:gap-3">
+                        <button
+                            class="tip-button py-2 px-3 text-center rounded-md font-semibold transition duration-200"
+                            data-tip="10">10%</button>
+                        <button
+                            class="tip-button py-2 px-3 text-center rounded-md font-semibold transition duration-200"
+                            data-tip="15">15%</button>
+                        <button
+                            class="tip-button py-2 px-3 text-center rounded-md font-semibold transition duration-200"
+                            data-tip="20">20%</button>
+                        <button
+                            class="tip-button py-2 px-3 text-center rounded-md font-semibold transition duration-200"
+                            data-tip="25">25%</button>
+                        <button
+                            class="tip-button py-2 px-3 text-center rounded-md font-semibold transition duration-200"
+                            data-tip="50">50%</button>
+                        <input type="number" id="custom-tip-input" placeholder="Custom" min="0" max="100"
+                            class="form-input py-2 px-3 text-center rounded-md border shadow-sm appearance-none placeholder-opacity-70">
+                    </div>
+                </div>
+                <div>
+                    <label for="people-input"
+                        class="flex justify-between items-center text-sm font-semibold mb-1"><span>Number of
+                            People</span><span id="people-error" class="text-xs font-medium hidden">Can't be
+                            zero</span></label>
+                    <div class="relative"><span class="input-icon absolute inset-y-0 left-0 pl-3 flex items-center"><i
+                                class="fas fa-users"></i></span><input type="number" id="people-input" placeholder="1"
+                            min="1" step="1" value="1"
+                            class="form-input w-full p-3 pl-10 rounded-lg border shadow-sm appearance-none"></div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section rounded-xl p-6 flex flex-col gap-5 shadow-inner">
+                <div class="result-item flex justify-between items-center">
+                    <div>
+                        <p class="text-base font-medium">Tip Amount</p>
+                        <p class="text-xs opacity-80">/ person</p>
+                    </div>
+                    <span id="tip-amount" class="text-3xl sm:text-4xl font-bold tabular-nums">--.--</span>
+                </div>
+                <div class="result-item flex justify-between items-center">
+                    <div>
+                        <p class="text-base font-medium">Total</p>
+                        <p class="text-xs opacity-80">/ person</p>
+                    </div>
+                    <span id="total-amount" class="text-3xl sm:text-4xl font-bold tabular-nums">--.--</span>
+                </div>
+                <button id="reset-btn" disabled
+                    class="w-full mt-4 font-bold py-2.5 px-4 rounded-lg transition duration-200 uppercase tracking-wider text-lg shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">Reset</button>
+            </div>
+        </div><!-- End Calculator Wrapper -->
+
+    </div><!-- End App Container -->
+
+    <!-- History Modal -->
+    <div id="history-modal"
+        class="modal fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm p-4 transition-opacity duration-300">
+        <div class="history-modal-content modal-content w-full max-w-lg rounded-xl shadow-2xl border p-6 flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="modal-title text-xl sm:text-2xl font-bold">Calculation History</h2>
+                <button id="close-history-btn"
+                    class="text-3xl font-light leading-none opacity-70 hover:opacity-100 focus:outline-none">×</button>
+            </div>
+            <div id="history-list" class="flex-grow overflow-y-auto max-h-[60vh] pr-2 space-y-3">
+                <!-- History items will be added here -->
+                <p id="no-history-msg" class="text-center opacity-70 py-4">No history yet.</p>
+            </div>
+            <button id="clear-history-btn"
+                class="w-full mt-4 font-semibold py-2 px-4 rounded-lg transition duration-200 text-sm shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
+                Clear History
+            </button>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+
+</html>

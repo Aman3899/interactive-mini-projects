@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-midnight-scribe">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards App</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Playfair+Display:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Base Font */
+        body {
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* --- CSS Variables for Themes --- */
+        :root,
+        .theme-midnight-scribe {
+            --bg-gradient-start: #0f172a;
+            --bg-gradient-via: #1e293b;
+            --bg-gradient-end: #334155;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle fill="%23ffffff20" cx="20" cy="20" r="1"/><circle fill="%23ffffff10" cx="80" cy="80" r="0.5"/></svg>');
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --card-border: rgba(59, 130, 246, 0.4);
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 20px rgba(59, 130, 246, 0.3);
+            --text-primary: #e0f2fe;
+            --text-secondary: #93c5fd;
+            --text-accent: #3b82f6;
+            --button-bg: linear-gradient(145deg, #3b82f6, #1e40af);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #60a5fa, #3b82f6);
+            --button-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            --input-bg: rgba(51, 65, 85, 0.8);
+            --input-border: var(--card-border);
+            --input-text: var(--text-secondary);
+            --transition-duration: 0.6s;
+        }
+
+        .theme-velvet-dusk {
+            --bg-gradient-start: #1e1e2e;
+            --bg-gradient-via: #3b0764;
+            --bg-gradient-end: #7c3aed;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect x="10" y="10" width="80" height="80" fill="none" stroke="%23ec489920" stroke-width="1"/></svg>');
+            --card-bg: rgba(30, 30, 46, 0.8);
+            --card-border: rgba(236, 72, 153, 0.4);
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 20px rgba(236, 72, 153, 0.3);
+            --text-primary: #f5f3ff;
+            --text-secondary: #ec4899;
+            --text-accent: #22d3ee;
+            --button-bg: linear-gradient(145deg, #ec4899, #c026d3);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #f472b6, #ec4899);
+            --button-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+            --input-bg: rgba(59, 7, 100, 0.8);
+            --input-border: var(--card-border);
+            --input-text: var(--text-secondary);
+        }
+
+        .theme-ember-glow {
+            --bg-gradient-start: #7f0000;
+            --bg-gradient-via: #b91c1c;
+            --bg-gradient-end: #dc2626;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 0 50 Q 25 30, 50 50 T 100 50" stroke="%23f8717120" stroke-width="2" fill="none"/></svg>');
+            --card-bg: rgba(69, 10, 10, 0.8);
+            --card-border: rgba(239, 68, 68, 0.5);
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(239, 68, 68, 0.3);
+            --text-primary: #fee2e2;
+            --text-secondary: #f87171;
+            --text-accent: #facc15;
+            --button-bg: linear-gradient(145deg, #ef4444, #b91c1c);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #f87171, #ef4444);
+            --button-shadow: 0 4px 15px rgba(239, 68, 68, 0.5);
+            --input-bg: rgba(127, 29, 29, 0.8);
+            --input-border: var(--card-border);
+            --input-text: var(--text-secondary);
+        }
+
+        .theme-forest-whisper {
+            --bg-gradient-start: #022c22;
+            --bg-gradient-via: #064e3b;
+            --bg-gradient-end: #047857;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><path d="M 10 10 C 20 30, 40 30, 50 10" stroke="%2347b26520" stroke-width="1" fill="none"/></svg>');
+            --card-bg: rgba(2, 44, 34, 0.8);
+            --card-border: rgba(71, 178, 101, 0.4);
+            --card-shadow: 0 8px 25px rgba(0, 20, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(71, 178, 101, 0.3);
+            --text-primary: #d1fae5;
+            --text-secondary: #47b265;
+            --text-accent: #f59e0b;
+            --button-bg: linear-gradient(145deg, #47b265, #2f855a);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #6ee7b7, #47b265);
+            --button-shadow: 0 4px 15px rgba(71, 178, 101, 0.4);
+            --input-bg: rgba(6, 78, 59, 0.8);
+            --input-border: var(--card-border);
+            --input-text: var(--text-secondary);
+        }
+
+        .theme-crystal-dawn {
+            --bg-gradient-start: #e0f2fe;
+            --bg-gradient-via: #f3f4f6;
+            --bg-gradient-end: #f9fafb;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><polygon points="50,10 90,90 10,90" fill="none" stroke="%2360a5fa30" stroke-width="1"/></svg>');
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-border: rgba(147, 197, 253, 0.4);
+            --card-shadow: 0 8px 25px rgba(100, 100, 150, 0.15);
+            --card-shadow-glow: 0 0 20px rgba(147, 197, 253, 0.3);
+            --text-primary: #1e3a8a;
+            --text-secondary: #2563eb;
+            --text-accent: #0284c7;
+            --button-bg: linear-gradient(145deg, #93c5fd, #60a5fa);
+            --button-text: #1e3a8a;
+            --button-hover-bg: linear-gradient(145deg, #bfdbfe, #93c5fd);
+            --button-shadow: 0 4px 15px rgba(147, 197, 253, 0.4);
+            --input-bg: rgba(191, 219, 254, 0.8);
+            --input-border: var(--card-border);
+            --input-text: var(--text-primary);
+        }
+
+        /* --- Apply Variables --- */
+        body {
+            background-color: var(--bg-gradient-start);
+            background-image: var(--bg-image), linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-via), var(--bg-gradient-end));
+            color: var(--text-primary);
+            transition: background-color var(--transition-duration) ease-in-out, background-image var(--transition-duration) ease-in-out, color var(--transition-duration) ease-in-out;
+        }
+
+        .app-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow), var(--card-shadow-glow);
+            transition: background-color var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out, box-shadow var(--transition-duration) ease-in-out;
+        }
+
+        .flashcard {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            box-shadow: var(--card-shadow);
+            transition: background-color var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out;
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+            color: var(--text-secondary);
+        }
+
+        .theme-selector {
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            transition: background-color var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out;
+        }
+
+        .theme-selector select {
+            background-color: transparent;
+            color: var(--input-text);
+            border: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em;
+            padding-right: 2.5rem;
+            transition: color var(--transition-duration) ease-in-out;
+        }
+
+        .theme-selector select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--text-accent);
+        }
+
+        .input-field {
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--input-text);
+            transition: background-color var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out, color var(--transition-duration) ease-in-out;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--text-accent);
+            box-shadow: 0 0 0 2px var(--text-accent);
+        }
+
+        .action-button {
+            background-image: var(--button-bg);
+            color: var(--button-text);
+            box-shadow: var(--button-shadow);
+            transition: background-image var(--transition-duration) ease-in-out, transform 0.2s ease, box-shadow var(--transition-duration) ease-in-out;
+        }
+
+        .action-button:hover {
+            background-image: var(--button-hover-bg);
+            transform: scale(1.05);
+        }
+
+        .action-button:active {
+            transform: scale(0.95);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        playfair: ['Playfair Display', 'serif'],
+                        roboto: ['Roboto', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="app-container w-full max-w-4xl rounded-2xl p-6 sm:p-8">
+        <h1 class="font-playfair text-3xl sm:text-4xl font-bold text-center mb-6 text-[var(--text-primary)]">Flashcards
+            App</h1>
+
+        <!-- Theme Selector -->
+        <div class="theme-selector w-full sm:w-48 rounded-lg mb-6">
+            <label for="theme-select" class="sr-only">Select Theme</label>
+            <select id="theme-select" class="w-full p-2 rounded-lg text-center font-semibold cursor-pointer">
+                <option value="midnight-scribe">Midnight Scribe</option>
+                <option value="velvet-dusk">Velvet Dusk</option>
+                <option value="ember-glow">Ember Glow</option>
+                <option value="forest-whisper">Forest Whisper</option>
+                <option value="crystal-dawn">Crystal Dawn</option>
+            </select>
+        </div>
+
+        <!-- Create Flashcard Form -->
+        <div class="mb-6">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <input type="text" id="question-input" class="input-field w-full p-3 rounded-lg"
+                    placeholder="Enter question (e.g., Word)" required>
+                <input type="text" id="answer-input" class="input-field w-full p-3 rounded-lg"
+                    placeholder="Enter answer (e.g., Definition)" required>
+            </div>
+            <button id="add-flashcard"
+                class="action-button mt-4 w-full sm:w-auto font-semibold py-3 px-6 rounded-lg">Add Flashcard</button>
+        </div>
+
+        <!-- Flashcards List -->
+        <div id="flashcards-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6"></div>
+
+        <!-- Clear All Button -->
+        <button id="clear-all" class="action-button font-semibold py-3 px-6 rounded-lg">Clear All Flashcards</button>
+    </div>
+
+    <script>
+        let flashcards = JSON.parse(localStorage.getItem('flashcards')) || [];
+
+        const flashcardsList = document.getElementById('flashcards-list');
+        const questionInput = document.getElementById('question-input');
+        const answerInput = document.getElementById('answer-input');
+        const addFlashcardButton = document.getElementById('add-flashcard');
+        const clearAllButton = document.getElementById('clear-all');
+        const themeSelect = document.getElementById('theme-select');
+
+        // Theme Switching
+        function applyTheme(themeName) {
+            document.documentElement.className = '';
+            document.documentElement.classList.add(`theme-${themeName}`);
+            localStorage.setItem('flashcardsTheme', themeName);
+            if (themeSelect.value !== themeName) {
+                themeSelect.value = themeName;
+            }
+        }
+
+        themeSelect.addEventListener('change', (e) => {
+            applyTheme(e.target.value);
+        });
+
+        // Initialize Theme
+        const savedTheme = localStorage.getItem('flashcardsTheme') || 'midnight-scribe';
+        applyTheme(savedTheme);
+
+        // Render Flashcards
+        function renderFlashcards() {
+            flashcardsList.innerHTML = flashcards.length ?
+                flashcards.map((card, index) => `
+                    <div class="flashcard" data-index="${index}">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <p class="text-lg font-semibold">${card.question}</p>
+                            </div>
+                            <div class="flashcard-back">
+                                <p class="text-lg">${card.answer}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') :
+                '<p class="text-center text-[var(--text-secondary)] col-span-full">No flashcards yet. Add one above!</p>';
+
+            // Add flip event listeners
+            document.querySelectorAll('.flashcard').forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('flipped');
+                });
+            });
+        }
+
+        // Add Flashcard
+        function addFlashcard() {
+            const question = questionInput.value.trim();
+            const answer = answerInput.value.trim();
+            if (question && answer) {
+                flashcards.push({ question, answer });
+                localStorage.setItem('flashcards', JSON.stringify(flashcards));
+                questionInput.value = '';
+                answerInput.value = '';
+                renderFlashcards();
+            } else {
+                alert('Please enter both a question and an answer.');
+            }
+        }
+
+        // Clear All Flashcards
+        function clearFlashcards() {
+            if (confirm('Are you sure you want to delete all flashcards?')) {
+                flashcards = [];
+                localStorage.removeItem('flashcards');
+                renderFlashcards();
+            }
+        }
+
+        // Event Listeners
+        addFlashcardButton.addEventListener('click', addFlashcard);
+        questionInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') answerInput.focus();
+        });
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addFlashcard();
+        });
+        clearAllButton.addEventListener('click', clearFlashcards);
+
+        // Initialize
+        renderFlashcards();
+    </script>
+</body>
+
+</html>

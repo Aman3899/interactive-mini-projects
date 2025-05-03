@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryoStat - Analog Thermometer UI</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Exo+2:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Base Font & Theme Variables */
+        :root,
+        .theme-cryo-default {
+            --bg-primary: #0a0a1f;
+            --bg-secondary: #1c1c3c;
+            --text-primary: #e0e0ff;
+            --text-secondary: #a0a0f0;
+            --accent-cyan: #00ffff;
+            --accent-orange: #ffaa44;
+            --accent-red: #ff4444;
+            --border-color: rgba(0, 255, 255, 0.2);
+            --border-glow: rgba(0, 255, 255, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #2a2a5a, #1c1c3c);
+            --tube-bg: rgba(10, 10, 31, 0.5);
+            --liquid-color-cold: var(--accent-cyan);
+            --liquid-color-warm: var(--accent-orange);
+            --liquid-color-hot: var(--accent-red);
+            --liquid-glow: 0 0 10px;
+            --scale-color: var(--text-secondary);
+            --slider-track-bg: var(--bg-secondary);
+            --slider-thumb-bg: var(--accent-cyan);
+            --slider-thumb-shadow: 0 0 8px var(--accent-cyan);
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle fill="%2300ffff20" cx="20" cy="20" r="1"/><circle fill="%2300ffff10" cx="80" cy="80" r="0.5"/></svg>');
+            --transition-duration: 0.5s;
+        }
+
+        /* Theme Definitions */
+        .theme-stranger-things {
+            --bg-primary: #1a0000;
+            --bg-secondary: #3b0000;
+            --text-primary: #ff9999;
+            --text-secondary: #ff6666;
+            --accent-cyan: #00ffcc;
+            --accent-orange: #ff6600;
+            --accent-red: #cc0000;
+            --border-color: rgba(0, 255, 204, 0.2);
+            --border-glow: rgba(0, 255, 204, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #330000, #1a0000);
+            --tube-bg: rgba(26, 0, 0, 0.5);
+            --slider-track-bg: #3b0000;
+            --slider-thumb-bg: #00ffcc;
+            --slider-thumb-shadow: 0 0 8px #00ffcc;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect x="10" y="10" width="80" height="80" fill="none" stroke="%23ff666620" stroke-width="1"/></svg>');
+        }
+
+        .theme-the-witcher {
+            --bg-primary: #1c2526;
+            --bg-secondary: #3e4c4f;
+            --text-primary: #e6d7a8;
+            --text-secondary: #b8a878;
+            --accent-cyan: #4ecdc4;
+            --accent-orange: #ff9f43;
+            --accent-red: #c44536;
+            --border-color: rgba(78, 205, 196, 0.2);
+            --border-glow: rgba(78, 205, 196, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #3e4c4f, #1c2526);
+            --tube-bg: rgba(28, 37, 38, 0.5);
+            --slider-track-bg: #3e4c4f;
+            --slider-thumb-bg: #4ecdc4;
+            --slider-thumb-shadow: 0 0 8px #4ecdc4;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><path d="M 10 10 C 20 30, 40 30, 50 10" stroke="%234ecdc420" stroke-width="1" fill="none"/></svg>');
+        }
+
+        .theme-cyberpunk-2077 {
+            --bg-primary: #0d1b2a;
+            --bg-secondary: #1b263b;
+            --text-primary: #ffd60a;
+            --text-secondary: #00f5d4;
+            --accent-cyan: #00f5d4;
+            --accent-orange: #ff006e;
+            --accent-red: #ff4d6d;
+            --border-color: rgba(0, 245, 212, 0.2);
+            --border-glow: rgba(0, 245, 212, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #1b263b, #0d1b2a);
+            --tube-bg: rgba(13, 27, 42, 0.5);
+            --slider-track-bg: #1b263b;
+            --slider-thumb-bg: #00f5d4;
+            --slider-thumb-shadow: 0 0 8px #00f5d4;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 10 10 L 90 90" stroke="%2300f5d420" stroke-width="1.5" fill="none"/></svg>');
+        }
+
+        .theme-the-mandalorian {
+            --bg-primary: #2c2c2c;
+            --bg-secondary: #4a4a4a;
+            --text-primary: #d9d9d9;
+            --text-secondary: #a8a8a8;
+            --accent-cyan: #4bb543;
+            --accent-orange: #ff8c00;
+            --accent-red: #b22222;
+            --border-color: rgba(75, 181, 67, 0.2);
+            --border-glow: rgba(75, 181, 67, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #4a4a4a, #2c2c2c);
+            --tube-bg: rgba(44, 44, 44, 0.5);
+            --slider-track-bg: #4a4a4a;
+            --slider-thumb-bg: #4bb543;
+            --slider-thumb-shadow: 0 0 8px #4bb543;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle fill="%234bb54320" cx="50" cy="50" r="2"/></svg>');
+        }
+
+        .theme-game-of-thrones {
+            --bg-primary: #1a0e0b;
+            --bg-secondary: #3c2f2f;
+            --text-primary: #d4a017;
+            --text-secondary: #a67c00;
+            --accent-cyan: #4682b4;
+            --accent-orange: #ff4500;
+            --accent-red: #8b0000;
+            --border-color: rgba(70, 130, 180, 0.2);
+            --border-glow: rgba(70, 130, 180, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #3c2f2f, #1a0e0b);
+            --tube-bg: rgba(26, 14, 11, 0.5);
+            --slider-track-bg: #3c2f2f;
+            --slider-thumb-bg: #4682b4;
+            --slider-thumb-shadow: 0 0 8px #4682b4;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><path d="M 25 10 L 40 40 L 10 40 Z" fill="none" stroke="%23d4a01720" stroke-width="1"/></svg>');
+        }
+
+        .theme-westworld {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #2b2b2b;
+            --text-primary: #e8e8e8;
+            --text-secondary: #b0b0b0;
+            --accent-cyan: #00ced1;
+            --accent-orange: #ff8c00;
+            --accent-red: #dc143c;
+            --border-color: rgba(0, 206, 209, 0.2);
+            --border-glow: rgba(0, 206, 209, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #2b2b2b, #0f0f0f);
+            --tube-bg: rgba(15, 15, 15, 0.5);
+            --slider-track-bg: #2b2b2b;
+            --slider-thumb-bg: #00ced1;
+            --slider-thumb-shadow: 0 0 8px #00ced1;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect x="20" y="20" width="60" height="60" fill="none" stroke="%2300ced120" stroke-width="1"/></svg>');
+        }
+
+        .theme-the-last-of-us {
+            --bg-primary: #1b261b;
+            --bg-secondary: #3a4b3a;
+            --text-primary: #d8e6d8;
+            --text-secondary: #a8c0a8;
+            --accent-cyan: #66cdaa;
+            --accent-orange: #ff7f50;
+            --accent-red: #8b0000;
+            --border-color: rgba(102, 205, 170, 0.2);
+            --border-glow: rgba(102, 205, 170, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #3a4b3a, #1b261b);
+            --tube-bg: rgba(27, 38, 27, 0.5);
+            --slider-track-bg: #3a4b3a;
+            --slider-thumb-bg: #66cdaa;
+            --slider-thumb-shadow: 0 0 8px #66cdaa;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><path d="M 10 40 Q 25 20, 40 40" stroke="%2366cdaa20" stroke-width="1" fill="none"/></svg>');
+        }
+
+        .theme-arcane {
+            --bg-primary: #1e1b3e;
+            --bg-secondary: #3b2f6b;
+            --text-primary: #e6d6ff;
+            --text-secondary: #b8a1ff;
+            --accent-cyan: #40c4ff;
+            --accent-orange: #ffab40;
+            --accent-red: #d81b60;
+            --border-color: rgba(64, 196, 255, 0.2);
+            --border-glow: rgba(64, 196, 255, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #3b2f6b, #1e1b3e);
+            --tube-bg: rgba(30, 27, 62, 0.5);
+            --slider-track-bg: #3b2f6b;
+            --slider-thumb-bg: #40c4ff;
+            --slider-thumb-shadow: 0 0 8px #40c4ff;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><polygon points="50,10 90,90 10,90" fill="none" stroke="%2340c4ff20" stroke-width="1"/></svg>');
+        }
+
+        .theme-halo {
+            --bg-primary: #0a1d2e;
+            --bg-secondary: #1b3a4b;
+            --text-primary: #b0e0e6;
+            --text-secondary: #87ceeb;
+            --accent-cyan: #20b2aa;
+            --accent-orange: #ff8c00;
+            --accent-red: #b22222;
+            --border-color: rgba(32, 178, 170, 0.2);
+            --border-glow: rgba(32, 178, 170, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #1b3a4b, #0a1d2e);
+            --tube-bg: rgba(10, 29, 46, 0.5);
+            --slider-track-bg: #1b3a4b;
+            --slider-thumb-bg: #20b2aa;
+            --slider-thumb-shadow: 0 0 8px #20b2aa;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 10 10 L 50 50 L 10 90" stroke="%2320b2aa20" stroke-width="1.5" fill="none"/></svg>');
+        }
+
+        .theme-the-expanse {
+            --bg-primary: #0b1a2b;
+            --bg-secondary: #2a3e5a;
+            --text-primary: #d3e3fc;
+            --text-secondary: #a3c1ef;
+            --accent-cyan: #4682b4;
+            --accent-orange: #ff4500;
+            --accent-red: #b22222;
+            --border-color: rgba(70, 130, 180, 0.2);
+            --border-glow: rgba(70, 130, 180, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #2a3e5a, #0b1a2b);
+            --tube-bg: rgba(11, 26, 43, 0.5);
+            --slider-track-bg: #2a3e5a;
+            --slider-thumb-bg: #4682b4;
+            --slider-thumb-shadow: 0 0 8px #4682b4;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle fill="%234682b420" cx="50" cy="50" r="3"/></svg>');
+        }
+
+        .theme-overwatch {
+            --bg-primary: #1c2526;
+            --bg-secondary: #3e4c4f;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --accent-cyan: #00b7eb;
+            --accent-orange: #ff9900;
+            --accent-red: #ff3333;
+            --border-color: rgba(0, 183, 235, 0.2);
+            --border-glow: rgba(0, 183, 235, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #3e4c4f, #1c2526);
+            --tube-bg: rgba(28, 37, 38, 0.5);
+            --slider-track-bg: #3e4c4f;
+            --slider-thumb-bg: #00b7eb;
+            --slider-thumb-shadow: 0 0 8px #00b7eb;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 50 10 L 90 50 L 50 90 L 10 50 Z" fill="none" stroke="%2300b7eb20" stroke-width="1"/></svg>');
+        }
+
+        .theme-destiny-2 {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #e0f2fe;
+            --text-secondary: #93c5fd;
+            --accent-cyan: #4f46e5;
+            --accent-orange: #f59e0b;
+            --accent-red: #dc2626;
+            --border-color: rgba(79, 70, 229, 0.2);
+            --border-glow: rgba(79, 70, 229, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #1e293b, #0f172a);
+            --tube-bg: rgba(15, 23, 42, 0.5);
+            --slider-track-bg: #1e293b;
+            --slider-thumb-bg: #4f46e5;
+            --slider-thumb-shadow: 0 0 8px #4f46e5;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle fill="%234f46e520" cx="30" cy="30" r="2"/><circle fill="%234f46e520" cx="70" cy="70" r="2"/></svg>');
+        }
+
+        .theme-breaking-bad {
+            --bg-primary: #1a2b1a;
+            --bg-secondary: #3a5a3a;
+            --text-primary: #d4e4d4;
+            --text-secondary: #a8c8a8;
+            --accent-cyan: #00ff7f;
+            --accent-orange: #ffa500;
+            --accent-red: #b22222;
+            --border-color: rgba(0, 255, 127, 0.2);
+            --border-glow: rgba(0, 255, 127, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #3a5a3a, #1a2b1a);
+            --tube-bg: rgba(26, 43, 26, 0.5);
+            --slider-track-bg: #3a5a3a;
+            --slider-thumb-bg: #00ff7f;
+            --slider-thumb-shadow: 0 0 8px #00ff7f;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect x="20" y="20" width="60" height="60" fill="none" stroke="%2300ff7f20" stroke-width="1"/></svg>');
+        }
+
+        .theme-the-boys {
+            --bg-primary: #1c2526;
+            --bg-secondary: #3e4c4f;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --accent-cyan: #1e90ff;
+            --accent-orange: #ff4500;
+            --accent-red: #b22222;
+            --border-color: rgba(30, 144, 255, 0.2);
+            --border-glow: rgba(30, 144, 255, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #3e4c4f, #1c2526);
+            --tube-bg: rgba(28, 37, 38, 0.5);
+            --slider-track-bg: #3e4c4f;
+            --slider-thumb-bg: #1e90ff;
+            --slider-thumb-shadow: 0 0 8px #1e90ff;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 10 50 L 90 50" stroke="%231e90ff20" stroke-width="1.5" fill="none"/></svg>');
+        }
+
+        .theme-fallout {
+            --bg-primary: #2b2b2b;
+            --bg-secondary: #4a4a4a;
+            --text-primary: #00ff00;
+            --text-secondary: #00cc00;
+            --accent-cyan: #00ff00;
+            --accent-orange: #ff8c00;
+            --accent-red: #b22222;
+            --border-color: rgba(0, 255, 0, 0.2);
+            --border-glow: rgba(0, 255, 0, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #4a4a4a, #2b2b2b);
+            --tube-bg: rgba(43, 43, 43, 0.5);
+            --slider-track-bg: #4a4a4a;
+            --slider-thumb-bg: #00ff00;
+            --slider-thumb-shadow: 0 0 8px #00ff00;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect x="10" y="10" width="80" height="80" fill="none" stroke="%2300ff0020" stroke-width="1"/></svg>');
+        }
+
+        .theme-warcraft {
+            --bg-primary: #1b2a3a;
+            --bg-secondary: #3a4e6a;
+            --text-primary: #e6d6a8;
+            --text-secondary: #b8a878;
+            --accent-cyan: #4682b4;
+            --accent-orange: #ff8c00;
+            --accent-red: #b22222;
+            --border-color: rgba(70, 130, 180, 0.2);
+            --border-glow: rgba(70, 130, 180, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #3a4e6a, #1b2a3a);
+            --tube-bg: rgba(27, 42, 58, 0.5);
+            --slider-track-bg: #3a4e6a;
+            --slider-thumb-bg: #4682b4;
+            --slider-thumb-shadow: 0 0 8px #4682b4;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><path d="M 25 10 L 40 40 L 10 40 Z" fill="none" stroke="%234682b420" stroke-width="1"/></svg>');
+        }
+
+        .theme-doom {
+            --bg-primary: #1a0e0b;
+            --bg-secondary: #3c2f2f;
+            --text-primary: #ff4500;
+            --text-secondary: #cc3300;
+            --accent-cyan: #00ced1;
+            --accent-orange: #ff4500;
+            --accent-red: #8b0000;
+            --border-color: rgba(0, 206, 209, 0.2);
+            --border-glow: rgba(0, 206, 209, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #3c2f2f, #1a0e0b);
+            --tube-bg: rgba(26, 14, 11, 0.5);
+            --slider-track-bg: #3c2f2f;
+            --slider-thumb-bg: #00ced1;
+            --slider-thumb-shadow: 0 0 8px #00ced1;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 10 10 L 90 90" stroke="%23ff450020" stroke-width="1.5" fill="none"/></svg>');
+        }
+
+        .theme-portal {
+            --bg-primary: #1e2526;
+            --bg-secondary: #3e4c4f;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --accent-cyan: #00b7eb;
+            --accent-orange: #ff9900;
+            --accent-red: #ff3333;
+            --border-color: rgba(0, 183, 235, 0.2);
+            --border-glow: rgba(0, 183, 235, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #3e4c4f, #1e2526);
+            --tube-bg: rgba(30, 37, 38, 0.5);
+            --slider-track-bg: #3e4c4f;
+            --slider-thumb-bg: #00b7eb;
+            --slider-thumb-shadow: 0 0 8px #00b7eb;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle fill="%2300b7eb20" cx="50" cy="50" r="3"/></svg>');
+        }
+
+        .theme-mass-effect {
+            --bg-primary: #0b1a2b;
+            --bg-secondary: #2a3e5a;
+            --text-primary: #d3e3fc;
+            --text-secondary: #a3c1ef;
+            --accent-cyan: #4682b4;
+            --accent-orange: #ff4500;
+            --accent-red: #b22222;
+            --border-color: rgba(70, 130, 180, 0.2);
+            --border-glow: rgba(70, 130, 180, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #2a3e5a, #0b1a2b);
+            --tube-bg: rgba(11, 26, 43, 0.5);
+            --slider-track-bg: #2a3e5a;
+            --slider-thumb-bg: #4682b4;
+            --slider-thumb-shadow: 0 0 8px #4682b4;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 10 50 L 90 50" stroke="%234682b420" stroke-width="1.5" fill="none"/></svg>');
+        }
+
+        .theme-fortnite {
+            --bg-primary: #1e3a5e;
+            --bg-secondary: #3e6a9e;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --accent-cyan: #00b7eb;
+            --accent-orange: #ff9900;
+            --accent-red: #ff3333;
+            --border-color: rgba(0, 183, 235, 0.2);
+            --border-glow: rgba(0, 183, 235, 0.4);
+            --thermometer-casing-bg: linear-gradient(180deg, #3e6a9e, #1e3a5e);
+            --tube-bg: rgba(30, 58, 94, 0.5);
+            --slider-track-bg: #3e6a9e;
+            --slider-thumb-bg: #00b7eb;
+            --slider-thumb-shadow: 0 0 8px #00b7eb;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><polygon points="50,10 90,90 10,90" fill="none" stroke="%2300b7eb20" stroke-width="1"/></svg>');
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%), var(--bg-image);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: background var(--transition-duration) ease-in-out, color var(--transition-duration) ease-in-out;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-exo {
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        /* Thermometer Structure */
+        .thermometer-container {
+            width: 180px;
+            padding: 15px;
+            background: var(--thermometer-casing-bg);
+            border-radius: 30px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4), 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            transition: background var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out;
+        }
+
+        .thermometer-body {
+            height: 400px;
+            width: 60px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .thermometer-glass-tube {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: calc(100% - 30px);
+            background: var(--tube-bg);
+            border-radius: 12px 12px 0 0;
+            border: 1px solid var(--border-color);
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            transition: background var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out;
+        }
+
+        .thermometer-liquid {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--liquid-color, var(--liquid-color-cold));
+            border-radius: 12px 12px 0 0;
+            height: var(--liquid-height, 0%);
+            transition: height var(--transition-duration) cubic-bezier(0.4, 0, 0.2, 1), background-color var(--transition-duration) ease;
+            box-shadow: var(--liquid-glow, none);
+            filter: brightness(1.1);
+        }
+
+        .thermometer-bulb {
+            position: absolute;
+            bottom: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--tube-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: hidden;
+            transition: background var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out;
+        }
+
+        .thermometer-bulb-liquid {
+            width: calc(100% - 12px);
+            height: calc(100% - 12px);
+            border-radius: 50%;
+            background-color: var(--liquid-color, var(--liquid-color-cold));
+            box-shadow: var(--liquid-glow, none);
+            transition: background-color var(--transition-duration) ease-in-out;
+            filter: brightness(1.1);
+        }
+
+        /* Scale Markings */
+        .thermometer-scale {
+            position: absolute;
+            top: 0;
+            left: calc(50% + 18px);
+            height: calc(100% - 30px);
+            width: 40px;
+        }
+
+        .scale-mark {
+            position: absolute;
+            left: 0;
+            width: 10px;
+            height: 1px;
+            background-color: var(--scale-color);
+            transform-origin: left center;
+            transition: background-color var(--transition-duration) ease-in-out;
+        }
+
+        .scale-mark.major {
+            width: 15px;
+            height: 2px;
+        }
+
+        .scale-number {
+            position: absolute;
+            left: 20px;
+            transform: translateY(-50%);
+            font-size: 0.7rem;
+            color: var(--scale-color);
+            font-weight: 600;
+            transition: color var(--transition-duration) ease-in-out;
+        }
+
+        /* Controls Styling */
+        .controls-container {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            transition: background-color var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out;
+        }
+
+        .temp-display {
+            text-shadow: 0 0 8px var(--slider-thumb-bg);
+        }
+
+        .temp-unit {
+            color: var(--text-secondary);
+            transition: color var(--transition-duration) ease-in-out;
+        }
+
+        /* Custom Slider Styles */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: var(--slider-track-bg);
+            border-radius: 4px;
+            outline: none;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--slider-thumb-bg);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--slider-thumb-shadow);
+            border: 2px solid var(--bg-secondary);
+            transition: background var(--transition-duration) ease-in-out, box-shadow var(--transition-duration) ease-in-out;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--slider-thumb-bg);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--slider-thumb-shadow);
+            border: 2px solid var(--bg-secondary);
+            transition: background var(--transition-duration) ease-in-out, box-shadow var(--transition-duration) ease-in-out;
+        }
+
+        input[type="range"]:focus {
+            box-shadow: 0 0 0 3px var(--border-glow);
+        }
+
+        /* Theme Selector */
+        .theme-selector {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            transition: background-color var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out;
+        }
+
+        .theme-selector select {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23e0e0ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em;
+            padding-right: 2.5rem;
+            transition: color var(--transition-duration) ease-in-out;
+        }
+
+        .theme-selector select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--border-glow);
+        }
+
+        /* Utility */
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        exo: ['Exo 2', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="main-container flex flex-col items-center gap-10">
+        <h1 class="font-orbitron text-3xl sm:text-4xl font-bold text-center tracking-wider uppercase">CryoStat Sensor
+        </h1>
+
+        <!-- Theme Selector -->
+        <div class="theme-selector w-full sm:w-48 rounded-lg mb-6 mx-auto">
+            <label for="theme-select" class="sr-only">Select Theme</label>
+            <select id="theme-select" class="w-full p-2 rounded-lg text-center font-semibold cursor-pointer">
+                <option value="cryo-default">Cryo Default</option>
+                <option value="stranger-things">Stranger Things</option>
+                <option value="the-witcher">The Witcher</option>
+                <option value="cyberpunk-2077">Cyberpunk 2077</option>
+                <option value="the-mandalorian">The Mandalorian</option>
+                <option value="game-of-thrones">Game of Thrones</option>
+                <option value="westworld">Westworld</option>
+                <option value="the-last-of-us">The Last of Us</option>
+                <option value="arcane">Arcane</option>
+                <option value="halo">Halo</option>
+                <option value="the-expanse">The Expanse</option>
+                <option value="overwatch">Overwatch</option>
+                <option value="destiny-2">Destiny 2</option>
+                <option value="breaking-bad">Breaking Bad</option>
+                <option value="the-boys">The Boys</option>
+                <option value="fallout">Fallout</option>
+                <option value="warcraft">Warcraft</option>
+                <option value="doom">DOOM</option>
+                <option value="portal">Portal</option>
+                <option value="mass-effect">Mass Effect</option>
+                <option value="fortnite">Fortnite</option>
+            </select>
+        </div>
+
+        <!-- Thermometer Visual -->
+        <div class="thermometer-container">
+            <div class="thermometer-body">
+                <!-- Scale Markings Container -->
+                <div id="thermometer-scale" class="thermometer-scale">
+                    <!-- Markings generated by JS -->
+                </div>
+                <!-- Glass Tube & Liquid -->
+                <div class="thermometer-glass-tube">
+                    <div id="thermometer-liquid" class="thermometer-liquid"></div>
+                </div>
+                <!-- Bulb -->
+                <div class="thermometer-bulb">
+                    <div id="thermometer-bulb-liquid" class="thermometer-bulb-liquid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls and Display -->
+        <div class="controls-container w-full max-w-sm p-6 rounded-xl shadow-lg border border-[var(--border-color)]">
+            <div class="text-center mb-4">
+                <span id="temp-display"
+                    class="temp-display font-orbitron text-5xl font-bold tabular-nums">10</span><span
+                    class="temp-unit font-orbitron text-3xl opacity-70">°C</span>
+            </div>
+            <label for="temp-slider" class="sr-only">Adjust Temperature</label>
+            <input type="range" id="temp-slider" min="-20" max="50" value="10" step="1" class="w-full">
+            <div class="flex justify-between text-xs font-semibold mt-2 text-[var(--text-secondary)]">
+                <span>-20°C</span>
+                <span>15°C</span>
+                <span>50°C</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const slider = document.getElementById('temp-slider');
+            const tempDisplay = document.getElementById('temp-display');
+            const liquid = document.getElementById('thermometer-liquid');
+            const bulbLiquid = document.getElementById('thermometer-bulb-liquid');
+            const scaleContainer = document.getElementById('thermometer-scale');
+            const root = document.documentElement;
+            const themeSelect = document.getElementById('theme-select');
+
+            // --- Constants ---
+            const minTemp = -20;
+            const maxTemp = 50;
+            const tempRange = maxTemp - minTemp;
+
+            // --- Theme Switching ---
+            function applyTheme(themeName) {
+                document.documentElement.className = '';
+                document.documentElement.classList.add(`theme-${themeName}`);
+                localStorage.setItem('cryostatTheme', themeName);
+                if (themeSelect.value !== themeName) {
+                    themeSelect.value = themeName;
+                }
+                // Update temp display shadow to match new slider thumb color
+                tempDisplay.style.textShadow = `0 0 8px var(--slider-thumb-bg)`;
+            }
+
+            themeSelect.addEventListener('change', (e) => {
+                applyTheme(e.target.value);
+            });
+
+            // Initialize Theme
+            const savedTheme = localStorage.getItem('cryostatTheme') || 'cryo-default';
+            applyTheme(savedTheme);
+
+            // --- Update Function ---
+            function updateThermometer(value) {
+                const temperature = parseFloat(value);
+
+                // 1. Update Numerical Display
+                tempDisplay.textContent = Math.round(temperature);
+
+                // 2. Calculate Liquid Height Percentage
+                const clampedValue = Math.max(minTemp, Math.min(maxTemp, temperature));
+                const percent = ((clampedValue - minTemp) / tempRange) * 100;
+                root.style.setProperty('--liquid-height', `${percent}%`);
+
+                // 3. Update Liquid Color & Glow Based on Temperature
+                let liquidColor;
+                let glowOpacity;
+                if (temperature <= 0) {
+                    liquidColor = 'var(--liquid-color-cold)';
+                    glowOpacity = Math.max(0.1, Math.abs(temperature) / Math.abs(minTemp) * 0.6);
+                } else if (temperature < 25) {
+                    const warmRatio = temperature / 25;
+                    liquidColor = `color-mix(in srgb, var(--liquid-color-cold) ${100 - warmRatio * 100}%, var(--liquid-color-warm))`;
+                    glowOpacity = 0.3 + warmRatio * 0.2;
+                } else {
+                    const hotRatio = (temperature - 25) / (maxTemp - 25);
+                    liquidColor = `color-mix(in srgb, var(--liquid-color-warm) ${100 - hotRatio * 100}%, var(--liquid-color-hot))`;
+                    glowOpacity = 0.5 + hotRatio * 0.5;
+                }
+                glowOpacity = Math.min(0.9, glowOpacity);
+
+                root.style.setProperty('--liquid-color', liquidColor);
+                bulbLiquid.style.backgroundColor = liquidColor;
+                root.style.setProperty('--liquid-glow', `0 0 12px ${liquidColor.replace(')', `, ${glowOpacity})`).replace('rgb(', 'rgba(')}`);
+                bulbLiquid.style.boxShadow = `var(--liquid-glow, none)`;
+            }
+
+            // --- Generate Scale Markings ---
+            function generateScale() {
+                scaleContainer.innerHTML = '';
+                const majorStep = 10;
+                const minorStep = 5;
+
+                for (let temp = minTemp; temp <= maxTemp; temp++) {
+                    const isMajor = temp % majorStep === 0;
+                    const isMinor = temp % minorStep === 0;
+
+                    if (isMajor || isMinor) {
+                        const percent = ((temp - minTemp) / tempRange) * 100;
+
+                        const mark = document.createElement('div');
+                        mark.className = `scale-mark ${isMajor ? 'major' : ''}`;
+                        mark.style.top = `${100 - percent}%`;
+                        scaleContainer.appendChild(mark);
+
+                        if (isMajor) {
+                            const number = document.createElement('span');
+                            number.className = 'scale-number';
+                            number.textContent = temp;
+                            number.style.top = `${100 - percent}%`;
+                            scaleContainer.appendChild(number);
+                        }
+                    }
+                }
+            }
+
+            // --- Event Listeners ---
+            slider.addEventListener('input', (event) => {
+                updateThermometer(event.target.value);
+            });
+
+            // --- Initialization ---
+            generateScale();
+            updateThermometer(slider.value);
+        });
+    </script>
+</body>
+
+</html>

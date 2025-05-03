@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<!-- Add dark class for default dark theme -->
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stylish Digital Clock</title>
+    <!-- Tailwind CSS CDN with Forms Plugin -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Custom Styles/Overrides -->
+    <style>
+        /* Define fonts for Tailwind */
+        body { font-family: 'Roboto', sans-serif; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+
+        /* Custom animation for divider */
+        @keyframes blink { 50% { opacity: 0.3; } }
+        .animate-blink { animation: blink 1s infinite; }
+
+        /* Style for the Switch Toggle */
+        .slider { transition: .4s; }
+        .slider:before { content: ""; position: absolute; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        /* Style the slider track */
+        html.dark .slider { background-color: #4b5563; } /* gray-600 */
+        html:not(.dark) .slider { background-color: #9ca3af; } /* gray-400 */
+         /* Style the checked state */
+        input:checked + .slider { background-color: #3b82f6; } /* blue-500 */
+        input:checked + .slider:before { transform: translateX(30px); }
+        .slider.round { border-radius: 34px; }
+        .slider.round:before { border-radius: 50%; }
+
+        /* Scrollbar Styling (Optional but nice) */
+         ::-webkit-scrollbar { width: 8px; height: 8px; }
+         ::-webkit-scrollbar-track { background: #374151; } /* gray-700 */
+         html:not(.dark) ::-webkit-scrollbar-track { background: #e5e7eb; } /* gray-200 */
+         ::-webkit-scrollbar-thumb { background: #1d4ed8; border-radius: 4px; } /* blue-700 */
+         html:not(.dark) ::-webkit-scrollbar-thumb { background: #60a5fa; } /* blue-400 */
+         ::-webkit-scrollbar-thumb:hover { background: #1e40af; } /* blue-800 */
+         html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: #3b82f6; } /* blue-500 */
+
+         /* Hide number input spinners */
+         input[type='number']::-webkit-outer-spin-button,
+         input[type='number']::-webkit-inner-spin-button {
+           -webkit-appearance: none;
+           margin: 0;
+         }
+         input[type='number'] {
+           -moz-appearance: textfield; /* Firefox */
+         }
+
+         /* Ensure modal is centered when display:flex is added by JS */
+         .modal { align-items: center; justify-content: center; }
+
+    </style>
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+          darkMode: 'class', // Enable class-based dark mode
+          theme: {
+            extend: {
+              fontFamily: {
+                orbitron: ['Orbitron', 'sans-serif'],
+                roboto: ['Roboto', 'sans-serif'],
+              },
+              // Add custom colors if needed, though Tailwind's palette is extensive
+              colors: {
+                // Example:
+                // 'custom-blue': '#4a4ffc',
+              },
+              // Add custom keyframes/animations if needed
+              keyframes: {
+                 blink: {
+                    '50%': { opacity: '0.3' },
+                 }
+              },
+              animation: {
+                 blink: 'blink 1s infinite'
+              }
+            }
+          }
+        }
+      </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <div class="container max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 flex-grow">
+        <!-- Main Clock Container -->
+        <div class="clock-container bg-gray-200/60 dark:bg-gray-800/70 backdrop-blur-xl border border-gray-300 dark:border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl mb-8 overflow-hidden relative">
+            <!-- Header -->
+            <div class="clock-header flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-4 border-b border-gray-300 dark:border-gray-700">
+                <h1 class="font-orbitron font-bold text-2xl sm:text-3xl text-blue-600 dark:text-blue-500 tracking-wider mb-4 sm:mb-0" style="text-shadow: 0 0 8px rgba(59, 130, 246, 0.4);">
+                    DIGITAL CLOCK
+                </h1>
+                <!-- Theme Toggle -->
+                <div class="theme-toggle flex items-center gap-3">
+                    <i class="fas fa-sun text-lg text-yellow-500"></i>
+                    <label class="switch relative inline-block w-[60px] h-[30px]">
+                        <input type="checkbox" id="theme-switch" class="opacity-0 w-0 h-0">
+                        <span class="slider round absolute cursor-pointer top-0 left-0 right-0 bottom-0"></span>
+                    </label>
+                    <i class="fas fa-moon text-lg text-blue-300"></i>
+                </div>
+            </div>
+
+            <!-- Main Clock Display -->
+            <div class="main-clock bg-gray-300/30 dark:bg-black/20 rounded-2xl p-6 sm:p-8 mb-8 border border-gray-400/20 dark:border-gray-600/30 shadow-xl">
+                <!-- Time -->
+                <div class="time-container flex flex-wrap justify-center items-center gap-1 sm:gap-2 md:gap-4 mb-6 relative">
+                    <div class="time-segment flex flex-col items-center px-1 sm:px-2 md:px-4">
+                        <div class="time-value font-orbitron text-5xl sm:text-6xl lg:text-7xl font-bold text-blue-600 dark:text-blue-400 h-20 sm:h-24 flex items-center justify-center relative tabular-nums" id="hours">00</div>
+                        <div class="time-label text-xs font-medium text-gray-600 dark:text-gray-400 tracking-widest uppercase mt-2">HOURS</div>
+                    </div>
+                    <div class="time-divider font-orbitron text-4xl sm:text-5xl lg:text-6xl font-bold text-pink-500 dark:text-pink-400 animate-blink self-center sm:self-start pt-2 sm:pt-0">:</div>
+                    <div class="time-segment flex flex-col items-center px-1 sm:px-2 md:px-4">
+                        <div class="time-value font-orbitron text-5xl sm:text-6xl lg:text-7xl font-bold text-blue-600 dark:text-blue-400 h-20 sm:h-24 flex items-center justify-center relative tabular-nums" id="minutes">00</div>
+                        <div class="time-label text-xs font-medium text-gray-600 dark:text-gray-400 tracking-widest uppercase mt-2">MINUTES</div>
+                    </div>
+                    <div class="time-divider font-orbitron text-4xl sm:text-5xl lg:text-6xl font-bold text-pink-500 dark:text-pink-400 animate-blink self-center sm:self-start pt-2 sm:pt-0">:</div>
+                    <div class="time-segment flex flex-col items-center px-1 sm:px-2 md:px-4">
+                        <div class="time-value font-orbitron text-5xl sm:text-6xl lg:text-7xl font-bold text-blue-600 dark:text-blue-400 h-20 sm:h-24 flex items-center justify-center relative tabular-nums" id="seconds">00</div>
+                        <div class="time-label text-xs font-medium text-gray-600 dark:text-gray-400 tracking-widest uppercase mt-2">SECONDS</div>
+                    </div>
+                    <div class="am-pm font-orbitron text-xl sm:text-2xl font-semibold text-green-600 dark:text-green-400 bg-green-500/10 dark:bg-green-400/10 px-3 py-1 rounded-lg ml-2 sm:ml-4 self-center mt-4 sm:mt-0 sm:absolute sm:right-0 sm:top-4" id="am-pm">AM</div>
+                </div>
+
+                <!-- Date -->
+                <div class="date-container flex flex-wrap justify-center items-center gap-3 sm:gap-4">
+                    <div class="date-segment bg-white/10 dark:bg-white/5 backdrop-blur-sm rounded-lg px-4 py-2 font-orbitron font-medium tracking-wider text-gray-700 dark:text-gray-200 border border-gray-400/20 dark:border-gray-700/30 shadow-md text-sm sm:text-base" id="day-name">MONDAY</div>
+                    <div class="date-segment bg-white/10 dark:bg-white/5 backdrop-blur-sm rounded-lg px-4 py-2 font-orbitron font-medium tracking-wider text-gray-700 dark:text-gray-200 border border-gray-400/20 dark:border-gray-700/30 shadow-md text-sm sm:text-base tabular-nums" id="day">01</div>
+                    <div class="date-segment bg-white/10 dark:bg-white/5 backdrop-blur-sm rounded-lg px-4 py-2 font-orbitron font-medium tracking-wider text-gray-700 dark:text-gray-200 border border-gray-400/20 dark:border-gray-700/30 shadow-md text-sm sm:text-base" id="month">JANUARY</div>
+                    <div class="date-segment bg-white/10 dark:bg-white/5 backdrop-blur-sm rounded-lg px-4 py-2 font-orbitron font-medium tracking-wider text-gray-700 dark:text-gray-200 border border-gray-400/20 dark:border-gray-700/30 shadow-md text-sm sm:text-base tabular-nums" id="year">2025</div>
+                </div>
+            </div>
+
+            <!-- World Clock -->
+            <div class="world-clock-container bg-gray-300/30 dark:bg-black/20 rounded-2xl p-6 sm:p-8 border border-gray-400/20 dark:border-gray-600/30 shadow-xl">
+                <div class="section-header flex justify-between items-center mb-6 pb-3 border-b border-gray-300 dark:border-gray-700">
+                    <h2 class="font-orbitron font-semibold text-xl sm:text-2xl text-blue-600 dark:text-blue-500">WORLD CLOCK</h2>
+                    <button id="add-timezone" class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg text-sm shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition duration-200 flex items-center gap-2">
+                        <i class="fas fa-plus text-xs"></i> Add Timezone
+                    </button>
+                </div>
+
+                <div class="world-clocks grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[100px]" id="world-clocks">
+                    <!-- World clocks will be dynamically added here by JS -->
+                    <!-- Example structure rendered by JS: -->
+                    <!-- <div class="world-clock bg-white/5 dark:bg-gray-900/30 rounded-xl p-5 relative border border-gray-700/20 shadow-md flex flex-col gap-2">
+                        <div class="world-clock-city font-orbitron text-lg font-semibold text-pink-500 dark:text-pink-400">New York</div>
+                        <div class="world-clock-time font-orbitron text-2xl font-bold text-gray-800 dark:text-gray-100 tabular-nums" data-timezone="America/New_York">00:00:00</div>
+                        <div class="world-clock-date text-sm text-gray-600 dark:text-gray-400">Mon, 01 Jan</div>
+                        <button class="remove-clock absolute top-3 right-3 text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 text-lg"><i class="fas fa-times"></i></button>
+                    </div> -->
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm p-4" id="timezone-modal">
+                <div class="modal-content bg-gray-200 dark:bg-gray-800 p-6 sm:p-8 rounded-xl shadow-2xl max-w-md w-full relative border border-gray-400 dark:border-gray-700">
+                    <span class="close absolute top-3 right-4 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 text-3xl font-bold cursor-pointer leading-none">×</span>
+                    <h2 class="text-xl font-semibold mb-6 text-blue-600 dark:text-blue-400 font-orbitron">Add Timezone</h2>
+                    <div class="form-group mb-5">
+                        <label for="city-name" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">City Name:</label>
+                        <input type="text" id="city-name" placeholder="e.g. Paris" class="form-input w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                    </div>
+                    <div class="form-group mb-6">
+                        <label for="timezone-select" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Timezone:</label>
+                        <select id="timezone-select" class="form-select w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                            <!-- Options populated by JS -->
+                             <option value="" disabled selected>Loading timezones...</option>
+                        </select>
+                    </div>
+                    <button id="add-city" class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition duration-200 shadow-md hover:shadow-lg">Add</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Features -->
+        <div class="additional-features grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Stopwatch -->
+            <div class="feature stopwatch bg-gray-200/60 dark:bg-gray-800/70 backdrop-blur-xl border border-gray-300 dark:border-gray-700/50 rounded-2xl p-6 shadow-xl transition duration-300">
+                <h3 class="font-orbitron text-lg font-semibold text-blue-600 dark:text-blue-500 mb-4 flex items-center gap-2"><i class="fas fa-stopwatch w-5 text-center"></i> STOPWATCH</h3>
+                <div class="stopwatch-display font-orbitron text-4xl sm:text-5xl text-center my-5 text-gray-800 dark:text-gray-100 tabular-nums">00:00:00<span class="text-base align-baseline">.00</span></div>
+                <div class="stopwatch-controls flex justify-center gap-3">
+                    <button id="stopwatch-start" class="feature-btn px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:enabled:bg-green-500 hover:enabled:border-green-500 hover:enabled:text-white disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-gray-800">Start</button>
+                    <button id="stopwatch-pause" class="feature-btn px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:enabled:bg-yellow-500 hover:enabled:border-yellow-500 hover:enabled:text-white disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 dark:focus:ring-offset-gray-800">Pause</button>
+                    <button id="stopwatch-reset" class="feature-btn px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:enabled:bg-red-500 hover:enabled:border-red-500 hover:enabled:text-white disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800">Reset</button>
+                </div>
+            </div>
+
+            <!-- Timer -->
+            <div class="feature timer bg-gray-200/60 dark:bg-gray-800/70 backdrop-blur-xl border border-gray-300 dark:border-gray-700/50 rounded-2xl p-6 shadow-xl transition duration-300">
+                 <h3 class="font-orbitron text-lg font-semibold text-blue-600 dark:text-blue-500 mb-4 flex items-center gap-2"><i class="fas fa-hourglass-half w-5 text-center"></i> TIMER</h3>
+                <div class="timer-inputs flex justify-center items-center gap-2 mb-4">
+                    <input type="number" id="hours-input" min="0" max="99" placeholder="HH" class="form-input w-16 text-center p-2 font-orbitron text-lg rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                    <span class="font-orbitron text-2xl text-gray-500 dark:text-gray-400">:</span>
+                    <input type="number" id="minutes-input" min="0" max="59" placeholder="MM" class="form-input w-16 text-center p-2 font-orbitron text-lg rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                    <span class="font-orbitron text-2xl text-gray-500 dark:text-gray-400">:</span>
+                    <input type="number" id="seconds-input" min="0" max="59" placeholder="SS" class="form-input w-16 text-center p-2 font-orbitron text-lg rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                </div>
+                <div class="timer-display font-orbitron text-4xl sm:text-5xl text-center my-5 text-gray-800 dark:text-gray-100 tabular-nums">00:00:00</div>
+                <div class="timer-controls flex justify-center gap-3">
+                    <button id="timer-start" class="feature-btn px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:enabled:bg-green-500 hover:enabled:border-green-500 hover:enabled:text-white disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-gray-800">Start</button>
+                    <button id="timer-pause" class="feature-btn px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:enabled:bg-yellow-500 hover:enabled:border-yellow-500 hover:enabled:text-white disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 dark:focus:ring-offset-gray-800">Pause</button>
+                    <button id="timer-reset" class="feature-btn px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:enabled:bg-red-500 hover:enabled:border-red-500 hover:enabled:text-white disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center p-6 bg-gray-200/60 dark:bg-gray-800/70 text-gray-600 dark:text-gray-400 text-sm border-t border-gray-300 dark:border-gray-700 mt-auto">
+        <p>© <span id="footer-year">2025</span> Stylish Digital Clock | <a href="#" id="about-link" class="text-blue-600 dark:text-blue-400 hover:underline">About</a></p>
+    </footer>
+
+    <!-- Link JavaScript at the end -->
+    <script src="script.js"></script>
+</body>
+</html>

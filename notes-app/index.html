@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<!-- Default theme class, JS handles this -->
+<html lang="en" class="theme-matrix">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Notes - Sticky Note Interface</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400&display=swap"
+        rel="stylesheet">
+    <!-- Marked.js for Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Base Font & Theme Variables */
+        :root,
+        .theme-matrix {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-accent: #031000;
+            --text-primary: #00ff41;
+            --text-secondary: #00cc33;
+            --text-accent: #50ff50;
+            --text-muted: #008822;
+            --border-color: rgba(0, 255, 65, 0.2);
+            --border-glow: rgba(0, 255, 65, 0.4);
+            --note-bg: rgba(3, 26, 0, 0.8);
+            --note-border: var(--border-color);
+            --note-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            --note-glow-hover: 0 0 15px var(--border-glow);
+            --button-bg: linear-gradient(145deg, #00ff41, #00cc33);
+            --button-hover-bg: linear-gradient(145deg, #33ff33, #00ff41);
+            --button-text: #000000;
+            --button-shadow: 0 0 15px var(--border-glow);
+            --delete-color: #ffdd00;
+            --delete-hover-color: #ffff55;
+            /* Yellow for Matrix error/delete */
+            --edit-color: var(--text-secondary);
+            --edit-hover-color: var(--text-accent);
+            --input-bg: rgba(3, 16, 0, 0.7);
+            --input-border: var(--border-color);
+            --input-focus-border: var(--text-accent);
+            --modal-bg: rgba(0, 10, 0, 0.9);
+            --modal-border: var(--border-color);
+            --scrollbar-thumb: var(--text-secondary);
+            --scrollbar-thumb-hover: var(--text-accent);
+            --transition-duration: 0.4s;
+        }
+
+        .theme-cyberpunk {
+            --bg-primary: #0a0a1f;
+            --bg-secondary: #1c1c3c;
+            --bg-accent: #2a2a5a;
+            --text-primary: #00ffff;
+            --text-secondary: #a8a8ff;
+            --text-accent: #ff00ff;
+            --text-muted: #6c6c9c;
+            --border-color: rgba(0, 255, 255, 0.2);
+            --border-glow: rgba(255, 0, 255, 0.4);
+            --note-bg: rgba(28, 28, 60, 0.8);
+            --note-border: var(--border-color);
+            --note-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            --note-glow-hover: 0 0 15px var(--border-glow);
+            --button-bg: linear-gradient(145deg, #ff00ff, #cc00cc);
+            --button-hover-bg: linear-gradient(145deg, #ff33ff, #ff00ff);
+            --button-text: #ffffff;
+            --button-shadow: 0 0 15px var(--border-glow);
+            --delete-color: #ff4444;
+            --delete-hover-color: #ff7777;
+            --edit-color: var(--text-secondary);
+            --edit-hover-color: var(--text-accent);
+            --input-bg: rgba(10, 10, 31, 0.7);
+            --input-border: var(--border-color);
+            --input-focus-border: var(--text-accent);
+            --modal-bg: rgba(16, 16, 47, 0.95);
+            --modal-border: var(--border-color);
+            --scrollbar-thumb: var(--text-accent);
+            --scrollbar-thumb-hover: var(--text-secondary);
+        }
+
+        .theme-nebula {
+            --bg-primary: #1a0a3d;
+            --bg-secondary: #2a115b;
+            --bg-accent: #4f0070;
+            --text-primary: #e9d5ff;
+            --text-secondary: #c084fc;
+            --text-accent: #fde047;
+            --text-muted: #9370db;
+            /* Medium purple */
+            --border-color: rgba(168, 85, 247, 0.3);
+            --border-glow: rgba(168, 85, 247, 0.4);
+            --note-bg: rgba(42, 17, 91, 0.8);
+            --note-border: var(--border-color);
+            --note-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            --note-glow-hover: 0 0 15px var(--border-glow);
+            --button-bg: linear-gradient(145deg, #c084fc, #9333ea);
+            --button-hover-bg: linear-gradient(145deg, #d8b4fe, #c084fc);
+            --button-text: #ffffff;
+            --button-shadow: 0 0 15px var(--border-glow);
+            --delete-color: #ff8d00;
+            --delete-hover-color: #ffcc00;
+            /* Orange/Yellow */
+            --edit-color: var(--text-secondary);
+            --edit-hover-color: var(--text-primary);
+            --input-bg: rgba(26, 10, 61, 0.7);
+            --input-border: var(--border-color);
+            --input-focus-border: var(--text-accent);
+            --modal-bg: rgba(42, 17, 91, 0.95);
+            --modal-border: var(--border-color);
+            --scrollbar-thumb: var(--text-secondary);
+            --scrollbar-thumb-hover: var(--text-primary);
+        }
+
+        .theme-arcLight {
+            --bg-primary: #f0f9ff;
+            --bg-secondary: #e0f2fe;
+            --bg-accent: #ffffff;
+            --text-primary: #075985;
+            --text-secondary: #0ea5e9;
+            --text-accent: #0284c7;
+            --text-muted: #7dd3fc;
+            --border-color: rgba(56, 189, 248, 0.3);
+            --border-glow: rgba(56, 189, 248, 0.4);
+            --note-bg: rgba(255, 255, 255, 0.8);
+            --note-border: #bae6fd;
+            --note-shadow: 0 4px 15px rgba(100, 150, 200, 0.15);
+            --note-glow-hover: 0 0 15px var(--border-glow);
+            --button-bg: linear-gradient(145deg, #0ea5e9, #0284c7);
+            --button-hover-bg: linear-gradient(145deg, #38bdf8, #0ea5e9);
+            --button-text: #ffffff;
+            --button-shadow: 0 0 15px var(--border-glow);
+            --delete-color: #ef4444;
+            --delete-hover-color: #f87171;
+            --edit-color: var(--text-secondary);
+            --edit-hover-color: var(--text-accent);
+            --input-bg: rgba(224, 242, 254, 0.7);
+            --input-border: #bae6fd;
+            --input-focus-border: var(--text-accent);
+            --modal-bg: rgba(240, 249, 255, 0.98);
+            --modal-border: #bae6fd;
+            --scrollbar-thumb: var(--text-accent);
+            --scrollbar-thumb-hover: var(--text-secondary);
+        }
+
+        /* --- Base Element Styles using Variables --- */
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .app-container {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: var(--text-primary);
+        }
+
+        p,
+        label,
+        .note-timestamp {
+            color: var(--text-secondary);
+        }
+
+        input,
+        textarea,
+        select {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            caret-color: var(--text-accent);
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 10px var(--border-glow);
+        }
+
+        .control-button {
+            background-image: var(--button-bg);
+            color: var(--button-text);
+            box-shadow: var(--button-shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-image var(--transition-duration) ease;
+        }
+
+        .control-button:hover {
+            background-image: var(--button-hover-bg);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .note-card {
+            background-color: var(--note-bg);
+            border: 1px solid var(--note-border);
+            box-shadow: var(--note-shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color var(--transition-duration) ease;
+        }
+
+        .note-card:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: var(--note-shadow), var(--note-glow-hover);
+        }
+
+        .note-content {
+            color: var(--text-primary);
+        }
+
+        /* Style rendered markdown */
+        .note-content p {
+            margin-bottom: 0.5em;
+            color: var(--text-primary);
+        }
+
+        .note-content strong {
+            color: var(--text-accent);
+            font-weight: 600;
+        }
+
+        .note-content em {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .note-content code {
+            background-color: var(--input-bg);
+            padding: 0.1em 0.3em;
+            border-radius: 3px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9em;
+            color: var(--text-accent);
+        }
+
+        .note-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .note-actions button:hover {
+            transform: scale(1.15);
+        }
+
+        .edit-btn {
+            color: var(--edit-color);
+        }
+
+        .edit-btn:hover {
+            color: var(--edit-hover-color);
+        }
+
+        .delete-btn {
+            color: var(--delete-color);
+        }
+
+        .delete-btn:hover {
+            color: var(--delete-hover-color);
+        }
+
+        #theme-select {
+            /* ... same select styling as before ... */
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            color: var(--text-secondary);
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            background-color: rgba(10, 10, 31, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--modal-bg);
+            border: 1px solid var(--modal-border);
+            box-shadow: 0 0 30px var(--border-glow);
+        }
+
+        .modal-title {
+            color: var(--text-primary);
+        }
+
+        .modal-button {
+            /* Inherits from .control-button */
+        }
+
+        .modal-close-btn {
+            color: var(--text-secondary);
+        }
+
+        .modal-close-btn:hover {
+            color: var(--text-primary);
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-15px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeOutUp {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-15px) scale(0.98);
+            }
+        }
+
+        .note-enter {
+            animation: fadeInDown 0.4s ease-out forwards;
+        }
+
+        .note-exit {
+            animation: fadeOutUp 0.3s ease-in forwards;
+        }
+
+        /* Scrollbar */
+        #notes-grid::-webkit-scrollbar,
+        .modal-content textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #notes-grid::-webkit-scrollbar-track,
+        .modal-content textarea::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 4px;
+        }
+
+        #notes-grid::-webkit-scrollbar-thumb,
+        .modal-content textarea::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb);
+            border-radius: 4px;
+        }
+
+        #notes-grid::-webkit-scrollbar-thumb:hover,
+        .modal-content textarea::-webkit-scrollbar-thumb:hover {
+            background-color: var(--scrollbar-thumb-hover);
+        }
+    </style>
+    <!-- Tailwind Config -->
+    <script>tailwind.config = { theme: { extend: { fontFamily: { orbitron: ['Orbitron', 'sans-serif'], rajdhani: ['Rajdhani', 'sans-serif'], mono: ['Share Tech Mono', 'monospace'] } } } }</script>
+</head>
+
+<body class="min-h-screen p-4 sm:p-8 theme-transition">
+
+    <div class="app-container max-w-6xl mx-auto p-6 sm:p-8 rounded-2xl shadow-2xl">
+        <!-- Header -->
+        <header class="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8 border-b pb-4"
+            style="border-color: var(--border-color);">
+            <div>
+                <h1 class="text-3xl sm:text-4xl font-bold font-orbitron tracking-wider uppercase mb-1">QUANTUM NOTES
+                </h1>
+                <p class="text-base font-rajdhani opacity-80 font-light">Data Stream Synchronization</p>
+            </div>
+            <div class="flex items-center gap-4 mt-4 sm:mt-0">
+                <div class="relative">
+                    <span
+                        class="absolute inset-y-0 left-0 pl-3 flex items-center text-[var(--text-muted)] pointer-events-none"><i
+                            class="fas fa-search fa-sm"></i></span>
+                    <input type="search" id="search-input" placeholder="Search notes..."
+                        class="input-field py-2 pl-10 pr-4 rounded-lg text-sm w-full sm:w-64">
+                </div>
+                <select id="theme-select" class="input-field py-2 px-4 rounded-lg font-semibold cursor-pointer text-sm">
+                    <option value="matrix">Matrix</option>
+                    <option value="cyberpunk">Cyberpunk</option>
+                    <option value="nebula">Nebula</option>
+                    <option value="arcLight">Arc Light</option>
+                    {/* <!-- Add more theme options here --> */}
+                </select>
+            </div>
+        </header>
+
+        <!-- Add Note Button -->
+        <div class="text-center mb-6">
+            <button id="add-note-btn"
+                class="control-button py-3 px-6 rounded-lg font-orbitron font-semibold text-base tracking-wider inline-flex items-center gap-2">
+                <i class="fas fa-plus"></i> Add New Note
+            </button>
+        </div>
+
+
+        <!-- Notes Grid -->
+        <div id="notes-grid"
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 overflow-y-auto max-h-[70vh] p-1">
+            <!-- Note cards will be added here -->
+            <p id="no-notes-msg" class="text-center py-10 col-span-full hidden">No data fragments found. Initiate a new
+                note.</p>
+        </div>
+
+    </div> <!-- End App Container -->
+
+    <!-- Edit/Add Modal -->
+    <div id="note-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-overlay">
+        <div class="modal-content w-full max-w-lg rounded-xl shadow-2xl p-6 flex flex-col gap-4">
+            <div class="flex justify-between items-center">
+                <h2 id="modal-title" class="modal-title text-2xl font-orbitron font-bold">Add New Note</h2>
+                <button id="modal-close-btn"
+                    class="modal-close-btn text-2xl leading-none opacity-70 hover:opacity-100">×</button>
+            </div>
+            <textarea id="modal-textarea" rows="8"
+                class="input-field w-full p-3 rounded-lg resize-none text-sm font-mono"
+                placeholder="Enter note content (Markdown supported)..."></textarea>
+            <div class="flex justify-end gap-3">
+                <button id="modal-delete-btn"
+                    class="control-button !bg-[var(--delete-color)] hover:!bg-[var(--delete-hover-color)] !text-white py-2 px-4 rounded-lg font-orbitron font-semibold text-sm tracking-wider hidden">Delete</button>
+                {/* Use specific delete color */}
+                <button id="modal-save-btn"
+                    class="control-button py-2 px-6 rounded-lg font-orbitron font-semibold text-sm tracking-wider">Save
+                    Note</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const notesGrid = document.getElementById('notes-grid');
+            const addNoteBtn = document.getElementById('add-note-btn');
+            const noteModal = document.getElementById('note-modal');
+            const modalContent = noteModal.querySelector('.modal-content'); // For potential animation targeting
+            const modalTitle = document.getElementById('modal-title');
+            const modalTextarea = document.getElementById('modal-textarea');
+            const modalSaveBtn = document.getElementById('modal-save-btn');
+            const modalDeleteBtn = document.getElementById('modal-delete-btn');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+            const searchInput = document.getElementById('search-input');
+            const themeSelect = document.getElementById('theme-select');
+            const htmlElement = document.documentElement;
+            const noNotesMsg = document.getElementById('no-notes-msg');
+
+            // --- State ---
+            let notes = [];
+            let currentEditId = null; // Track ID of the note being edited
+
+            // --- Utility ---
+            const formatTimestamp = (timestamp) => {
+                const date = new Date(timestamp);
+                // Simple date format, customize as needed
+                return date.toLocaleDateString('en-US', { year: '2-digit', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+            };
+
+            // --- Local Storage ---
+            function loadNotes() {
+                const savedNotes = localStorage.getItem('quantumNotes');
+                notes = savedNotes ? JSON.parse(savedNotes) : [];
+                notes.sort((a, b) => b.id - a.id); // Show newest first
+                renderNotes();
+            }
+
+            function saveNotes() {
+                notes.sort((a, b) => b.id - a.id); // Keep sorted
+                localStorage.setItem('quantumNotes', JSON.stringify(notes));
+                checkEmptyState(); // Update message visibility
+            }
+
+            // --- Theming ---
+            function applyTheme(themeName) {
+                htmlElement.className = ''; // Clear theme classes
+                htmlElement.classList.add(`theme-${themeName}`);
+                localStorage.setItem('quantumNoteTheme', themeName);
+                if (themeSelect.value !== themeName) themeSelect.value = themeName;
+            }
+
+            // --- Rendering ---
+            function renderNotes(filter = '') {
+                notesGrid.innerHTML = ''; // Clear grid
+                const lowerCaseFilter = filter.toLowerCase();
+                const filteredNotes = notes.filter(note =>
+                    note.content.toLowerCase().includes(lowerCaseFilter)
+                );
+
+                if (filteredNotes.length === 0) {
+                    checkEmptyState(filter);
+                    return;
+                }
+                noNotesMsg.classList.add('hidden');
+
+                filteredNotes.forEach(note => {
+                    const noteElement = createNoteElement(note);
+                    notesGrid.appendChild(noteElement);
+                    // Trigger enter animation
+                    requestAnimationFrame(() => {
+                        noteElement.classList.add('note-enter');
+                        requestAnimationFrame(() => { // Allow enter class to apply
+                            noteElement.style.opacity = '1';
+                            noteElement.style.transform = 'translateY(0) scale(1)';
+                        });
+                    });
+                });
+                checkEmptyState(filter); // Check after rendering potentially filtered list
+            }
+
+            function createNoteElement(note) {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note-card rounded-lg p-4 flex flex-col h-64'; // Fixed height for grid consistency
+                noteElement.dataset.id = note.id;
+                noteElement.style.opacity = '0'; // Start hidden for animation
+                noteElement.style.transform = 'translateY(15px) scale(0.98)';
+
+                // Use Marked.js to render markdown content safely
+                const renderedContent = marked.parse(note.content || '', { breaks: true, gfm: true }); // Enable GitHub Flavored Markdown & line breaks
+
+                noteElement.innerHTML = `
+                    <div class="note-content flex-grow overflow-y-auto text-sm mb-2 pr-1">
+                        ${renderedContent}
+                    </div>
+                    <div class="note-footer border-t pt-2 flex justify-between items-center" style="border-color: var(--border-color);">
+                        <span class="note-timestamp text-xs opacity-70">${formatTimestamp(note.id)}</span>
+                        <div class="note-actions flex gap-3">
+                            <button class="edit-btn" title="Edit Note"><i class="fas fa-pencil-alt fa-sm"></i></button>
+                            <button class="delete-btn" title="Delete Note"><i class="fas fa-trash-alt fa-sm"></i></button>
+                        </div>
+                    </div>
+                `;
+
+                // Attach listeners
+                noteElement.querySelector('.edit-btn').addEventListener('click', () => openModal(note));
+                noteElement.querySelector('.delete-btn').addEventListener('click', () => deleteNote(note.id));
+
+                return noteElement;
+            }
+
+            function checkEmptyState(filter = '') {
+                const hasVisibleNotes = notesGrid.children.length > 0 && !noNotesMsg.classList.contains('hidden');
+                const hasNotesInData = notes.length > 0;
+
+                if (!hasNotesInData) {
+                    noNotesMsg.textContent = "No data fragments found. Initiate a new note.";
+                    noNotesMsg.classList.remove('hidden');
+                } else if (filter && !hasVisibleNotes) {
+                    noNotesMsg.textContent = `No fragments match query "${filter}".`;
+                    noNotesMsg.classList.remove('hidden');
+                } else {
+                    noNotesMsg.classList.add('hidden');
+                }
+            }
+
+            // --- Modal Handling ---
+            function openModal(noteToEdit = null) {
+                currentEditId = noteToEdit ? noteToEdit.id : null;
+                modalTitle.textContent = noteToEdit ? 'Edit Data Fragment' : 'Add New Data Fragment';
+                modalTextarea.value = noteToEdit ? noteToEdit.content : '';
+                modalDeleteBtn.classList.toggle('hidden', !noteToEdit); // Show delete only when editing
+
+                noteModal.classList.remove('hidden');
+                noteModal.classList.add('flex');
+                // Trigger animation
+                requestAnimationFrame(() => modalContent.style.transform = 'scale(1)');
+                modalTextarea.focus();
+            }
+
+            function closeModal() {
+                modalContent.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    noteModal.classList.add('hidden');
+                    noteModal.classList.remove('flex');
+                    modalTextarea.value = ''; // Clear textarea
+                    currentEditId = null;
+                }, 250); // Allow animation
+            }
+
+            function handleSaveNote() {
+                const content = modalTextarea.value.trim();
+                if (!content) return; // Don't save empty notes
+
+                if (currentEditId !== null) {
+                    // Editing existing note
+                    const noteIndex = notes.findIndex(n => n.id === currentEditId);
+                    if (noteIndex > -1) {
+                        notes[noteIndex].content = content;
+                        // notes[noteIndex].lastEdited = Date.now(); // Optional: track edits
+                    }
+                } else {
+                    // Adding new note
+                    const newNote = {
+                        id: Date.now(),
+                        content: content
+                    };
+                    notes.push(newNote);
+                }
+                saveNotes();
+                renderNotes(searchInput.value); // Re-render with filter
+                closeModal();
+            }
+
+            function handleDeleteFromModal() {
+                if (currentEditId !== null) {
+                    if (confirm('Permanently delete this data fragment?')) {
+                        deleteNote(currentEditId);
+                        closeModal();
+                    }
+                }
+            }
+
+            // --- Note Actions ---
+            function deleteNote(id) {
+                const noteElement = notesGrid.querySelector(`.note-card[data-id="${id}"]`);
+                if (noteElement) {
+                    noteElement.classList.add('note-exit'); // Trigger exit animation
+                    noteElement.style.opacity = '0';
+                    noteElement.style.transform = 'translateY(-15px) scale(0.98)';
+                    setTimeout(() => {
+                        notes = notes.filter(note => note.id !== id);
+                        saveNotes();
+                        noteElement.remove(); // Remove element after animation
+                        checkEmptyState(searchInput.value); // Check empty state
+                    }, 300); // Match animation duration
+                } else {
+                    // Fallback if element not found (e.g., deleted quickly)
+                    notes = notes.filter(note => note.id !== id);
+                    saveNotes();
+                    renderNotes(searchInput.value); // Full re-render as fallback
+                }
+
+            }
+
+            // --- Initialization ---
+            loadNotes(); // Load notes first
+            const savedTheme = localStorage.getItem('quantumNoteTheme') || 'matrix'; // Load theme
+            applyTheme(savedTheme);
+
+            // Event Listeners
+            addNoteBtn.addEventListener('click', () => openModal());
+            modalCloseBtn.addEventListener('click', closeModal);
+            modalSaveBtn.addEventListener('click', handleSaveNote);
+            modalDeleteBtn.addEventListener('click', handleDeleteFromModal);
+            themeSelect.addEventListener('change', () => applyTheme(themeSelect.value));
+            searchInput.addEventListener('input', (e) => renderNotes(e.target.value));
+
+            // Close modal on overlay click
+            noteModal.addEventListener('click', (e) => { if (e.target === noteModal) closeModal(); });
+            // Close modal with Escape key
+            window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !noteModal.classList.contains('hidden')) closeModal(); });
+
+        }); // End DOMContentLoaded
+    </script>
+</body>
+
+</html>

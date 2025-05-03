@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Formatter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 5px var(--primary-color); }
+            50% { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--secondary-color); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        .glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+        .pulse:hover {
+            animation: pulse 0.4s ease-in-out;
+        }
+        /* Theme-specific styles */
+        .theme-cyberpunk {
+            --bg-color: #0f1419;
+            --text-color: #f8f8f2;
+            --primary-color: #ff2e63;
+            --secondary-color: #08f7fe;
+            --key-color: #ff79c6;
+            --string-color: #f1fa8c;
+            --number-color: #bd93f9;
+            --boolean-color: #50fa7b;
+            --null-color: #ff5555;
+            --accent-color: #6272a4;
+        }
+        .theme-witcher {
+            --bg-color: #1a0f0b;
+            --text-color: #e6d3a3;
+            --primary-color: #b89d5b;
+            --secondary-color: #8b5a2b;
+            --key-color: #d4a017;
+            --string-color: #a3bffa;
+            --number-color: #ff8c00;
+            --boolean-color: #dc143c;
+            --null-color: #4682b4;
+            --accent-color: #4a3728;
+        }
+        .theme-stranger-things {
+            --bg-color: #0a0f1b;
+            --text-color: #f5f5f5;
+            --primary-color: #ff2d55;
+            --secondary-color: #00f2ea;
+            --key-color: #ff453a;
+            --string-color: #40c4ff;
+            --number-color: #ffeb3b;
+            --boolean-color: #7c4dff;
+            --null-color: #00ff7f;
+            --accent-color: #1c2526;
+        }
+        .theme-star-wars {
+            --bg-color: #0a0f1b;
+            --text-color: #e0e0e0;
+            --primary-color: #ffd700;
+            --secondary-color: #00b7eb;
+            --key-color: #00ff00;
+            --string-color: #87ceeb;
+            --number-color: #ffa500;
+            --boolean-color: #ff4040;
+            --null-color: #ff69b4;
+            --accent-color: #1b263b;
+        }
+        .theme-matrix {
+            --bg-color: #000000;
+            --text-color: #00ff00;
+            --primary-color: #00ff00;
+            --secondary-color: #00cc00;
+            --key-color: #00ff7f;
+            --string-color: #98fb98;
+            --number-color: #7fff00;
+            --boolean-color: #00fa9a;
+            --null-color: #adff2f;
+            --accent-color: #1c2526;
+        }
+        body {
+            background: linear-gradient(135deg, var(--bg-color), var(--accent-color));
+            color: var(--text-color);
+            transition: all 0.5s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+        /* Glassmorphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <div class="container mx-auto p-4 sm:p-8 flex-grow">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl sm:text-5xl font-extrabold glow fade-in" id="app-title">JSON Formatter</h1>
+            <p class="text-lg sm:text-xl mt-2 text-[var(--text-color)] opacity-80 fade-in">Transform your JSON with style and precision</p>
+        </header>
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Input Section -->
+            <div class="fade-in">
+                <label for="json-input" class="block text-lg font-semibold mb-3">Paste Your JSON</label>
+                <textarea
+                    id="json-input"
+                    class="w-full h-80 p-4 rounded-xl glass focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] text-[var(--text-color)] resize-y transition-all duration-300"
+                    placeholder='{"example": "Paste your JSON here"}'
+                    spellcheck="false"
+                ></textarea>
+                <div class="mt-4 flex flex-wrap gap-4">
+                    <button
+                        id="format-btn"
+                        class="pulse bg-[var(--primary-color)] text-[var(--bg-color)] px-6 py-3 rounded-xl hover:bg-[var(--secondary-color)] transition-all duration-300 font-medium shadow-lg"
+                    >
+                        Format JSON
+                    </button>
+                    <button
+                        id="clear-btn"
+                        class="pulse bg-[var(--accent-color)] text-[var(--text-color)] px-6 py-3 rounded-xl hover:bg-gray-600 transition-all duration-300 font-medium shadow-lg"
+                    >
+                        Clear
+                    </button>
+                    <button
+                        id="copy-btn"
+                        class="pulse bg-[var(--secondary-color)] text-[var(--bg-color)] px-6 py-3 rounded-xl hover:bg-[var(--primary-color)] transition-all duration-300 font-medium shadow-lg"
+                    >
+                        Copy Output
+                    </button>
+                </div>
+            </div>
+            <!-- Output Section -->
+            <div class="fade-in">
+                <label class="block text-lg font-semibold mb-3">Formatted JSON</label>
+                <pre
+                    id="json-output"
+                    class="w-full h-80 p-4 rounded-xl glass text-[var(--text-color)] overflow-auto font-mono text-sm"
+                ><code></code></pre>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="text-center py-6 text-sm text-[var(--text-color)] opacity-70">
+        <p>JSON Formatter © 2025 | Crafted with 💾 & ✨</p>
+    </footer>
+
+    <script>
+        // Theme selection
+        const themes = ['theme-cyberpunk', 'theme-witcher', 'theme-stranger-things', 'theme-star-wars', 'theme-matrix'];
+        const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+        document.body.classList.add(randomTheme);
+
+        // Theme-specific titles
+        const titles = {
+            'theme-cyberpunk': 'Neon JSON Synth',
+            'theme-witcher': 'Witcher’s JSON Grimoire',
+            'theme-stranger-things': 'Upside Down JSON Portal',
+            'theme-star-wars': 'Galactic JSON Holocron',
+            'theme-matrix': 'Matrix JSON Stream'
+        };
+        document.getElementById('app-title').textContent = titles[randomTheme];
+
+        // JSON Formatting Logic
+        const input = document.getElementById('json-input');
+        const output = document.getElementById('json-output').querySelector('code');
+        const formatBtn = document.getElementById('format-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const copyBtn = document.getElementById('copy-btn');
+
+        function formatJSON() {
+            try {
+                const json = JSON.parse(input.value.trim());
+                const formatted = JSON.stringify(json, null, 2);
+                output.innerHTML = syntaxHighlight(formatted);
+            } catch (e) {
+                output.innerHTML = `<span style="color: var(--boolean-color);">Error: ${e.message}</span>`;
+            }
+        }
+
+        function syntaxHighlight(json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(
+                /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+                function (match) {
+                    let cls = 'number';
+                    if (/^"/.test(match)) {
+                        if (/:$/.test(match)) {
+                            cls = 'key';
+                        } else {
+                            cls = 'string';
+                        }
+                    } else if (/true|false/.test(match)) {
+                        cls = 'boolean';
+                    } else if (/null/.test(match)) {
+                        cls = 'null';
+                    }
+                    return `<span style="color: var(--${cls}-color);">${match}</span>`;
+                }
+            );
+        }
+
+        formatBtn.addEventListener('click', formatJSON);
+        clearBtn.addEventListener('click', () => {
+            input.value = '';
+            output.innerHTML = '';
+        });
+        copyBtn.addEventListener('click', () => {
+            const text = output.innerText;
+            if (text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = 'Copy Output';
+                    }, 2000);
+                });
+            }
+        });
+
+        // Auto-resize textarea
+        input.addEventListener('input', () => {
+            input.style.height = 'auto';
+            input.style.height = `${Math.max(input.scrollHeight, 320)}px`;
+        });
+
+        // Initialize with sample JSON
+        input.value = JSON.stringify({ message: "Welcome to JSON Formatter!", version: 1.0, active: true, data: null }, null, 2);
+        formatJSON();
+    </script>
+</body>
+</html>

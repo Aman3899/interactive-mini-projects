@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <style>
+        .calculator {
+            transition: all 0.3s ease;
+        }
+        .button {
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .button:active {
+            transform: scale(0.95);
+        }
+        .display {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen">
+    <div id="calculator" class="calculator bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md">
+        <!-- Theme Selector -->
+        <div class="mb-4">
+            <select id="themeSelector" class="w-full p-2 rounded-lg bg-gray-700 text-white focus:outline-none">
+                <option value="neon">Neon Glow</option>
+                <option value="cyberpunk">Cyberpunk</option>
+                <option value="retro">Retro Wave</option>
+                <option value="minimal">Minimal Dark</option>
+                <option value="solar">Solar Flare</option>
+            </select>
+        </div>
+
+        <!-- Display -->
+        <div class="display bg-gray-900 p-4 rounded-lg mb-4 text-right text-white text-2xl sm:text-3xl font-mono shadow-inner">
+            <div id="expression" class="text-gray-400 text-sm sm:text-base"></div>
+            <div id="result">0</div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="grid grid-cols-4 gap-2">
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="clearDisplay()">C</button>
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay('(')">(</button>
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay(')')">)</button>
+            <button class="button bg-orange-500 text-white p-3 sm:p-4 rounded-lg hover:bg-orange-600" onclick="appendToDisplay('/')">/</button>
+
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay('7')">7</button>
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay('8')">8</button>
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay('9')">9</button>
+            <button class="button bg-orange-500 text-white p-3 sm:p-4 rounded-lg hover:bg-orange-600" onclick="appendToDisplay('*')">×</button>
+
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay('4')">4</button>
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay('5')">5</button>
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay('6')">6</button>
+            <button class="button bg-orange-500 text-white p-3 sm:p-4 rounded-lg hover:bg-orange-600" onclick="appendToDisplay('-')">-</button>
+
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay('1')">1</button>
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay('2')">2</button>
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay('3')">3</button>
+            <button class="button bg-orange-500 text-white p-3 sm:p-4 rounded-lg hover:bg-orange-600" onclick="appendToDisplay('+')">+</button>
+
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay('0')">0</button>
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="appendToDisplay('.')">.</button>
+            <button class="button bg-gray-700 text-white p-3 sm:p-4 rounded-lg hover:bg-gray-600" onclick="backspace()">←</button>
+            <button class="button bg-green-500 text-white p-3 sm:p-4 rounded-lg hover:bg-green-600" onclick="calculate()">=</button>
+
+            <!-- Advanced Functions -->
+            <button class="button bg-blue-500 text-white p-3 sm:p-4 rounded-lg hover:bg-blue-600 col-span-2" onclick="applyFunction('sin')">sin</button>
+            <button class="button bg-blue-500 text-white p-3 sm:p-4 rounded-lg hover:bg-blue-600 col-span-2" onclick="applyFunction('cos')">cos</button>
+            <button class="button bg-blue-500 text-white p-3 sm:p-4 rounded-lg hover:bg-blue-600 col-span-2" onclick="applyFunction('tan')">tan</button>
+            <button class="button bg-blue-500 text-white p-3 sm:p-4 rounded-lg hover:bg-blue-600 col-span-2" onclick="applyFunction('sqrt')">√</button>
+        </div>
+    </div>
+
+    <script>
+        let expression = '';
+        const displayExpression = document.getElementById('expression');
+        const displayResult = document.getElementById('result');
+        const calculator = document.getElementById('calculator');
+        const themeSelector = document.getElementById('themeSelector');
+
+        const themes = {
+            neon: {
+                bg: 'from-blue-900 to-purple-900',
+                button: 'bg-gray-800 hover:bg-gray-700',
+                operator: 'bg-pink-500 hover:bg-pink-600',
+                equals: 'bg-green-500 hover:bg-green-600',
+                advanced: 'bg-purple-500 hover:bg-purple-600',
+                text: 'text-cyan-300'
+            },
+            cyberpunk: {
+                bg: 'from-gray-900 to-teal-900',
+                button: 'bg-gray-700 hover:bg-gray-600',
+                operator: 'bg-teal-500 hover:bg-teal-600',
+                equals: 'bg-yellow-500 hover:bg-yellow-600',
+                advanced: 'bg-blue-500 hover:bg-blue-600',
+                text: 'text-yellow-300'
+            },
+            retro: {
+                bg: 'from-pink-800 to-purple-800',
+                button: 'bg-gray-600 hover:bg-gray-500',
+                operator: 'bg-red-500 hover:bg-red-600',
+                equals: 'bg-green-400 hover:bg-green-500',
+                advanced: 'bg-purple-400 hover:bg-purple-500',
+                text: 'text-pink-200'
+            },
+            minimal: {
+                bg: 'from-gray-800 to-gray-900',
+                button: 'bg-gray-700 hover:bg-gray-600',
+                operator: 'bg-blue-500 hover:bg-blue-600',
+                equals: 'bg-green-500 hover:bg-green-600',
+                advanced: 'bg-indigo-500 hover:bg-indigo-600',
+                text: 'text-white'
+            },
+            solar: {
+                bg: 'from-orange-900 to-red-900',
+                button: 'bg-gray-800 hover:bg-gray-700',
+                operator: 'bg-orange-500 hover:bg-orange-600',
+                equals: 'bg-yellow-500 hover:bg-yellow-600',
+                advanced: 'bg-red-500 hover:bg-red-600',
+                text: 'text-yellow-200'
+            }
+        };
+
+        function applyTheme(theme) {
+            const { bg, button, operator, equals, advanced, text } = themes[theme];
+            calculator.className = `calculator bg-gradient-to-br ${bg} p-6 rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md`;
+            document.querySelectorAll('.button').forEach(btn => {
+                if (btn.textContent.match(/[0-9().←C]/)) {
+                    btn.className = `button ${button} text-white p-3 sm:p-4 rounded-lg`;
+                } else if (btn.textContent === '=') {
+                    btn.className = `button ${equals} text-white p-3 sm:p-4 rounded-lg`;
+                } else if (btn.textContent.match(/sin|cos|tan|√/)) {
+                    btn.className = `button ${advanced} text-white p-3 sm:p-4 rounded-lg col-span-2`;
+                } else {
+                    btn.className = `button ${operator} text-white p-3 sm:p-4 rounded-lg`;
+                }
+            });
+            displayResult.className = `text-2xl sm:text-3xl font-mono ${text}`;
+            gsap.to(calculator, { scale: 1.05, duration: 0.2, yoyo: true, repeat: 1 });
+        }
+
+        themeSelector.addEventListener('change', (e) => applyTheme(e.target.value));
+        applyTheme('neon');
+
+        function appendToDisplay(value) {
+            expression += value;
+            updateDisplay();
+            gsap.from('.display', { opacity: 0, duration: 0.3 });
+        }
+
+        function clearDisplay() {
+            expression = '';
+            updateDisplay();
+            gsap.to('.display', { scale: 1.1, duration: 0.2, yoyo: true, repeat: 1 });
+        }
+
+        function backspace() {
+            expression = expression.slice(0, -1);
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            displayExpression.textContent = expression || '';
+            try {
+                displayResult.textContent = expression ? eval(expression.replace('×', '*')) : '0';
+            } catch {
+                displayResult.textContent = '0';
+            }
+        }
+
+        function calculate() {
+            try {
+                expression = eval(expression.replace('×', '*')).toString();
+                updateDisplay();
+                gsap.to('.display', { y: -10, duration: 0.2, yoyo: true, repeat: 1 });
+            } catch {
+                displayResult.textContent = 'Error';
+                expression = '';
+                gsap.to('.display', { color: '#ff0000', duration: 0.5, yoyo: true, repeat: 1 });
+            }
+        }
+
+        function applyFunction(func) {
+            try {
+                let result;
+                const num = parseFloat(expression) || 0;
+                switch (func) {
+                    case 'sin': result = Math.sin(num * Math.PI / 180); break;
+                    case 'cos': result = Math.cos(num * Math.PI / 180); break;
+                    case 'tan': result = Math.tan(num * Math.PI / 180); break;
+                    case 'sqrt': result = Math.sqrt(num); break;
+                }
+                expression = result.toString();
+                updateDisplay();
+                gsap.to('.display', { scale: 1.1, duration: 0.2, yoyo: true, repeat: 1 });
+            } catch {
+                displayResult.textContent = 'Error';
+                expression = '';
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key.match(/[0-9]/)) appendToDisplay(e.key);
+            else if (e.key === '+') appendToDisplay('+');
+            else if (e.key === '-') appendToDisplay('-');
+            else if (e.key === '*') appendToDisplay('×');
+            else if (e.key === '/') appendToDisplay('/');
+            else if (e.key === '.') appendToDisplay('.');
+            else if (e.key === 'Enter') calculate();
+            else if (e.key === 'Escape') clearDisplay();
+            else if (e.key === 'Backspace') backspace();
+        });
+    </script>
+</body>
+</html>

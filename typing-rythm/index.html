@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-neural-net"> {/* Default Theme */}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Rhythm Visualizer</title>
+    {/* Tailwind CSS CDN */}
+    <script src="https://cdn.tailwindcss.com"></script>
+    {/* Font Awesome for icons (Optional) */}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {/* Google Fonts */}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@400;600;800&family=Roboto+Mono:wght@500&family=Aldrich&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Base Styles & Font Definitions */
+        body {
+            font-family: 'Exo 2', sans-serif;
+            overflow-x: hidden;
+            transition: background 0.5s ease;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-exo {
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .font-roboto-mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .font-aldrich {
+            font-family: 'Aldrich', sans-serif;
+        }
+
+        .font-share-tech {
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* --- CSS Variables for Themes --- */
+        :root,
+        .theme-default-light {
+            --bg-gradient-start: #e5e7eb;
+            --bg-gradient-end: #d1d5db;
+            --bg-image: none;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-border: #cbd5e1;
+            --card-shadow: rgba(0, 0, 0, 0.1);
+            --card-shadow-glow: transparent;
+            --text-primary: #1f2937;
+            --text-secondary: #3b82f6;
+            --text-accent: #1d4ed8;
+            --text-muted: #6b7280;
+            --input-bg: #ffffff;
+            --input-border: #9ca3af;
+            --input-text: #1f2937;
+            --input-focus-ring: var(--text-secondary);
+            --canvas-bg: #f9fafb;
+            --canvas-grid-color: rgba(0, 0, 0, 0.08);
+            --canvas-line-color: var(--text-accent);
+            --canvas-line-shadow: var(--text-secondary);
+            --font-heading: 'Orbitron', sans-serif;
+            --font-body: 'Exo 2', sans-serif;
+        }
+
+        .theme-neural-net {
+            --bg-gradient-start: #0b132b;
+            --bg-gradient-end: #1c2541;
+            --bg-image: linear-gradient(rgba(99, 179, 237, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(99, 179, 237, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            --card-bg: rgba(28, 37, 65, 0.92);
+            --card-border: #3a506b;
+            --card-shadow: rgba(0, 0, 0, 0.7);
+            --card-shadow-glow: rgba(58, 80, 107, 0.3);
+            --text-primary: #edf2f4;
+            --text-secondary: #63b3ed;
+            --text-accent: #4299e1;
+            --text-muted: #a0aec0;
+            --input-bg: rgba(11, 19, 43, 0.9);
+            --input-border: #5bc0be;
+            --input-text: #edf2f4;
+            --input-focus-ring: #6fffe9;
+            --canvas-bg: #0b132b;
+            --canvas-grid-color: rgba(58, 80, 107, 0.3);
+            --canvas-line-color: #6fffe9;
+            --canvas-line-shadow: #63b3ed;
+            --font-heading: 'Orbitron', sans-serif;
+            font-weight: 700;
+            --font-body: 'Share Tech Mono', monospace;
+        }
+
+        .theme-matrix-rain {
+            --bg-gradient-start: #000000;
+            --bg-gradient-end: #050505;
+            --bg-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px);
+            background-size: 2px 40px;
+            /* Vertical rain */
+            --card-bg: rgba(5, 20, 5, 0.9);
+            --card-border: #00ff41;
+            --card-shadow: rgba(0, 0, 0, 0.9);
+            --card-shadow-glow: rgba(0, 255, 65, 0.35);
+            --text-primary: #00ff41;
+            --text-secondary: #39ff14;
+            --text-accent: #008f11;
+            --text-muted: #a0ffa0;
+            --input-bg: #010b01;
+            --input-border: var(--text-accent);
+            --input-text: #00ff41;
+            --input-focus-ring: var(--text-secondary);
+            --canvas-bg: #000500;
+            --canvas-grid-color: rgba(0, 255, 65, 0.15);
+            --canvas-line-color: #00ff41;
+            --canvas-line-shadow: #39ff14;
+            --font-heading: 'Share Tech Mono', monospace;
+            font-weight: 700;
+            --font-body: 'Roboto Mono', monospace;
+        }
+
+        .theme-warp-drive {
+            --bg-gradient-start: #00001a;
+            --bg-gradient-end: #1a1a3d;
+            --bg-image: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1) 0%, transparent 60%), repeating-linear-gradient(-45deg, transparent, transparent 5px, rgba(167, 139, 250, 0.05) 5px, rgba(167, 139, 250, 0.05) 10px);
+            --card-bg: rgba(26, 26, 61, 0.93);
+            --card-border: #a78bfa;
+            /* Violet */
+            --card-shadow: rgba(0, 0, 15, 0.8);
+            --card-shadow-glow: rgba(167, 139, 250, 0.35);
+            --text-primary: #e9d5ff;
+            --text-secondary: #c4b5fd;
+            --text-accent: #a78bfa;
+            --text-muted: #d8b4fe;
+            --input-bg: #1a1a3d;
+            --input-border: var(--text-secondary);
+            --input-text: #e9d5ff;
+            --input-focus-ring: #c084fc;
+            --canvas-bg: #00001a;
+            --canvas-grid-color: rgba(167, 139, 250, 0.2);
+            --canvas-line-color: #f5d0fe;
+            --canvas-line-shadow: #e9d5ff;
+            --font-heading: 'Aldrich', sans-serif;
+            --font-body: 'Exo 2', sans-serif;
+        }
+
+        /* Add ~7 more themes inspired by specific games or general genres */
+        .theme-fallout-pipboy {
+            --bg-gradient-start: #1a3a1a;
+            --bg-gradient-end: #0f290f;
+            --bg-image: linear-gradient(rgba(185, 246, 202, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(185, 246, 202, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            --card-bg: rgba(20, 50, 20, 0.94);
+            --card-border: #86efac;
+            --card-shadow: rgba(5, 20, 5, 0.8);
+            --card-shadow-glow: rgba(134, 239, 172, 0.3);
+            --text-primary: #bbf7d0;
+            --text-secondary: #86efac;
+            --text-accent: #4ade80;
+            --text-muted: #a7f3d0;
+            --input-bg: #14532d;
+            --input-border: var(--text-secondary);
+            --input-text: #bbf7d0;
+            --input-focus-ring: var(--text-accent);
+            --canvas-bg: #166534;
+            --canvas-grid-color: rgba(134, 239, 172, 0.25);
+            --canvas-line-color: #bbf7d0;
+            --canvas-line-shadow: #86efac;
+            --font-heading: 'Roboto Mono', monospace;
+            font-weight: 700;
+            --font-body: 'Roboto Mono', monospace;
+        }
+
+        .theme-starcraft-terran {
+            --bg-gradient-start: #334155;
+            --bg-gradient-end: #0f172a;
+            --bg-image: linear-gradient(45deg, #475569 25%, transparent 25%), linear-gradient(-45deg, #475569 25%, transparent 25%);
+            background-size: 30px 30px;
+            --card-bg: rgba(30, 41, 59, 0.94);
+            --card-border: #94a3b8;
+            /* Steel Gray */
+            --card-shadow: rgba(0, 5, 15, 0.8);
+            --card-shadow-glow: rgba(148, 163, 184, 0.2);
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-accent: #64748b;
+            --text-muted: #cbd5e1;
+            --input-bg: #1e293b;
+            --input-border: var(--text-accent);
+            --input-text: #e2e8f0;
+            --input-focus-ring: var(--text-secondary);
+            --canvas-bg: #0f172a;
+            --canvas-grid-color: rgba(100, 116, 139, 0.3);
+            --canvas-line-color: #e2e8f0;
+            --canvas-line-shadow: #94a3b8;
+            --font-heading: 'Aldrich', sans-serif;
+            --font-body: 'Exo 2', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Placeholder themes */
+        .theme-elden-ring {
+            /* Dark soulsy */
+        }
+
+        .theme-mario-world {
+            /* Bright, colorful */
+        }
+
+        .theme-metroid-prime {
+            /* Orange/Blue sci-fi */
+        }
+
+        .theme-witcher-runes {
+            /* Fantasy, runes */
+        }
+
+        .theme-portal-labs {
+            /* Clean, orange/blue */
+        }
+
+
+        /* --- Apply Variables & Base Styles --- */
+        body {
+            background-color: var(--bg-gradient-start);
+            background-image: var(--bg-image), linear-gradient(to bottom, var(--bg-gradient-start), var(--bg-gradient-end));
+        }
+
+        .main-heading {
+            color: var(--text-primary);
+            font-family: var(--font-heading);
+        }
+
+        .sub-text {
+            color: var(--text-muted);
+        }
+
+        .component-card {
+            background-color: var(--card-bg);
+            border: 3px solid var(--card-border);
+            box-shadow: 0 12px 45px var(--card-shadow), 0 0 30px var(--card-shadow-glow), inset 0 0 18px color-mix(in srgb, black 25%, var(--card-bg));
+            backdrop-filter: blur(9px);
+            border-radius: 1.5rem;
+            padding: 2rem 2.5rem;
+            transition: all 0.5s ease;
+        }
+
+        .component-card h2 {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            letter-spacing: 0.09em;
+            border-bottom: 3px solid var(--card-border);
+            padding-bottom: 0.9rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+            color: var(--text-primary);
+            text-align: center;
+            font-size: 2.25rem;
+        }
+
+        textarea.themed-input {
+            background-color: var(--input-bg);
+            border: 2px solid var(--input-border);
+            color: var(--input-text);
+            border-radius: 1rem;
+            padding: 1rem;
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2);
+            min-height: 150px;
+            resize: vertical;
+            transition: all 0.3s ease;
+            line-height: 1.6;
+        }
+
+        textarea.themed-input:focus {
+            outline: none;
+            border-color: var(--input-focus-ring);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2), 0 0 0 4px color-mix(in srgb, var(--input-focus-ring) 50%, transparent);
+        }
+
+        .theme-selector-container {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 50;
+        }
+
+        .themed-select {
+            /* Basic select styling */
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--input-text);
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+            padding: 0.4rem 2rem 0.4rem 0.8rem;
+            border-radius: 0.5rem;
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1em;
+        }
+
+        /* --- Canvas & Visualization Styles --- */
+        .canvas-container {
+            width: 100%;
+            aspect-ratio: 21 / 9;
+            /* Widescreen */
+            border: 3px solid var(--card-border);
+            /* Heavy border */
+            border-radius: 1rem;
+            overflow: hidden;
+            position: relative;
+            background-color: var(--canvas-bg);
+            margin-top: 1.5rem;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.25);
+            transition: all 0.5s ease;
+        }
+
+        #typingCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .placeholder-text {
+            /* Text shown before typing starts */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            opacity: 0.6;
+            pointer-events: none;
+            text-align: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .placeholder-text.hidden {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-4 md:p-8">
+
+    {/* Theme Selector */}
+    <div class="theme-selector-container">
+        <select id="theme-selector" class="themed-select">
+            <option value="neural-net">Neural Net</option>
+            <option value="matrix-rain">Matrix Rain</option>
+            <option value="warp-drive">Warp Drive</option>
+            <option value="fallout-pipboy">Pip-Boy</option>
+            <option value="starcraft-terran">Terran Console</option>
+            <option value="reactor-core">Reactor Core</option>
+            <option value="cryo-chamber">Cryo Chamber</option>
+            <option value="doom">Doom</option>
+            <option value="zelda">Zelda</option>
+            {/* Add other themes */}
+            <option value="default-light">Default Light</option>
+        </select>
+    </div>
+
+    <main class="main-container w-full max-w-4xl">
+        {/* Typing DNA Visualizer Component */}
+        <section class="component-card" data-component-id="typing-dna">
+            <h2>Typing Rhythm Synthesizer</h2>
+
+            <div class="input-area mb-6">
+                <label for="typing-input" class="block mb-3 text-xl font-semibold text-center"
+                    style="color: var(--text-muted);">Input Keystrokes Below:</label>
+                <textarea id="typing-input" class="themed-input w-full"
+                    placeholder="Start typing here to visualize your rhythm..." rows="5"></textarea>
+            </div>
+
+            {/* Visualization Area */}
+            <div class="canvas-container shadow-lg">
+                <canvas id="typingCanvas"></canvas>
+                <div id="canvas-placeholder" class="placeholder-text">Start Typing...</div>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        // --- THEME SWITCHER ---
+        const themeSelector = document.getElementById('theme-selector');
+        const htmlElement = document.documentElement;
+
+        function applyTheme(themeName) {
+            const classList = htmlElement.classList;
+            for (let i = classList.length - 1; i >= 0; i--) { if (classList[i].startsWith('theme-')) classList.remove(classList[i]); }
+            htmlElement.classList.add(`theme-${themeName}`);
+            localStorage.setItem('typingDnaTheme', themeName);
+            if (themeSelector.value !== themeName) themeSelector.value = themeName;
+            console.log(`Theme applied: ${themeName}`);
+            // Trigger a redraw when theme changes as colors are theme-dependent
+            requestAnimationFrame(redrawCanvas); // Use rAF for timing
+        }
+
+        themeSelector?.addEventListener('change', (e) => applyTheme(e.target.value));
+
+        // --- Typing DNA Visualizer Logic ---
+        (function initTypingVisualizer() {
+            const typingInput = document.getElementById('typing-input');
+            const canvas = document.getElementById('typingCanvas');
+            const placeholderText = document.getElementById('canvas-placeholder');
+            const canvasContainer = canvas.parentElement; // Get container for resize observer
+            const ctx = canvas.getContext('2d');
+
+            if (!typingInput || !canvas || !ctx || !placeholderText || !canvasContainer) {
+                console.error("Typing visualizer elements not found!");
+                return;
+            }
+
+            let lastKeydownTime = 0;
+            const intervals = []; // Array to store time intervals (in ms)
+            const maxIntervalsToShow = 100; // How many recent intervals to display
+            const maxIntervalDuration = 1000; // Max interval (ms) for scaling (adjust as needed)
+            const minIntervalDuration = 10; // Min interval (ms) for scaling (ignore tiny values)
+            const verticalPadding = 0.15; // Percentage padding top/bottom
+
+            let animationFrameId = null; // To manage animation frame requests
+
+            function handleKeyDown(event) {
+                const now = performance.now(); // High-resolution timestamp
+
+                // Hide placeholder once typing starts
+                if (!placeholderText.classList.contains('hidden')) {
+                    placeholderText.classList.add('hidden');
+                }
+
+
+                if (lastKeydownTime > 0) {
+                    const interval = now - lastKeydownTime;
+                    if (interval > minIntervalDuration) { // Only record meaningful intervals
+                        intervals.push(interval);
+                        // Keep only the last N intervals
+                        if (intervals.length > maxIntervalsToShow) {
+                            intervals.shift(); // Remove the oldest interval
+                        }
+                        // Request redraw on new data
+                        requestRedraw();
+                    }
+                }
+                lastKeydownTime = now;
+            }
+
+            // Debounce redraw requests slightly
+            let redrawTimeout;
+            function requestRedraw() {
+                clearTimeout(redrawTimeout);
+                redrawTimeout = setTimeout(() => {
+                    if (!animationFrameId) { // Only request if not already pending
+                        animationFrameId = requestAnimationFrame(redrawCanvas);
+                    }
+                }, 16); // Roughly 60fps throttle
+            }
+
+
+            function redrawCanvas() {
+                animationFrameId = null; // Reset frame ID
+
+                // Get computed styles AFTER theme is applied
+                const computedStyle = getComputedStyle(document.documentElement);
+                const bgColor = computedStyle.getPropertyValue('--canvas-bg').trim() || '#ffffff';
+                const gridColor = computedStyle.getPropertyValue('--canvas-grid-color').trim() || 'rgba(0,0,0,0.1)';
+                const lineColor = computedStyle.getPropertyValue('--canvas-line-color').trim() || '#0000ff';
+                const lineShadowColor = computedStyle.getPropertyValue('--canvas-line-shadow').trim() || 'rgba(0,0,255,0.5)';
+
+                // Ensure canvas dimensions match container
+                const dpr = window.devicePixelRatio || 1;
+                const rect = canvasContainer.getBoundingClientRect();
+                const displayWidth = rect.width;
+                const displayHeight = rect.height;
+
+                if (canvas.width !== Math.floor(displayWidth * dpr) || canvas.height !== Math.floor(displayHeight * dpr)) {
+                    canvas.width = Math.floor(displayWidth * dpr);
+                    canvas.height = Math.floor(displayHeight * dpr);
+                    ctx.scale(dpr, dpr); // Scale context for HiDPI displays
+                    console.log(`Canvas resized to: ${canvas.width}x${canvas.height} (Display: ${displayWidth}x${displayHeight})`);
+                }
+
+
+                // Clear canvas with theme background
+                ctx.fillStyle = bgColor;
+                ctx.fillRect(0, 0, displayWidth, displayHeight); // Use display dimensions here
+
+                // --- Draw Grid (Optional but adds to heavy/tech feel) ---
+                ctx.strokeStyle = gridColor;
+                ctx.lineWidth = 0.5; // Thin grid lines
+                const gridSize = 30; // Adjust grid size
+                for (let x = gridSize; x < displayWidth; x += gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, displayHeight);
+                    ctx.stroke();
+                }
+                for (let y = gridSize; y < displayHeight; y += gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(displayWidth, y);
+                    ctx.stroke();
+                }
+                // --- End Grid ---
+
+
+                if (intervals.length < 2) return; // Need at least 2 points to draw a line
+
+                ctx.strokeStyle = lineColor;
+                ctx.lineWidth = 3; // Thicker line for heavy feel
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                // Add glow/shadow to the line
+                ctx.shadowColor = lineShadowColor;
+                ctx.shadowBlur = 10; // Adjust blur intensity
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 2;
+
+
+                ctx.beginPath();
+
+                const pointsToDraw = intervals.slice(-maxIntervalsToShow); // Get the relevant slice
+                const numPoints = pointsToDraw.length;
+                const graphHeight = displayHeight * (1 - 2 * verticalPadding); // Usable height
+                const yOffset = displayHeight * verticalPadding; // Top padding
+
+                pointsToDraw.forEach((interval, index) => {
+                    // X position: evenly spaced across the width
+                    const x = (index / (numPoints - 1)) * displayWidth;
+
+                    // Y position: scale interval duration
+                    // Clamp interval to avoid extreme values
+                    const clampedInterval = Math.max(0, Math.min(interval, maxIntervalDuration));
+                    // Normalize to 0-1 range
+                    const normalizedY = clampedInterval / maxIntervalDuration;
+                    // Map to canvas height (inverted, longer interval = higher point) and add padding
+                    const y = displayHeight - yOffset - (normalizedY * graphHeight);
+
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        // Use quadratic curve for smoother waves (optional)
+                        const prevX = ((index - 1) / (numPoints - 1)) * displayWidth;
+                        const prevInterval = pointsToDraw[index - 1];
+                        const prevClamped = Math.max(0, Math.min(prevInterval, maxIntervalDuration));
+                        const prevNormalizedY = prevClamped / maxIntervalDuration;
+                        const prevY = displayHeight - yOffset - (prevNormalizedY * graphHeight);
+                        const cpX = (prevX + x) / 2; // Control point X midway
+                        ctx.quadraticCurveTo(cpX, prevY, x, y); // Curve from previous point's Y
+
+                        // Or use simple lines:
+                        // ctx.lineTo(x, y);
+                    }
+                });
+
+                ctx.stroke();
+
+                // Reset shadow for other potential drawing
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+
+            }
+
+            // Event Listener for Typing Input
+            typingInput.addEventListener('keydown', handleKeyDown);
+
+            // --- Resize Observer ---
+            const resizeObserver = new ResizeObserver(entries => {
+                // Debounce resize drawing
+                requestRedraw();
+            });
+            resizeObserver.observe(canvasContainer);
+
+
+            // Initial Setup on Load
+            function initialize() {
+                const savedTheme = localStorage.getItem('typingDnaTheme') || 'neural-net'; // Default heavy theme
+                applyTheme(savedTheme); // Apply theme first, which triggers initial redraw via callback
+            }
+
+            initialize(); // Run initial setup
+
+        })();
+
+        // --- ON PAGE LOAD ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialization is handled within the IIFE's initialize function now
+            console.log("Typing Rhythm Visualizer Initialized.");
+        });
+
+    </script>
+
+</body>
+
+</html>

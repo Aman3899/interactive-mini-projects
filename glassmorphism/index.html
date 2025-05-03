@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism Login</title>
+    <!-- Tailwind CSS v3 (Make sure it's v3 for backdrop-filter utilities) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Base Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Animated Gradient Background */
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animated-gradient {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient-animation 15s ease infinite;
+        }
+
+        /* Optional: Enhance placeholder styling */
+        input::placeholder {
+            /* color: rgba(255, 255, 255, 0.6); */
+            /* Adjust placeholder color/opacity if needed */
+        }
+
+        /* Custom focus ring color matching the gradient */
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(35, 166, 213, 0.4);
+            /* Tailwind blue-500 equivalent */
+            /* Or use a theme color, e.g., ring-pink-500/50 */
+        }
+
+        /* Hide default number input spinners (if number inputs were used) */
+        input[type='number']::-webkit-outer-spin-button,
+        input[type='number']::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type='number'] {
+            -moz-appearance: textfield;
+        }
+    </style>
+    <!-- Tailwind Config (Optional: for custom theme extensions) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    // Add custom colors or other extensions if needed
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="animated-gradient min-h-screen flex items-center justify-center p-4">
+
+    <!-- Login Card Container -->
+    <div
+        class="glass-card w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+        <div class="p-8 sm:p-10 text-white">
+
+            <!-- Header -->
+            <h2 class="text-3xl font-bold text-center mb-2 text-shadow-md">Welcome Back</h2>
+            <p class="text-center text-sm text-white/70 mb-8">Enter your credentials to access your account</p>
+
+            <!-- Form -->
+            <form action="#" method="POST">
+                <div class="space-y-6">
+                    <!-- Username/Email Input -->
+                    <div class="relative">
+                        <label for="username" class="sr-only">Username or Email</label>
+                        <span
+                            class="absolute inset-y-0 left-0 pl-3 flex items-center text-white/60 pointer-events-none">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" id="username" name="username" required placeholder="Username or Email"
+                            class="w-full p-3 pl-10 rounded-lg bg-white/10 border border-white/20 focus:border-white/40 text-white placeholder-white/60 transition duration-200">
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="relative">
+                        <label for="password" class="sr-only">Password</label>
+                        <span
+                            class="absolute inset-y-0 left-0 pl-3 flex items-center text-white/60 pointer-events-none">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" id="password" name="password" required placeholder="Password"
+                            class="w-full p-3 pl-10 rounded-lg bg-white/10 border border-white/20 focus:border-white/40 text-white placeholder-white/60 transition duration-200">
+                    </div>
+
+                    <!-- Remember Me & Forgot Password (Optional) -->
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex items-center">
+                            <!-- Simple checkbox styling might need custom CSS if more complex look is needed -->
+                            <!-- <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-pink-500 focus:ring-pink-400 border-white/30 rounded bg-white/10">
+                           <label for="remember-me" class="ml-2 block text-white/80">Remember me</label> -->
+                        </div>
+                        <a href="#" class="font-medium text-pink-300 hover:text-pink-200 transition duration-200">Forgot
+                            password?</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div>
+                        <button type="submit"
+                            class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white font-semibold shadow-md hover:shadow-lg transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50">
+                            Sign In
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Sign Up Link (Optional) -->
+            <p class="mt-8 text-center text-sm text-white/70">
+                Don't have an account?
+                <a href="#" class="font-medium text-cyan-300 hover:text-cyan-200 transition duration-200">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+</body>
+
+</html>

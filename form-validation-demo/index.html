@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<!-- Default theme class, JS will manage this -->
+<html lang="en" class="theme-darkMatter">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Form Validation Demo</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Exo+2:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Base Font & Theme Variables */
+        :root {
+            /* Using Dark Matter as the base for :root */
+            --bg-primary: #111827;
+            --bg-secondary: #0b132b;
+            --text-primary: #c7d2fe;
+            /* Indigo 200 */
+            --text-secondary: #a5b4fc;
+            /* Indigo 300 */
+            --text-accent: #818cf8;
+            /* Indigo 400 */
+            --text-inverted: #ffffff;
+            --error-color: #ff6b6b;
+            /* Lighter Red for dark bg */
+            --success-color: #44ff88;
+            --border-color: rgba(129, 140, 248, 0.2);
+            --border-focus-color: var(--text-accent);
+            --border-error-color: var(--error-color);
+            --border-success-color: var(--success-color);
+            --input-bg: rgba(28, 37, 65, 0.7);
+            --glow-accent: rgba(129, 140, 248, 0.4);
+            --glow-error: rgba(255, 107, 107, 0.5);
+            --glow-success: rgba(68, 255, 136, 0.5);
+            --button-primary-bg: linear-gradient(90deg, var(--text-accent), var(--text-secondary));
+            --button-primary-text: var(--bg-secondary);
+            --button-primary-hover-bg: linear-gradient(90deg, var(--text-secondary), var(--text-accent));
+            --button-secondary-bg: var(--bg-secondary);
+            --button-secondary-text: var(--text-secondary);
+            --button-secondary-hover-bg: var(--input-bg);
+            --transition-duration: 0.3s;
+            --scrollbar-thumb: var(--text-accent);
+            --scrollbar-thumb-hover: var(--text-secondary);
+        }
+
+        /* --- Theme Definitions --- */
+        .theme-darkMatter {
+            /* Base already defined in :root */
+        }
+
+        .theme-cyberpunk {
+            --bg-primary: #000000;
+            --bg-secondary: #1a1a2e;
+            --text-primary: #00ffff;
+            --text-secondary: #a8a8ff;
+            --text-accent: #ff00ff;
+            --text-inverted: #000000;
+            --error-color: #ff4444;
+            --success-color: #44ff88;
+            --border-color: rgba(0, 255, 255, 0.2);
+            --border-focus-color: var(--text-accent);
+            --border-error-color: var(--error-color);
+            --border-success-color: var(--success-color);
+            --input-bg: rgba(26, 26, 58, 0.7);
+            --glow-accent: rgba(255, 0, 255, 0.4);
+            --glow-error: rgba(255, 68, 68, 0.5);
+            --glow-success: rgba(68, 255, 136, 0.5);
+            --button-primary-bg: linear-gradient(90deg, var(--text-accent), #cc00cc);
+            --button-primary-text: var(--text-inverted);
+            --button-primary-hover-bg: linear-gradient(90deg, #ff33ff, var(--text-accent));
+            --button-secondary-bg: var(--bg-secondary);
+            --button-secondary-text: var(--text-secondary);
+            --button-secondary-hover-bg: var(--input-bg);
+            --scrollbar-thumb: var(--text-primary);
+            --scrollbar-thumb-hover: var(--text-secondary);
+        }
+
+        .theme-matrix {
+            --bg-primary: #000000;
+            --bg-secondary: #031a00;
+            --text-primary: #00ff00;
+            --text-secondary: #00dd00;
+            --text-accent: #33ff33;
+            --text-inverted: #000000;
+            --error-color: #ffdd00;
+            --success-color: #00ff00;
+            /* Use yellow for error in matrix */
+            --border-color: rgba(0, 255, 0, 0.2);
+            --border-focus-color: var(--text-accent);
+            --border-error-color: var(--error-color);
+            --border-success-color: var(--success-color);
+            --input-bg: rgba(3, 26, 0, 0.7);
+            --glow-accent: rgba(0, 255, 0, 0.4);
+            --glow-error: rgba(255, 221, 0, 0.5);
+            --glow-success: rgba(0, 255, 0, 0.5);
+            --button-primary-bg: linear-gradient(90deg, var(--text-primary), #00dd00);
+            --button-primary-text: var(--text-inverted);
+            --button-primary-hover-bg: linear-gradient(90deg, #33ff33, var(--text-primary));
+            --button-secondary-bg: var(--bg-secondary);
+            --button-secondary-text: var(--text-secondary);
+            --button-secondary-hover-bg: var(--input-bg);
+            --scrollbar-thumb: var(--text-primary);
+            --scrollbar-thumb-hover: var(--text-accent);
+        }
+
+        .theme-nebulaMist {
+            --bg-primary: #f5f3ff;
+            --bg-secondary: #ede9fe;
+            --text-primary: #6d28d9;
+            --text-secondary: #7c3aed;
+            --text-accent: #8b5cf6;
+            --text-inverted: #ffffff;
+            --error-color: #ef4444;
+            --success-color: #22c55e;
+            --border-color: #d1d5db;
+            --border-focus-color: var(--text-accent);
+            --border-error-color: var(--error-color);
+            --border-success-color: var(--success-color);
+            --input-bg: rgba(237, 233, 254, 0.7);
+            --glow-accent: rgba(139, 92, 246, 0.3);
+            --glow-error: rgba(239, 68, 68, 0.4);
+            --glow-success: rgba(34, 197, 94, 0.4);
+            --button-primary-bg: linear-gradient(90deg, var(--text-accent), var(--text-secondary));
+            --button-primary-text: var(--text-inverted);
+            --button-primary-hover-bg: linear-gradient(90deg, #a78bfa, var(--text-accent));
+            --button-secondary-bg: var(--bg-secondary);
+            --button-secondary-text: var(--text-primary);
+            --button-secondary-hover-bg: #e0d8fe;
+            --scrollbar-thumb: var(--text-secondary);
+            --scrollbar-thumb-hover: var(--text-accent);
+        }
+
+        .theme-goldenHour {
+            --bg-primary: #fff7ed;
+            --bg-secondary: #ffedd5;
+            --text-primary: #9a3412;
+            --text-secondary: #c2410c;
+            --text-accent: #ea580c;
+            --text-inverted: #ffffff;
+            --error-color: #dc2626;
+            --success-color: #16a34a;
+            --border-color: #fed7aa;
+            --border-focus-color: var(--text-accent);
+            --border-error-color: var(--error-color);
+            --border-success-color: var(--success-color);
+            --input-bg: rgba(255, 237, 213, 0.7);
+            --glow-accent: rgba(249, 115, 22, 0.3);
+            --glow-error: rgba(220, 38, 38, 0.4);
+            --glow-success: rgba(22, 163, 74, 0.4);
+            --button-primary-bg: linear-gradient(90deg, #f97316, var(--text-accent));
+            --button-primary-text: var(--text-inverted);
+            --button-primary-hover-bg: linear-gradient(90deg, #fb923c, #f97316);
+            --button-secondary-bg: var(--bg-secondary);
+            --button-secondary-text: var(--text-primary);
+            --button-secondary-hover-bg: #fee2e2;
+            --scrollbar-thumb: var(--text-accent);
+            --scrollbar-thumb-hover: var(--text-secondary);
+        }
+
+        .theme-arcticWind {
+            --bg-primary: #f0f9ff;
+            --bg-secondary: #e0f2fe;
+            --text-primary: #0369a1;
+            --text-secondary: #0ea5e9;
+            --text-accent: #38bdf8;
+            --text-inverted: #ffffff;
+            --error-color: #f43f5e;
+            --success-color: #16a34a;
+            --border-color: #bae6fd;
+            --border-focus-color: var(--text-accent);
+            --border-error-color: var(--error-color);
+            --border-success-color: var(--success-color);
+            --input-bg: rgba(224, 242, 254, 0.7);
+            --glow-accent: rgba(56, 189, 248, 0.3);
+            --glow-error: rgba(244, 63, 94, 0.4);
+            --glow-success: rgba(22, 163, 74, 0.4);
+            --button-primary-bg: linear-gradient(90deg, #0ea5e9, #38bdf8);
+            --button-primary-text: var(--text-inverted);
+            --button-primary-hover-bg: linear-gradient(90deg, #38bdf8, #7dd3fc);
+            --button-secondary-bg: var(--bg-secondary);
+            --button-secondary-text: var(--text-primary);
+            --button-secondary-hover-bg: #c0e9fb;
+            --scrollbar-thumb: var(--text-accent);
+            --scrollbar-thumb-hover: var(--text-secondary);
+        }
+
+        .theme-roseQuartz {
+            --bg-primary: #fff1f2;
+            --bg-secondary: #ffe4e6;
+            --text-primary: #be185d;
+            --text-secondary: #e11d48;
+            --text-accent: #f43f5e;
+            --text-inverted: #ffffff;
+            --error-color: #8b0000;
+            --success-color: #059669;
+            --border-color: #fecdd3;
+            --border-focus-color: var(--text-accent);
+            --border-error-color: var(--error-color);
+            --border-success-color: var(--success-color);
+            --input-bg: rgba(255, 228, 230, 0.7);
+            --glow-accent: rgba(244, 63, 94, 0.3);
+            --glow-error: rgba(139, 0, 0, 0.4);
+            --glow-success: rgba(5, 150, 105, 0.4);
+            --button-primary-bg: linear-gradient(90deg, #e11d48, #f43f5e);
+            --button-primary-text: var(--text-inverted);
+            --button-primary-hover-bg: linear-gradient(90deg, #f43f5e, #fb7185);
+            --button-secondary-bg: var(--bg-secondary);
+            --button-secondary-text: var(--text-primary);
+            --button-secondary-hover-bg: #fbcfe8;
+            --scrollbar-thumb: var(--text-accent);
+            --scrollbar-thumb-hover: var(--text-secondary);
+        }
+
+        .theme-obsidian {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1c1c1c;
+            --text-primary: #cccccc;
+            --text-secondary: #999999;
+            --text-accent: #dddddd;
+            --text-inverted: #000000;
+            --error-color: #ff4d4d;
+            --success-color: #4dff4d;
+            --border-color: #333333;
+            --border-focus-color: var(--text-accent);
+            --border-error-color: var(--error-color);
+            --border-success-color: var(--success-color);
+            --input-bg: rgba(28, 28, 28, 0.7);
+            --glow-accent: rgba(221, 221, 221, 0.3);
+            --glow-error: rgba(255, 77, 77, 0.4);
+            --glow-success: rgba(77, 255, 77, 0.4);
+            --button-primary-bg: linear-gradient(90deg, #eeeeee, #cccccc);
+            --button-primary-text: var(--text-inverted);
+            --button-primary-hover-bg: linear-gradient(90deg, #ffffff, #dddddd);
+            --button-secondary-bg: var(--bg-secondary);
+            --button-secondary-text: var(--text-secondary);
+            --button-secondary-hover-bg: #2a2a2a;
+            --scrollbar-thumb: var(--text-secondary);
+            --scrollbar-thumb-hover: var(--text-accent);
+        }
+
+        .theme-sakura {
+            --bg-primary: #fff0f5;
+            --bg-secondary: #ffe4e1;
+            --text-primary: #c72c41;
+            --text-secondary: #a52a2a;
+            --text-accent: #ff69b4;
+            /* Hot Pink */
+            --text-inverted: #ffffff;
+            --error-color: #800000;
+            --success-color: #228b22;
+            --border-color: #ffb6c1;
+            --border-focus-color: var(--text-accent);
+            --border-error-color: var(--error-color);
+            --border-success-color: var(--success-color);
+            --input-bg: rgba(255, 228, 225, 0.7);
+            --glow-accent: rgba(255, 105, 180, 0.3);
+            --glow-error: rgba(128, 0, 0, 0.4);
+            --glow-success: rgba(34, 139, 34, 0.4);
+            --button-primary-bg: linear-gradient(90deg, #ff69b4, #ff1493);
+            --button-primary-text: var(--text-inverted);
+            --button-primary-hover-bg: linear-gradient(90deg, #ff85c0, #ff33a1);
+            --button-secondary-bg: var(--bg-secondary);
+            --button-secondary-text: var(--text-primary);
+            --button-secondary-hover-bg: #ffcad4;
+            --scrollbar-thumb: var(--text-accent);
+            --scrollbar-thumb-hover: var(--text-secondary);
+        }
+
+        /* --- Base Element Styles --- */
+        body {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            transition: background var(--transition-duration) ease;
+        }
+
+        .form-container,
+        .success-container {
+            background-color: rgba(10, 10, 31, 0.6);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            background-color: var(--bg-secondary);
+            opacity: 0.95;
+            transition: all var(--transition-duration) ease;
+        }
+
+        h1 {
+            color: var(--text-primary);
+        }
+
+        p,
+        label {
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            background-color: var(--input-bg);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+            caret-color: var(--text-accent);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        .form-input:focus {
+            border-color: var(--border-focus-color);
+            box-shadow: 0 0 0 2px var(--glow-accent);
+            outline: none;
+        }
+
+        .form-input.input-error {
+            border-color: var(--border-error-color) !important;
+            box-shadow: 0 0 0 2px var(--glow-error);
+        }
+
+        .form-input.input-success {
+            border-color: var(--border-success-color) !important;
+            box-shadow: 0 0 0 2px var(--glow-success);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            text-shadow: 0 0 5px var(--glow-error);
+        }
+
+        .text-success {
+            color: var(--success-color);
+            text-shadow: 0 0 8px var(--glow-success);
+        }
+
+        .text-error {
+            color: var(--error-color);
+            text-shadow: 0 0 8px var(--glow-error);
+        }
+
+        .submit-button,
+        .secondary-button {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background var(--transition-duration) ease;
+        }
+
+        .submit-button {
+            background: var(--button-primary-bg);
+            color: var(--button-primary-text);
+            box-shadow: 0 0 15px var(--glow-accent);
+        }
+
+        .submit-button:hover:not(:disabled) {
+            transform: scale(1.03) translateY(-2px);
+            box-shadow: 0 0 25px var(--glow-accent), 0 4px 10px rgba(0, 0, 0, 0.3);
+            background: var(--button-primary-hover-bg);
+        }
+
+        .secondary-button {
+            background-color: var(--button-secondary-bg);
+            color: var(--button-secondary-text);
+            border: 1px solid var(--border-color);
+        }
+
+        .secondary-button:hover:not(:disabled) {
+            background-color: var(--button-secondary-hover-bg);
+        }
+
+        .submit-button:disabled,
+        .secondary-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            box-shadow: none;
+            transform: none;
+        }
+
+        .form-checkbox {
+            background-color: var(--input-bg);
+            border-color: var(--border-color);
+        }
+
+        .form-checkbox:checked {
+            background-color: var(--text-accent);
+            border-color: var(--text-accent);
+            box-shadow: 0 0 8px var(--glow-accent);
+        }
+
+        .form-checkbox:checked::after {
+            color: var(--bg-primary);
+        }
+
+        .form-checkbox:focus {
+            border-color: var(--border-focus-color);
+            box-shadow: 0 0 0 2px var(--glow-accent);
+        }
+
+        .form-checkbox.input-error {
+            border-color: var(--border-error-color) !important;
+            box-shadow: 0 0 8px var(--glow-error);
+        }
+
+        #theme-select {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        #theme-select:focus {
+            border-color: var(--border-focus-color);
+            box-shadow: 0 0 0 2px var(--glow-accent);
+            outline: none;
+        }
+
+        /* --- Other Styles --- */
+        .error-message {
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            min-height: 1.2em;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity var(--transition-duration) ease, transform var(--transition-duration) ease;
+        }
+
+        .error-message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .success-container {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            display: none;
+        }
+
+        .success-container.visible {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: success-bounce 0.8s ease-out;
+        }
+
+        @keyframes success-bounce {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            80% {
+                transform: scale(0.95);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .form-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            display: inline-block;
+            position: relative;
+            height: 1.25em;
+            width: 1.25em;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            vertical-align: middle;
+            transition: all var(--transition-duration) ease;
+        }
+
+        .form-checkbox:checked::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 0.8em;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        input[type='number']::-webkit-outer-spin-button,
+        input[type='number']::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type='number'] {
+            -moz-appearance: textfield;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--scrollbar-thumb-hover);
+        }
+    </style>
+    <!-- Tailwind Config -->
+    <script>tailwind.config = { theme: { extend: { fontFamily: { orbitron: ['Orbitron', 'sans-serif'], exo: ['Exo 2', 'sans-serif'] } } } }</script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="form-wrapper w-full max-w-2xl">
+
+        <!-- Theme Selector -->
+        <div class="flex justify-center mb-6">
+            <label for="theme-select" class="sr-only">Select Theme</label>
+            <select id="theme-select"
+                class="form-input py-2 px-4 rounded-lg font-semibold cursor-pointer text-sm w-full max-w-xs mx-auto">
+                <option value="darkMatter">Dark Matter</option>
+                <option value="cyberpunk">Cyberpunk</option>
+                <option value="matrix">Matrix</option>
+                <option value="nebulaMist">Nebula Mist</option>
+                <option value="goldenHour">Golden Hour</option>
+                <option value="arcticWind">Arctic Wind</option>
+                <option value="roseQuartz">Rose Quartz</option>
+                <option value="obsidian">Obsidian</option>
+                <option value="sakura">Sakura</option>
+                <!-- Add other themes from CSS -->
+            </select>
+        </div>
+
+        <!-- Form Container -->
+        <div id="form-container" class="form-container rounded-2xl p-8 sm:p-10">
+            <h1 class="font-orbitron text-3xl sm:text-4xl font-bold text-center mb-2">System Access</h1>
+            <p class="text-center opacity-80 mb-8 font-light">Validate your credentials</p>
+
+            <form id="validation-form" novalidate>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                    {/* <!-- Input fields remain the same as previous version --> */}
+                    <div class="form-group"> <label for="username" class="block text-sm font-semibold mb-1">Callsign
+                            <span class="text-[var(--accent-secondary)]">*</span></label> <input type="text"
+                            id="username" name="username" required minlength="3" maxlength="15"
+                            class="form-input w-full p-3 rounded-lg" placeholder="Enter your callsign">
+                        <p class="error-message" id="username-error"></p>
+                    </div>
+                    <div class="form-group"> <label for="email" class="block text-sm font-semibold mb-1">Comms Channel
+                            (Email) <span class="text-[var(--accent-secondary)]">*</span></label> <input type="email"
+                            id="email" name="email" required class="form-input w-full p-3 rounded-lg"
+                            placeholder="tactical@email.com">
+                        <p class="error-message" id="email-error"></p>
+                    </div>
+                    <div class="form-group"> <label for="password" class="block text-sm font-semibold mb-1">Access Code
+                            (Password) <span class="text-[var(--accent-secondary)]">*</span></label> <input
+                            type="password" id="password" name="password" required minlength="8"
+                            class="form-input w-full p-3 rounded-lg" placeholder="Min. 8 characters + Number">
+                        <p class="error-message" id="password-error"></p>
+                    </div>
+                    <div class="form-group"> <label for="confirm-password"
+                            class="block text-sm font-semibold mb-1">Confirm Access Code <span
+                                class="text-[var(--accent-secondary)]">*</span></label> <input type="password"
+                            id="confirm-password" name="confirmPassword" required
+                            class="form-input w-full p-3 rounded-lg" placeholder="Re-enter code">
+                        <p class="error-message" id="confirm-password-error"></p>
+                    </div>
+                    <div class="form-group"> <label for="age" class="block text-sm font-semibold mb-1">Cycles (Age)
+                            <span class="text-[var(--accent-secondary)]">*</span></label> <input type="number" id="age"
+                            name="age" required min="18" max="120" class="form-input w-full p-3 rounded-lg"
+                            placeholder="Enter cycles (18-120)">
+                        <p class="error-message" id="age-error"></p>
+                    </div>
+                    <div class="form-group"> <label for="website" class="block text-sm font-semibold mb-1">Data Hub
+                            (Website)</label> <input type="url" id="website" name="website"
+                            class="form-input w-full p-3 rounded-lg" placeholder="https://your-hub.com">
+                        <p class="error-message" id="website-error"></p>
+                    </div>
+                    <div class="form-group md:col-span-2"> <label for="bio"
+                            class="block text-sm font-semibold mb-1">Mission Brief (Bio) <span
+                                class="text-[var(--accent-secondary)]">*</span></label> <textarea id="bio" name="bio"
+                            rows="3" required minlength="10" maxlength="200"
+                            class="form-input w-full p-3 rounded-lg resize-none"
+                            placeholder="Brief description (10-200 chars)"></textarea>
+                        <p class="error-message" id="bio-error"></p>
+                    </div>
+                    <div class="form-group md:col-span-2 flex items-start gap-2"> <input type="checkbox" id="terms"
+                            name="terms" required class="form-checkbox mt-1"> <label for="terms"
+                            class="text-sm font-medium">Acknowledge protocol adherence (Terms & Conditions) <span
+                                class="text-[var(--accent-secondary)]">*</span></label>
+                        <p class="error-message w-full mt-1" id="terms-error"></p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <button type="button" id="fill-sample-btn"
+                        class="secondary-button py-3 px-4 rounded-lg font-orbitron font-semibold text-base tracking-wider transition duration-300 transform focus:outline-none order-2 sm:order-1">
+                        <i class="fas fa-random mr-2"></i> Sample
+                    </button>
+                    <button type="button" id="reset-form-btn"
+                        class="secondary-button py-3 px-4 rounded-lg font-orbitron font-semibold text-base tracking-wider transition duration-300 transform focus:outline-none order-3 sm:order-2">
+                        <i class="fas fa-undo mr-2"></i> Reset
+                    </button>
+                    <button type="submit" id="submit-button"
+                        class="submit-button py-3 px-4 rounded-lg font-orbitron font-bold text-lg tracking-wider transition duration-300 transform focus:outline-none order-1 sm:order-3">
+                        VALIDATE
+                    </button>
+                </div>
+            </form>
+        </div> <!-- End Form Container -->
+
+        <!-- Success Message Container -->
+        <div id="success-container" class="success-container w-full max-w-md form-container rounded-2xl p-10">
+            <div class="success-icon text-success"><i class="fas fa-check-circle"></i></div>
+            <h2 class="font-orbitron text-2xl font-bold mb-4 text-success">Validation Successful!</h2>
+            <p class="opacity-90 mb-6">Access granted. Preparing system interface...</p>
+            <button id="reset-success-btn"
+                class="submit-button py-2 px-6 rounded-lg font-orbitron font-semibold text-base">Reset Form</button>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('validation-form');
+            const formContainer = document.getElementById('form-container');
+            const successContainer = document.getElementById('success-container');
+            const submitButton = document.getElementById('submit-button');
+            const resetButtonSuccess = document.getElementById('reset-success-btn');
+            const resetFormButton = document.getElementById('reset-form-btn'); // New button
+            const fillSampleButton = document.getElementById('fill-sample-btn'); // New button
+            const themeSelect = document.getElementById('theme-select');
+            const htmlElement = document.documentElement;
+
+            const inputs = { /* ... (same as previous) ... */
+                username: form.elements.username, email: form.elements.email, password: form.elements.password,
+                confirmPassword: form.elements.confirmPassword, age: form.elements.age, website: form.elements.website,
+                bio: form.elements.bio, terms: form.elements.terms
+            };
+            const validationRules = { /* ... (same as previous) ... */
+                username: [{ check: (val) => val.trim() !== '', message: 'Callsign is required.' }, { check: (val) => val.length >= 3, message: 'Min. 3 characters.' }, { check: (val) => val.length <= 15, message: 'Max. 15 characters.' }],
+                email: [{ check: (val) => val.trim() !== '', message: 'Comms channel required.' }, { check: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), message: 'Invalid email format.' }],
+                password: [{ check: (val) => val.trim() !== '', message: 'Access code required.' }, { check: (val) => val.length >= 8, message: 'Min. 8 characters.' }, { check: (val) => /\d/.test(val), message: 'Must include a number.' }],
+                confirmPassword: [{ check: (val) => val.trim() !== '', message: 'Confirmation required.' }, { check: (val, formElements) => val === formElements.password.value, message: 'Codes do not match.' }],
+                age: [{ check: (val) => val.trim() !== '', message: 'Cycles required.' }, { check: (val) => !isNaN(val) && Number.isInteger(Number(val)), message: 'Must be a whole number.' }, { check: (val) => parseInt(val) >= 18, message: 'Min. 18 cycles.' }, { check: (val) => parseInt(val) <= 120, message: 'Max. 120 cycles.' }],
+                website: [{ check: (val) => val.trim() === '' || /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(val), message: 'Invalid URL format.' }],
+                bio: [{ check: (val) => val.trim() !== '', message: 'Mission brief required.' }, { check: (val) => val.length >= 10, message: 'Min. 10 characters.' }, { check: (val) => val.length <= 200, message: 'Max. 200 characters.' }],
+                terms: [{ check: (val, _, element) => element.checked, message: 'Protocol adherence mandatory.' }]
+            };
+
+            // --- Sample Data ---
+            const sampleData = {
+                usernames: ["CygnusX1", "NovaRider", "TechSynth", "BladeRunner2K49", "GhostWire", "ZeroCool"],
+                emails: ["orbital@station.net", "synthwave@sector7.org", "glitch@matrix.com", "void.walker@deep.space", "protocol@core.io"],
+                passwords: ["P@ssword123", "SecureCode#99", "AlphaBeta7!", "CyberSec1!", "CodeNinja007"],
+                websites: ["https://cyberdyne.com", "https://weyland-yutani.corp", "https://tyrell.co", "https://omnicorp.net", ""], // Include empty for optional
+                bios: [
+                    "Veteran data courier navigating the neon sprawl.",
+                    "Specializing in system infiltration and counter-intelligence.",
+                    "Bio-enhanced operative, peak physical condition.",
+                    "AI integration specialist seeking new frontiers.",
+                    "Deep space explorer charting unknown territories."
+                ]
+            };
+
+            // --- Helper Functions ---
+            function showError(inputName, message) { /* ... (same as previous) ... */
+                const inputElement = inputs[inputName];
+                const errorElement = document.getElementById(`${inputName}-error`);
+                if (!inputElement || !errorElement) return;
+                inputElement.classList.add('input-error');
+                inputElement.classList.remove('input-success');
+                errorElement.textContent = message;
+                errorElement.classList.add('visible');
+            }
+            function hideError(inputName, showSuccess = false) { /* ... (Modified slightly) ... */
+                const inputElement = inputs[inputName];
+                const errorElement = document.getElementById(`${inputName}-error`);
+                if (!inputElement || !errorElement) return;
+
+                inputElement.classList.remove('input-error');
+                errorElement.classList.remove('visible');
+                errorElement.textContent = ''; // Always clear text
+
+                // Conditionally add success class if requested and field is valid
+                if (showSuccess && validateField(inputName, true)) { // Re-validate silently
+                    inputElement.classList.add('input-success');
+                } else {
+                    inputElement.classList.remove('input-success'); // Ensure success is removed if not valid or not requested
+                }
+            }
+
+            function validateField(inputName, silent = false) { /* ... (same as previous) ... */
+                const inputElement = inputs[inputName];
+                const rules = validationRules[inputName];
+                if (!inputElement || !rules) return true;
+                const value = inputElement.type === 'checkbox' ? inputElement.checked : inputElement.value;
+                let isValid = true;
+                for (const rule of rules) {
+                    if (!rule.check(value, form.elements, inputElement)) {
+                        if (!silent) showError(inputName, rule.message);
+                        isValid = false;
+                        break;
+                    }
+                }
+                if (isValid) {
+                    // When valid, hide error and only show success border if not silent
+                    hideError(inputName, !silent);
+                } else {
+                    // If invalid and silent, still remove success border
+                    if (silent) inputElement.classList.remove('input-success');
+                }
+                return isValid;
+            }
+
+            function validateAllFields() {
+                let isFormValid = true;
+                Object.keys(inputs).forEach(inputName => {
+                    if (!validateField(inputName)) { // Validate and show errors
+                        isFormValid = false;
+                    }
+                });
+                return isFormValid;
+            }
+
+            function applyTheme(themeName) { /* ... (same as previous) ... */
+                htmlElement.className = '';
+                htmlElement.classList.add(`theme-${themeName}`);
+                localStorage.setItem('futuristicFormTheme', themeName);
+                if (themeSelect.value !== themeName) themeSelect.value = themeName;
+            }
+
+            function resetFormVisuals() {
+                form.reset(); // Reset native form fields
+                Object.keys(inputs).forEach(inputName => {
+                    const inputElement = inputs[inputName];
+                    const errorElement = document.getElementById(`${inputName}-error`);
+                    if (inputElement) inputElement.classList.remove('input-error', 'input-success');
+                    if (errorElement) {
+                        errorElement.textContent = '';
+                        errorElement.classList.remove('visible');
+                    }
+                });
+                console.log('Form visuals reset.');
+            }
+
+            function fillSampleData() {
+                console.log('Filling sample data...');
+                resetFormVisuals(); // Start with a clean slate
+
+                // Random selection helper
+                const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+                // Fill fields
+                inputs.username.value = getRandom(sampleData.usernames);
+                inputs.email.value = getRandom(sampleData.emails);
+                const generatedPassword = getRandom(sampleData.passwords);
+                inputs.password.value = generatedPassword;
+                inputs.confirmPassword.value = generatedPassword; // Match passwords
+                inputs.age.value = Math.floor(Math.random() * (100 - 18 + 1)) + 18; // Age 18-100
+                inputs.website.value = getRandom(sampleData.websites);
+                inputs.bio.value = getRandom(sampleData.bios);
+                inputs.terms.checked = true; // Check terms
+
+                // Trigger validation to show success states
+                console.log('Validating sample data...');
+                validateAllFields(); // Validate all fields silently to show success borders
+            }
+
+
+            // --- Event Listeners ---
+            Object.keys(inputs).forEach(inputName => { /* ... (same as previous, ensure validateField logic is correct) ... */
+                const inputElement = inputs[inputName];
+                if (!inputElement) return;
+                inputElement.addEventListener('blur', () => validateField(inputName));
+                if (inputElement.type !== 'checkbox') {
+                    inputElement.addEventListener('input', () => {
+                        if (inputElement.classList.contains('input-error')) {
+                            validateField(inputName, true); // Silently re-validate on input if error shown
+                        }
+                        if (inputName === 'confirmPassword' || inputName === 'password') {
+                            validateField('confirmPassword'); // Re-check match immediately
+                        }
+                    });
+                } else {
+                    // Validate checkbox immediately on change
+                    inputElement.addEventListener('change', () => validateField(inputName));
+                }
+            });
+
+            form.addEventListener('submit', (event) => { /* ... (same as previous) ... */
+                event.preventDefault();
+                if (validateAllFields()) {
+                    console.log('Form Submitted Successfully!');
+                    formContainer.style.display = 'none';
+                    successContainer.style.display = 'block';
+                    requestAnimationFrame(() => successContainer.classList.add('visible'));
+                } else {
+                    console.log('Form has validation errors.');
+                }
+            });
+
+            resetButtonSuccess.addEventListener('click', () => { /* ... (same as previous, uses resetFormVisuals) ... */
+                successContainer.classList.remove('visible');
+                setTimeout(() => { // Wait for transition
+                    successContainer.style.display = 'none';
+                    formContainer.style.display = 'block';
+                    resetFormVisuals();
+                }, 300);
+            });
+
+            // Added Listeners
+            resetFormButton.addEventListener('click', resetFormVisuals);
+            fillSampleButton.addEventListener('click', fillSampleData);
+            themeSelect.addEventListener('change', () => applyTheme(themeSelect.value));
+
+
+            // --- Initialization ---
+            function initializeApp() {
+                const savedTheme = localStorage.getItem('futuristicFormTheme') || 'darkMatter'; // Default theme
+                applyTheme(savedTheme);
+                // Initial visual state is clean, no need to call resetFormVisuals here unless needed
+            }
+
+            initializeApp();
+
+        }); // End DOMContentLoaded
+    </script>
+</body>
+
+</html>

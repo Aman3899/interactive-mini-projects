@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polygon Shape Synthesizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- Theme Variables --- */
+        :root,
+        .theme-light {
+            --bg-primary: #f3f4f6;
+            /* gray-100 */
+            --bg-card: #ffffff;
+            --bg-code: #f9fafb;
+            /* gray-50 */
+            --text-primary: #1f2937;
+            /* gray-800 */
+            --text-secondary: #4b5563;
+            /* gray-600 */
+            --text-code: #374151;
+            /* gray-700 */
+            --border-color: #e5e7eb;
+            /* gray-200 */
+            --accent-color: #3b82f6;
+            /* blue-500 */
+            --accent-color-darker: #2563eb;
+            /* blue-600 */
+            --polygon-fill: rgba(59, 130, 246, 0.2);
+            --polygon-stroke: var(--accent-color);
+            --slider-track: #bfdbfe;
+            /* blue-200 */
+            --slider-thumb: var(--accent-color);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --copy-button-bg: #e5e7eb;
+            --copy-button-text: #374151;
+            --copy-button-hover-bg: #d1d5db;
+        }
+
+        .theme-dark {
+            --bg-primary: #1f2937;
+            /* gray-800 */
+            --bg-card: #374151;
+            /* gray-700 */
+            --bg-code: #4b5563;
+            /* gray-600 */
+            --text-primary: #f3f4f6;
+            /* gray-100 */
+            --text-secondary: #d1d5db;
+            /* gray-300 */
+            --text-code: #e5e7eb;
+            /* gray-200 */
+            --border-color: #4b5563;
+            /* gray-600 */
+            --accent-color: #60a5fa;
+            /* blue-400 */
+            --accent-color-darker: #3b82f6;
+            /* blue-500 */
+            --polygon-fill: rgba(96, 165, 250, 0.25);
+            --polygon-stroke: var(--accent-color);
+            --slider-track: #4b5563;
+            /* gray-600 */
+            --slider-thumb: var(--accent-color);
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --copy-button-bg: #4b5563;
+            --copy-button-text: #f3f4f6;
+            --copy-button-hover-bg: #525f71;
+        }
+
+        .theme-cyberpunk {
+            --bg-primary: #0a0f21;
+            --bg-card: rgba(26, 32, 56, 0.9);
+            --bg-code: rgba(30, 41, 59, 0.85);
+            --text-primary: #e0f2fe;
+            --text-secondary: #94a3b8;
+            --text-code: #cbd5e1;
+            --border-color: rgba(0, 247, 247, 0.4);
+            --accent-color: #00f7f7;
+            /* Cyan */
+            --accent-color-darker: #14b8a6;
+            /* Teal */
+            --polygon-fill: rgba(0, 247, 247, 0.15);
+            --polygon-stroke: var(--accent-color);
+            --slider-track: rgba(249, 0, 243, 0.3);
+            /* Magenta track */
+            --slider-thumb: var(--accent-color);
+            --shadow-color: rgba(0, 0, 0, 0.6);
+            --copy-button-bg: #f900f3;
+            /* Magenta button */
+            --copy-button-text: #0a0f21;
+            --copy-button-hover-bg: #c002c0;
+        }
+
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            /* rounded-xl */
+            box-shadow: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color);
+            padding: 1.5rem;
+            /* p-6 */
+            margin-bottom: 2rem;
+            /* mb-8 */
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .code-block {
+            background-color: var(--bg-code);
+            color: var(--text-code);
+            padding: 1rem;
+            /* p-4 */
+            border-radius: 0.5rem;
+            /* rounded-md */
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            /* text-sm */
+            overflow-x: auto;
+            position: relative;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .code-block pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        label {
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        /* Polygon Styles */
+        .polygon-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            /* Fixed height for the container */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px dashed var(--border-color);
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .polygon {
+            stroke: var(--polygon-stroke);
+            stroke-width: 2;
+            fill: var(--polygon-fill);
+            transition: all 0.3s ease;
+        }
+
+        /* Slider Styles */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            /* h-2 */
+            border-radius: 9999px;
+            /* rounded-full */
+            background: var(--slider-track);
+            outline: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--slider-thumb);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: 2px solid var(--bg-card);
+            /* Add border matching card bg */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="range"]::-moz-range-track {
+            width: 100%;
+            height: 8px;
+            border-radius: 9999px;
+            background: var(--slider-track);
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--slider-thumb);
+            cursor: pointer;
+            border: 2px solid var(--bg-card);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Copy Button Styles */
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--copy-button-bg);
+            color: var(--copy-button-text);
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.375rem;
+            /* rounded-md */
+            font-size: 0.75rem;
+            /* text-xs */
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .copy-button:hover {
+            background-color: var(--copy-button-hover-bg);
+        }
+
+        .copy-button .fa-check {
+            color: #10b981;
+            /* green-600 */
+        }
+
+        /* Theme Selector */
+        .theme-selector-container {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 10;
+        }
+
+        .theme-select {
+            background-color: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 30%, transparent);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <div class="theme-selector-container">
+        <select id="theme-selector" class="theme-select" title="Select Theme">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="cyberpunk">Cyberpunk</option>
+        </select>
+    </div>
+
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-2xl mx-auto">
+            <h1 class="text-3xl font-bold text-center mb-8">Polygon Shape Synthesizer</h1>
+
+            <div class="card">
+                <div class="mb-6">
+                    <label for="sides" class="block text-sm font-semibold mb-2">Number of Sides: <span id="sideValue"
+                            class="font-bold text-base" style="color: var(--accent-color);">5</span></label>
+                    <input type="range" id="sides" name="sides" min="3" max="20" value="5" class="w-full">
+                </div>
+
+                <div class="mb-6">
+                    <label for="size" class="block text-sm font-semibold mb-2">Size: <span id="sizeValue"
+                            class="font-bold text-base" style="color: var(--accent-color);">100</span></label>
+                    <input type="range" id="size" name="size" min="50" max="140" value="100" class="w-full"> {/*
+                    Adjusted max size for viewBox */}
+                </div>
+
+                <div class="mb-4">
+                    <label for="rotation" class="block text-sm font-semibold mb-2">Rotation: <span id="rotationValue"
+                            class="font-bold text-base" style="color: var(--accent-color);">0</span>°</label>
+                    <input type="range" id="rotation" name="rotation" min="0" max="360" value="0" class="w-full">
+                </div>
+
+                <div class="polygon-container">
+                    {/* SVG viewBox allows coords from -150 to +150 */}
+                    <svg id="polygonSvg" width="300" height="300" viewBox="-150 -150 300 300"
+                        aria-labelledby="polygonTitle" role="img">
+                        <title id="polygonTitle">Generated Polygon Shape</title>
+                        {/* Center point for reference (optional) */}
+                        {/*
+                        <circle cx="0" cy="0" r="2" fill="var(--text-secondary)" opacity="0.5" /> */}
+                        <polygon id="polygon" class="polygon" points="" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="text-xl font-bold mb-4">Generated Code</h2>
+
+                <div class="mb-6">
+                    <h3 class="text-md font-semibold text-gray-700 mb-2" style="color: var(--text-secondary);">SVG Code
+                    </h3>
+                    <div class="code-block">
+                        <button class="copy-button" data-target="svgCode" title="Copy SVG Code">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
+                        <pre id="svgCode"></pre>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-md font-semibold text-gray-700 mb-2" style="color: var(--text-secondary);">CSS
+                        Clip-path</h3>
+                    <div class="code-block">
+                        <button class="copy-button" data-target="cssCode" title="Copy CSS Code">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
+                        <pre id="cssCode"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const sidesInput = document.getElementById('sides');
+        const sidesValue = document.getElementById('sideValue');
+        const sizeInput = document.getElementById('size');
+        const sizeValue = document.getElementById('sizeValue');
+        const rotationInput = document.getElementById('rotation');
+        const rotationValue = document.getElementById('rotationValue');
+        const polygon = document.getElementById('polygon');
+        const svgCodeEl = document.getElementById('svgCode');
+        const cssCodeEl = document.getElementById('cssCode');
+        const themeSelector = document.getElementById('theme-selector');
+        const htmlElement = document.documentElement;
+        const copyButtons = document.querySelectorAll('.copy-button');
+
+        // --- Theme Handling ---
+        function applyTheme(themeName) {
+            const themePrefix = 'theme-';
+            // Remove existing theme classes more robustly
+            const classesToRemove = [];
+            for (let i = 0; i < htmlElement.classList.length; i++) {
+                if (htmlElement.classList[i].startsWith(themePrefix)) {
+                    classesToRemove.push(htmlElement.classList[i]);
+                }
+            }
+            htmlElement.classList.remove(...classesToRemove);
+
+            // Add the new theme class
+            htmlElement.classList.add(themePrefix + themeName);
+            localStorage.setItem('polygonTheme', themeName); // Store preference
+            if (themeSelector.value !== themeName) {
+                themeSelector.value = themeName; // Sync dropdown
+            }
+        }
+
+        themeSelector.addEventListener('change', (e) => applyTheme(e.target.value));
+
+        // Load saved theme on startup
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('polygonTheme') || 'light'; // Default to light
+            applyTheme(savedTheme);
+            generatePolygon(); // Initial generation after theme is set
+        });
+
+
+        // --- Polygon Generation ---
+        function generatePolygon() {
+            const sides = parseInt(sidesInput.value);
+            const size = parseInt(sizeInput.value); // This is radius
+            const rotation = parseInt(rotationInput.value);
+
+            // Update display values
+            sidesValue.textContent = sides;
+            sizeValue.textContent = size;
+            rotationValue.textContent = rotation;
+
+            // Calculate polygon points (centered at 0,0 for the SVG viewBox)
+            const points = [];
+            const angleStep = (2 * Math.PI) / sides;
+            // Rotation offset starts from 3 o'clock (0 radians). Add -Math.PI / 2 to start from 12 o'clock.
+            const rotationRad = ((rotation - 90) * Math.PI) / 180; // Adjust rotation start point
+
+            for (let i = 0; i < sides; i++) {
+                const angle = i * angleStep + rotationRad;
+                // SVG coordinates: y increases downwards, but our math assumes y increases upwards.
+                // The viewBox handles the inversion. So standard math is fine.
+                const x = size * Math.cos(angle);
+                const y = size * Math.sin(angle);
+                points.push(`${x.toFixed(2)},${y.toFixed(2)}`);
+            }
+            const pointsString = points.join(' ');
+
+            // Update SVG polygon
+            polygon.setAttribute('points', pointsString);
+
+            // --- Generate Code Snippets ---
+            generateCodeSnippets(pointsString, sides, rotationRad);
+        }
+
+        function generateCodeSnippets(svgPointsString, sides, rotationRad) {
+            // Generate SVG Code
+            // Use CSS class instead of inline styles for theme adaptability
+            const svgString = `<svg width="300" height="300" viewBox="-150 -150 300 300">
+  <polygon class="polygon" points="${svgPointsString}" />
+</svg>`;
+            svgCodeEl.textContent = svgString.trim();
+
+            // Generate CSS Clip-path (points as percentages, relative to element box)
+            const clipPoints = [];
+            const angleStep = (2 * Math.PI) / sides;
+            for (let i = 0; i < sides; i++) {
+                const angle = i * angleStep + rotationRad;
+                // Map (cos, sin) from [-1, 1] range to [0%, 100%] range
+                // Multiply by 50 (half of 100%) and add 50% (center offset)
+                const x = 50 + 50 * Math.cos(angle);
+                const y = 50 + 50 * Math.sin(angle);
+                clipPoints.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
+            }
+            const clipPointsString = clipPoints.join(', ');
+
+            const cssString = `.polygon-shape {
+  clip-path: polygon(${clipPointsString});
+  /* For older webkit browsers */
+  -webkit-clip-path: polygon(${clipPointsString});
+  /* Add other properties like background, width, height */
+  width: 200px;
+  height: 200px;
+  background-color: var(--accent-color);
+}`;
+            cssCodeEl.textContent = cssString.trim();
+        }
+
+
+        // --- Copy Functionality ---
+        copyButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.getAttribute('data-target');
+                const codeElement = document.getElementById(targetId);
+                if (codeElement) {
+                    copyToClipboard(codeElement.textContent, button);
+                }
+            });
+        });
+
+        function copyToClipboard(text, buttonElement) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Success feedback
+                const originalIcon = buttonElement.innerHTML; // Store original content
+                buttonElement.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                buttonElement.disabled = true;
+
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalIcon; // Restore original
+                    buttonElement.disabled = false;
+                }, 1500); // Revert after 1.5 seconds
+
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                // Optional: Provide error feedback to the user
+                const originalIcon = buttonElement.innerHTML;
+                buttonElement.innerHTML = '<i class="fas fa-times"></i> Failed';
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalIcon;
+                }, 1500);
+            });
+        }
+
+
+        // --- Event Listeners for Sliders ---
+        [sidesInput, sizeInput, rotationInput].forEach(input => {
+            input.addEventListener('input', generatePolygon);
+        });
+
+    </script>
+</body>
+
+</html>

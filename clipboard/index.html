@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORE CLIP - Clipboard Manager</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Base Font & Theme Variables */
+        :root {
+            --bg-primary: #0a0a1f;
+            /* Deep dark blue/purple */
+            --bg-secondary: #1c1c3c;
+            /* Slightly lighter */
+            --text-primary: #00ffff;
+            /* Cyan */
+            --text-secondary: #a8a8ff;
+            /* Light purple */
+            --text-tertiary: #6c6c9c;
+            /* Dimmer purple */
+            --accent-primary: #ff00ff;
+            /* Magenta */
+            --accent-secondary: #00ffff;
+            /* Cyan */
+            --border-color: rgba(0, 255, 255, 0.2);
+            --border-glow: rgba(0, 255, 255, 0.4);
+            --container-bg: rgba(28, 28, 60, 0.6);
+            /* Semi-transparent dark blue */
+            --item-bg: rgba(42, 42, 90, 0.5);
+            --item-hover-bg: rgba(52, 52, 110, 0.7);
+            --input-bg: rgba(10, 10, 31, 0.7);
+            --button-bg: linear-gradient(145deg, var(--accent-primary), #cc00cc);
+            --button-hover-bg: linear-gradient(145deg, #ff33ff, var(--accent-primary));
+            --button-text: #ffffff;
+            --button-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+            --delete-color: #ff4444;
+            --delete-hover-color: #ff7777;
+            --copy-color: var(--accent-secondary);
+            --copy-hover-color: #5fffff;
+            --copied-color: #44ff88;
+            /* Green */
+            --scrollbar-thumb: var(--accent-secondary);
+            --scrollbar-thumb-hover: var(--text-primary);
+            --transition-duration: 0.3s;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            /* Subtle grid background */
+            background-image:
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            overflow-x: hidden;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-rajdhani {
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        /* Main Container Styling */
+        .clipboard-container {
+            background-color: var(--container-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 25px var(--border-glow);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            /* Safari */
+            transition: all var(--transition-duration) ease;
+        }
+
+        /* Input/Textarea Styling */
+        .input-field,
+        .textarea-field {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            caret-color: var(--accent-primary);
+            transition: border-color var(--transition-duration) ease, box-shadow var(--transition-duration) ease;
+        }
+
+        .input-field::placeholder,
+        .textarea-field::placeholder {
+            color: var(--text-tertiary);
+            opacity: 0.8;
+        }
+
+        .input-field:focus,
+        .textarea-field:focus {
+            outline: none;
+            border-color: var(--accent-secondary);
+            box-shadow: 0 0 10px var(--border-glow);
+        }
+
+        /* Button Styling */
+        .action-button {
+            background-image: var(--button-bg);
+            color: var(--button-text);
+            box-shadow: var(--button-shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-image var(--transition-duration) ease;
+        }
+
+        .action-button:hover:not(:disabled) {
+            background-image: var(--button-hover-bg);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px var(--button-shadow);
+        }
+
+        .action-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            background-image: none;
+            background-color: var(--bg-secondary);
+        }
+
+        /* Snippet Item Styling */
+        .snippet-item {
+            background-color: var(--item-bg);
+            border: 1px solid var(--border-color);
+            transition: background-color var(--transition-duration) ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .snippet-item:hover {
+            background-color: var(--item-hover-bg);
+            transform: translateX(5px);
+            box-shadow: -5px 0 15px -5px var(--border-glow);
+        }
+
+        .snippet-text {
+            color: var(--text-primary);
+            line-height: 1.4;
+            max-height: 6em;
+            overflow: hidden;
+            /* Limit visible lines */
+        }
+
+        .snippet-timestamp {
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
+        }
+
+        .snippet-actions button {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .snippet-actions button:hover {
+            transform: scale(1.1);
+        }
+
+        .copy-btn {
+            color: var(--copy-color);
+        }
+
+        .copy-btn:hover {
+            color: var(--copy-hover-color);
+        }
+
+        .copy-btn.copied {
+            color: var(--copied-color) !important;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+
+        /* Copied state */
+        .delete-btn {
+            color: var(--delete-color);
+        }
+
+        .delete-btn:hover {
+            color: var(--delete-hover-color);
+        }
+
+        /* Animations */
+        .snippet-enter {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+
+        .snippet-enter-active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .snippet-exit {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+        }
+
+        .snippet-exit-active {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        /* Scrollbar */
+        #snippet-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #snippet-list::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 3px;
+        }
+
+        #snippet-list::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb);
+            border-radius: 3px;
+        }
+
+        #snippet-list::-webkit-scrollbar-thumb:hover {
+            background-color: var(--scrollbar-thumb-hover);
+        }
+
+        /* No snippets message */
+        #no-snippets-msg {
+            color: var(--text-tertiary);
+        }
+    </style>
+    <!-- Tailwind Config -->
+    <script>tailwind.config = { theme: { extend: { fontFamily: { orbitron: ['Orbitron', 'sans-serif'], rajdhani: ['Rajdhani', 'sans-serif'] } } } }</script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="clipboard-container w-full max-w-2xl rounded-2xl p-6 sm:p-8 flex flex-col max-h-[90vh]">
+
+        <!-- Header -->
+        <header class="text-center mb-6 sm:mb-8 flex-shrink-0">
+            <h1
+                class="text-3xl sm:text-4xl font-bold font-orbitron tracking-wider uppercase mb-2 text-[var(--text-primary)]">
+                CORE CLIP</h1>
+            <p class="text-lg font-rajdhani opacity-80 text-[var(--text-secondary)] font-light">Neural Clipboard
+                Interface</p>
+        </header>
+
+        <!-- Input Area -->
+        <div class="input-area mb-6 flex-shrink-0">
+            <label for="snippet-input" class="sr-only">New Snippet</label>
+            <textarea id="snippet-input" rows="3"
+                class="textarea-field w-full p-3 rounded-lg resize-none placeholder-opacity-60"
+                placeholder="Paste or type your text snippet here..."></textarea>
+            <button id="add-btn"
+                class="action-button w-full mt-3 py-2.5 px-4 rounded-lg font-orbitron font-semibold text-base tracking-wider">
+                <i class="fas fa-plus mr-2"></i> Add to Clipboard
+            </button>
+        </div>
+
+        <!-- Search/Filter Area -->
+        <div class="search-area mb-4 flex-shrink-0">
+            <label for="search-input" class="sr-only">Search Snippets</label>
+            <div class="relative">
+                <span
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center text-[var(--text-secondary)] pointer-events-none opacity-60">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="search" id="search-input" placeholder="Search snippets..."
+                    class="input-field w-full p-2.5 pl-10 rounded-lg placeholder-opacity-60 text-sm">
+            </div>
+        </div>
+
+
+        <!-- Snippet List -->
+        <div id="snippet-list-container" class="flex-grow overflow-hidden relative">
+            <!-- Top fade effect -->
+            <div
+                class="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-[var(--container-bg)] to-transparent z-10 pointer-events-none">
+            </div>
+            <!-- List -->
+            <div id="snippet-list" class="space-y-3 overflow-y-auto h-full py-2 pr-2">
+                <!-- Snippet items will be added here -->
+                <p id="no-snippets-msg" class="text-center py-10 hidden">Clipboard empty. Add a snippet above.</p>
+                <!-- Example Structure:
+                <div class="snippet-item rounded-lg p-3 flex justify-between items-center gap-3">
+                    <pre class="snippet-text flex-grow whitespace-pre-wrap break-words font-mono text-sm">Snippet content here...</pre>
+                    <div class="snippet-actions flex flex-col items-center gap-2 flex-shrink-0">
+                        <button class="copy-btn" title="Copy"><i class="far fa-copy"></i></button>
+                        <button class="delete-btn" title="Delete"><i class="fas fa-trash-alt fa-xs"></i></button>
+                         <span class="snippet-timestamp opacity-60">2 min ago</span>
+                    </div>
+                </div>
+                 -->
+            </div>
+            <!-- Bottom fade effect -->
+            <div
+                class="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-[var(--container-bg)] to-transparent z-10 pointer-events-none">
+            </div>
+        </div>
+
+        <!-- Footer Action (Optional: Clear All) -->
+        <div class="mt-4 text-center flex-shrink-0">
+            <button id="clear-all-btn"
+                class="text-xs font-semibold opacity-60 hover:opacity-90 transition text-[var(--delete-color)] hover:text-[var(--delete-hover-color)]">
+                <i class="fas fa-skull-crossbones mr-1"></i> Clear All Snippets
+            </button>
+        </div>
+
+
+    </div> <!-- End Clipboard Container -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const snippetInput = document.getElementById('snippet-input');
+            const addBtn = document.getElementById('add-btn');
+            const searchInput = document.getElementById('search-input');
+            const snippetList = document.getElementById('snippet-list');
+            const noSnippetsMsg = document.getElementById('no-snippets-msg');
+            const clearAllBtn = document.getElementById('clear-all-btn');
+
+            // --- State ---
+            let snippets = []; // Array of { id: timestamp, text: string }
+
+            // --- Utility Functions ---
+            const formatRelativeTime = (timestamp) => {
+                const now = new Date();
+                const past = new Date(timestamp);
+                const diffInSeconds = Math.floor((now - past) / 1000);
+                const diffInMinutes = Math.floor(diffInSeconds / 60);
+                const diffInHours = Math.floor(diffInMinutes / 60);
+                const diffInDays = Math.floor(diffInHours / 24);
+
+                if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
+                if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+                if (diffInHours < 24) return `${diffInHours}h ago`;
+                return `${diffInDays}d ago`;
+            };
+
+            // --- Local Storage ---
+            function loadSnippets() {
+                const savedSnippets = localStorage.getItem('coreClipSnippets');
+                snippets = savedSnippets ? JSON.parse(savedSnippets) : [];
+                // Sort by newest first
+                snippets.sort((a, b) => b.id - a.id);
+                renderSnippets();
+            }
+
+            function saveSnippets() {
+                // Sort by newest first before saving (optional, but keeps order consistent)
+                snippets.sort((a, b) => b.id - a.id);
+                localStorage.setItem('coreClipSnippets', JSON.stringify(snippets));
+                checkEmptyState(); // Update message visibility after save
+            }
+
+            // --- Rendering ---
+            function renderSnippets(filter = '') {
+                snippetList.innerHTML = ''; // Clear current list
+                const lowerCaseFilter = filter.toLowerCase();
+
+                const filteredSnippets = snippets.filter(snippet =>
+                    snippet.text.toLowerCase().includes(lowerCaseFilter)
+                );
+
+                if (filteredSnippets.length === 0) {
+                    checkEmptyState(filter); // Pass filter to show appropriate message
+                    return;
+                }
+
+                noSnippetsMsg.classList.add('hidden'); // Hide empty message
+
+                filteredSnippets.forEach(snippet => {
+                    const snippetElement = document.createElement('div');
+                    snippetElement.className = 'snippet-item rounded-lg p-3 flex justify-between items-start gap-3 snippet-enter'; // Added items-start
+                    snippetElement.dataset.id = snippet.id;
+
+                    // Sanitize text for display (prevent basic HTML injection)
+                    const safeText = document.createTextNode(snippet.text).textContent;
+
+                    snippetElement.innerHTML = `
+                        <pre class="snippet-text flex-grow whitespace-pre-wrap break-words font-mono text-sm">${safeText}</pre>
+                        <div class="snippet-actions flex flex-col items-center gap-2 flex-shrink-0 ml-2">
+                            <button class="copy-btn" title="Copy Snippet">
+                                <i class="far fa-copy"></i>
+                                <i class="fas fa-check text-[var(--copied-color)] hidden"></i> <!-- Checkmark icon -->
+                            </button>
+                            <button class="delete-btn" title="Delete Snippet"><i class="fas fa-trash-alt fa-xs"></i></button>
+                            <span class="snippet-timestamp opacity-60">${formatRelativeTime(snippet.id)}</span>
+                        </div>
+                    `;
+
+                    // Add event listeners
+                    snippetElement.querySelector('.copy-btn').addEventListener('click', handleCopy);
+                    snippetElement.querySelector('.delete-btn').addEventListener('click', handleDelete);
+
+                    snippetList.appendChild(snippetElement);
+
+                    // Trigger animation
+                    requestAnimationFrame(() => {
+                        snippetElement.classList.add('snippet-enter-active');
+                    });
+                });
+            }
+
+
+            function checkEmptyState(filter = '') {
+                if (snippets.length === 0) {
+                    noSnippetsMsg.textContent = "Clipboard empty. Add a snippet above.";
+                    noSnippetsMsg.classList.remove('hidden');
+                } else if (filter && snippetList.children.length === 0) {
+                    noSnippetsMsg.textContent = `No snippets found matching "${filter}".`;
+                    noSnippetsMsg.classList.remove('hidden');
+                } else {
+                    noSnippetsMsg.classList.add('hidden');
+                }
+                // Disable clear all if empty
+                clearAllBtn.disabled = snippets.length === 0;
+                clearAllBtn.style.opacity = snippets.length === 0 ? '0.4' : '0.6';
+            }
+
+
+            // --- Event Handlers ---
+            function handleAddSnippet() {
+                const text = snippetInput.value.trim();
+                if (!text) return; // Don't add empty snippets
+
+                const newSnippet = {
+                    id: Date.now(), // Use timestamp as ID
+                    text: text
+                };
+
+                snippets.unshift(newSnippet); // Add to the beginning
+                saveSnippets();
+                snippetInput.value = ''; // Clear input
+                renderSnippets(searchInput.value); // Re-render list with potential filter
+                snippetInput.focus(); // Keep focus on input
+            }
+
+            async function handleCopy(event) {
+                const button = event.currentTarget;
+                const snippetElement = button.closest('.snippet-item');
+                const snippetId = snippetElement.dataset.id;
+                const snippet = snippets.find(s => s.id == snippetId);
+
+                if (snippet && navigator.clipboard) {
+                    try {
+                        await navigator.clipboard.writeText(snippet.text);
+                        console.log('Snippet copied!');
+
+                        // Visual Feedback
+                        const copyIcon = button.querySelector('.fa-copy');
+                        const checkIcon = button.querySelector('.fa-check');
+                        button.classList.add('copied');
+                        copyIcon.classList.add('hidden');
+                        checkIcon.classList.remove('hidden');
+
+                        // Reset after a delay
+                        setTimeout(() => {
+                            button.classList.remove('copied');
+                            copyIcon.classList.remove('hidden');
+                            checkIcon.classList.add('hidden');
+                        }, 1500); // Show checkmark for 1.5 seconds
+
+                    } catch (err) {
+                        console.error('Failed to copy snippet: ', err);
+                        alert('Failed to copy snippet.'); // Provide user feedback
+                    }
+                } else if (!navigator.clipboard) {
+                    alert('Clipboard API not available in this browser.');
+                }
+            }
+
+
+            function handleDelete(event) {
+                const snippetElement = event.currentTarget.closest('.snippet-item');
+                const snippetId = snippetElement.dataset.id;
+
+                // Add exit animation
+                snippetElement.classList.add('snippet-exit-active');
+                snippetElement.classList.remove('snippet-enter-active', 'snippet-enter'); // Clean up animation classes
+
+                // Remove after animation
+                setTimeout(() => {
+                    snippets = snippets.filter(s => s.id != snippetId);
+                    saveSnippets();
+                    // No need to re-render whole list, just remove the element
+                    snippetElement.remove();
+                    checkEmptyState(searchInput.value); // Check if list is now empty
+                }, 300); // Match animation duration
+            }
+
+            function handleSearch() {
+                renderSnippets(searchInput.value);
+            }
+
+            function handleClearAll() {
+                if (snippets.length === 0) return; // Nothing to clear
+
+                if (confirm('Are you sure you want to delete ALL snippets? This cannot be undone.')) {
+                    snippets = [];
+                    saveSnippets();
+                    renderSnippets(); // Re-render empty list
+                }
+            }
+
+            // --- Initialization ---
+            loadSnippets(); // Load existing snippets
+
+            // Event Listeners
+            addBtn.addEventListener('click', handleAddSnippet);
+            searchInput.addEventListener('input', handleSearch);
+            clearAllBtn.addEventListener('click', handleClearAll);
+            // Allow adding with Enter key in textarea (Shift+Enter for newline)
+            snippetInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault(); // Prevent default newline insertion
+                    handleAddSnippet();
+                }
+            });
+
+        }); // End DOMContentLoaded
+    </script>
+</body>
+
+</html>

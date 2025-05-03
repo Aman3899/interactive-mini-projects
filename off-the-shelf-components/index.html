@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-cyber-circuit">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive UI Component Showcase</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo+2:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Base Styles & Font Definitions */
+        body {
+            font-family: 'Exo 2', sans-serif;
+            overflow-x: hidden;
+        }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .font-exo { font-family: 'Exo 2', sans-serif; }
+        .font-roboto-mono { font-family: 'Roboto Mono', monospace; }
+
+        /* --- CSS Variables for Themes --- */
+        :root, .theme-default-light { /* Basic Light Fallback */
+            --bg-gradient-start: #e5e7eb;
+            --bg-gradient-end: #d1d5db;
+            --bg-image: none;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(156, 163, 175, 0.5);
+            --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --card-shadow-glow: none;
+            --text-primary: #1f2937;
+            --text-secondary: #3b82f6;
+            --text-accent: #1d4ed8;
+            --text-muted: #6b7280;
+            --button-bg: linear-gradient(145deg, #3b82f6, #2563eb);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #60a5fa, #3b82f6);
+            --button-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+            --button-secondary-bg: rgba(107, 114, 128, 0.2);
+            --button-secondary-text: #4b5563;
+            --button-secondary-border: rgba(107, 114, 128, 0.4);
+            --button-secondary-hover-bg: rgba(107, 114, 128, 0.3);
+            --select-bg: rgba(243, 244, 246, 0.9);
+            --select-border: var(--card-border);
+            --select-text: var(--text-accent);
+            --select-arrow: var(--text-accent);
+            --input-bg: #ffffff;
+            --input-border: #d1d5db;
+            --input-text: #1f2937;
+            --input-focus-ring: var(--text-secondary);
+            --code-bg: #f3f4f6;
+            --code-text: #374151;
+            --code-border: #e5e7eb;
+            --progress-bg: #e5e7eb;
+            --progress-fill: var(--text-secondary);
+            --step-default-bg: #d1d5db;
+            --step-default-text: #4b5563;
+            --step-active-bg: var(--text-secondary);
+            --step-active-text: #ffffff;
+            --step-complete-bg: #10b981;
+            --step-complete-text: #ffffff;
+            --rating-inactive-color: #9ca3af;
+            --rating-active-color: #f59e0b;
+            --slider-track-bg: #d1d5db;
+            --slider-thumb-bg: var(--text-secondary);
+            --color-picker-border: var(--text-secondary);
+            --font-heading: 'Orbitron', sans-serif;
+            --font-body: 'Exo 2', sans-serif;
+            --font-code: 'Roboto Mono', monospace;
+            --transition-speed: 0.4s;
+        }
+
+        /* --- Futuristic Themes --- */
+        .theme-cyber-circuit {
+             --bg-gradient-start: #0a0f21;
+            --bg-gradient-end: #1a2038;
+            --bg-image: radial-gradient(circle at 1px 1px, rgba(45, 212, 191, 0.5) 1px, transparent 0), radial-gradient(circle at 10px 10px, rgba(99, 102, 241, 0.3) 1px, transparent 0); background-size: 20px 20px;
+            --card-bg: rgba(26, 32, 56, 0.85);
+            --card-border: rgba(45, 212, 191, 0.4);
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 15px rgba(45, 212, 191, 0.2);
+            --text-primary: #e0f2fe;
+            --text-secondary: #2dd4bf; /* Teal */
+            --text-accent: #6366f1; /* Indigo */
+            --text-muted: #94a3b8;
+            --button-bg: linear-gradient(145deg, var(--text-secondary), #14b8a6);
+            --button-text: #0a0f21;
+            --button-hover-bg: linear-gradient(145deg, #5eead4, var(--text-secondary));
+            --button-shadow: 0 4px 15px rgba(45, 212, 191, 0.3);
+            --button-secondary-bg: rgba(99, 102, 241, 0.2);
+            --button-secondary-text: #a5b4fc;
+            --button-secondary-border: rgba(99, 102, 241, 0.5);
+            --button-secondary-hover-bg: rgba(99, 102, 241, 0.3);
+            --select-bg: rgba(26, 32, 56, 0.9);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --input-bg: rgba(10, 15, 33, 0.8);
+            --input-border: var(--text-accent);
+            --input-text: var(--text-primary);
+            --input-focus-ring: var(--text-secondary);
+            --code-bg: rgba(10, 15, 33, 0.9);
+            --code-text: #a5b4fc;
+            --code-border: rgba(99, 102, 241, 0.3);
+            --progress-bg: rgba(99, 102, 241, 0.2);
+            --progress-fill: var(--text-secondary);
+            --step-default-bg: rgba(99, 102, 241, 0.2);
+            --step-default-text: #a5b4fc;
+            --step-active-bg: var(--text-accent);
+            --step-active-text: var(--text-primary);
+            --step-complete-bg: var(--text-secondary);
+            --step-complete-text: #0a0f21;
+            --rating-inactive-color: rgba(99, 102, 241, 0.4);
+            --rating-active-color: #facc15; /* Yellow Neon */
+            --slider-track-bg: rgba(99, 102, 241, 0.3);
+            --slider-thumb-bg: var(--text-secondary);
+            --color-picker-border: var(--text-secondary);
+        }
+
+        .theme-star-navigator {
+            --bg-gradient-start: #000000;
+            --bg-gradient-end: #1e293b;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle fill="%23ffffff30" cx="10" cy="10" r="0.5"/><circle fill="%23ffffff20" cx="50" cy="90" r="0.7"/><circle fill="%23ffffff15" cx="80" cy="30" r="0.4"/></svg>'); background-size: 50px 50px;
+            --card-bg: rgba(15, 23, 42, 0.8); /* Very Dark Blue */
+            --card-border: rgba(165, 180, 252, 0.4); /* Light Indigo border */
+            --card-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
+            --card-shadow-glow: 0 0 20px rgba(129, 140, 248, 0.2); /* Indigo glow */
+            --text-primary: #e0e7ff; /* Light Indigo */
+            --text-secondary: #f87171; /* Light Red/Coral */
+            --text-accent: #a78bfa; /* Violet */
+            --text-muted: #94a3b8;
+            --button-bg: linear-gradient(145deg, var(--text-secondary), #ef4444);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #fbacaa, var(--text-secondary));
+            --button-shadow: 0 4px 15px rgba(248, 113, 113, 0.3);
+            --button-secondary-bg: rgba(167, 139, 250, 0.2);
+            --button-secondary-text: #c4b5fd;
+            --button-secondary-border: rgba(167, 139, 250, 0.5);
+            --button-secondary-hover-bg: rgba(167, 139, 250, 0.3);
+            --select-bg: rgba(15, 23, 42, 0.9);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --input-bg: rgba(15, 23, 42, 0.8);
+            --input-border: var(--text-accent);
+            --input-text: var(--text-primary);
+            --input-focus-ring: var(--text-secondary);
+            --code-bg: rgba(0, 0, 0, 0.8);
+            --code-text: #c4b5fd; /* Violet text */
+            --code-border: rgba(167, 139, 250, 0.3);
+            --progress-bg: rgba(167, 139, 250, 0.2);
+            --progress-fill: var(--text-secondary);
+            --step-default-bg: rgba(167, 139, 250, 0.2);
+            --step-default-text: #c4b5fd;
+            --step-active-bg: var(--text-accent);
+            --step-active-text: var(--text-primary);
+            --step-complete-bg: var(--text-secondary);
+            --step-complete-text: #ffffff;
+            --rating-inactive-color: rgba(167, 139, 250, 0.4);
+            --rating-active-color: #facc15;
+            --slider-track-bg: rgba(167, 139, 250, 0.3);
+            --slider-thumb-bg: var(--text-secondary);
+            --color-picker-border: var(--text-secondary);
+        }
+
+        .theme-plasma-fusion {
+            --bg-gradient-start: #4a044e; /* Dark Purple */
+            --bg-gradient-end: #be185d; /* Pink */
+            --bg-image: linear-gradient(45deg, rgba(244, 63, 94, 0.1) 25%, transparent 25%), linear-gradient(-45deg, rgba(244, 63, 94, 0.1) 25%, transparent 25%); background-size: 20px 20px;
+            --card-bg: rgba(74, 4, 78, 0.85);
+            --card-border: rgba(244, 63, 94, 0.5); /* Rose */
+            --card-shadow: 0 8px 30px rgba(30, 0, 30, 0.6);
+            --card-shadow-glow: 0 0 20px rgba(244, 63, 94, 0.3);
+            --text-primary: #fce7f3; /* Light Pink */
+            --text-secondary: #f43f5e; /* Rose */
+            --text-accent: #db2777; /* Fuchsia */
+            --text-muted: #fda4af;
+            --button-bg: linear-gradient(145deg, var(--text-secondary), var(--text-accent));
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #fb7185, var(--text-secondary));
+            --button-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
+            --button-secondary-bg: rgba(219, 39, 119, 0.2);
+            --button-secondary-text: #f9a8d4;
+            --button-secondary-border: rgba(219, 39, 119, 0.5);
+            --button-secondary-hover-bg: rgba(219, 39, 119, 0.3);
+            --select-bg: rgba(74, 4, 78, 0.9);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --input-bg: rgba(74, 4, 78, 0.8);
+            --input-border: var(--text-accent);
+            --input-text: var(--text-primary);
+            --input-focus-ring: var(--text-secondary);
+            --code-bg: rgba(40, 2, 42, 0.9);
+            --code-text: #fbcfe8; /* Lighter Pink */
+            --code-border: rgba(219, 39, 119, 0.3);
+            --progress-bg: rgba(219, 39, 119, 0.2);
+            --progress-fill: var(--text-secondary);
+            --step-default-bg: rgba(219, 39, 119, 0.2);
+            --step-default-text: #f9a8d4;
+            --step-active-bg: var(--text-accent);
+            --step-active-text: var(--text-primary);
+            --step-complete-bg: #a3e635; /* Lime Green */
+            --step-complete-text: #3f6212;
+            --rating-inactive-color: rgba(219, 39, 119, 0.4);
+            --rating-active-color: #fbbf24; /* Amber */
+            --slider-track-bg: rgba(219, 39, 119, 0.3);
+            --slider-thumb-bg: var(--text-secondary);
+            --color-picker-border: var(--text-secondary);
+        }
+
+        .theme-quantum-grid {
+             --bg-gradient-start: #064e3b; /* Dark Emerald */
+            --bg-gradient-end: #022c22; /* Very Dark Green */
+            --bg-image: linear-gradient(rgba(52, 211, 153, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(52, 211, 153, 0.1) 1px, transparent 1px); background-size: 25px 25px;
+            --card-bg: rgba(4, 78, 57, 0.85); /* Dark Green */
+            --card-border: rgba(52, 211, 153, 0.5); /* Emerald */
+            --card-shadow: 0 8px 30px rgba(0, 30, 20, 0.6);
+            --card-shadow-glow: 0 0 20px rgba(52, 211, 153, 0.3);
+            --text-primary: #d1fae5; /* Light Mint */
+            --text-secondary: #34d399; /* Emerald */
+            --text-accent: #10b981; /* Green */
+            --text-muted: #a7f3d0;
+            --button-bg: linear-gradient(145deg, var(--text-secondary), var(--text-accent));
+            --button-text: #047857;
+            --button-hover-bg: linear-gradient(145deg, #6ee7b7, var(--text-secondary));
+            --button-shadow: 0 4px 15px rgba(52, 211, 153, 0.4);
+            --button-secondary-bg: rgba(16, 185, 129, 0.2);
+            --button-secondary-text: #a7f3d0;
+            --button-secondary-border: rgba(16, 185, 129, 0.5);
+            --button-secondary-hover-bg: rgba(16, 185, 129, 0.3);
+            --select-bg: rgba(6, 95, 70, 0.9);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --input-bg: rgba(6, 95, 70, 0.8);
+            --input-border: var(--text-accent);
+            --input-text: var(--text-primary);
+            --input-focus-ring: var(--text-secondary);
+            --code-bg: rgba(2, 44, 34, 0.9);
+            --code-text: #a7f3d0;
+            --code-border: rgba(16, 185, 129, 0.3);
+            --progress-bg: rgba(16, 185, 129, 0.2);
+            --progress-fill: var(--text-secondary);
+            --step-default-bg: rgba(16, 185, 129, 0.2);
+            --step-default-text: #a7f3d0;
+            --step-active-bg: var(--text-accent);
+            --step-active-text: #d1fae5;
+            --step-complete-bg: #84cc16; /* Lime */
+            --step-complete-text: #3f6212;
+            --rating-inactive-color: rgba(16, 185, 129, 0.4);
+            --rating-active-color: #f59e0b; /* Orange */
+            --slider-track-bg: rgba(16, 185, 129, 0.3);
+            --slider-thumb-bg: var(--text-secondary);
+            --color-picker-border: var(--text-secondary);
+        }
+
+         .theme-molten-core {
+            --bg-gradient-start: #7f1d1d; /* Dark Red */
+            --bg-gradient-end: #000000;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 0 50 Q 25 20, 50 50 T 100 50" stroke="%23fca5a530" stroke-width="1" fill="none"/><path d="M 0 70 Q 25 100, 50 70 T 100 70" stroke="%23fbbf2420" stroke-width="1" fill="none"/></svg>'); background-size: 60px 60px;
+            --card-bg: rgba(20, 8, 8, 0.85); /* Very Dark Red/Black */
+            --card-border: rgba(251, 146, 60, 0.5); /* Orange */
+            --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+            --card-shadow-glow: 0 0 25px rgba(249, 115, 22, 0.3); /* Orange Glow */
+            --text-primary: #fed7aa; /* Light Orange */
+            --text-secondary: #fb923c; /* Orange */
+            --text-accent: #f97316; /* Darker Orange */
+            --text-muted: #fecaca; /* Light Red */
+            --button-bg: linear-gradient(145deg, var(--text-secondary), var(--text-accent));
+            --button-text: #451a03; /* Dark Brown */
+            --button-hover-bg: linear-gradient(145deg, #fdba74, var(--text-secondary));
+            --button-shadow: 0 4px 15px rgba(251, 146, 60, 0.4);
+            --button-secondary-bg: rgba(249, 115, 22, 0.2);
+            --button-secondary-text: #fed7aa;
+            --button-secondary-border: rgba(249, 115, 22, 0.5);
+            --button-secondary-hover-bg: rgba(249, 115, 22, 0.3);
+            --select-bg: rgba(20, 8, 8, 0.9);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --input-bg: rgba(20, 8, 8, 0.8);
+            --input-border: var(--text-accent);
+            --input-text: var(--text-primary);
+            --input-focus-ring: var(--text-secondary);
+            --code-bg: rgba(0, 0, 0, 0.85);
+            --code-text: #fed7aa;
+            --code-border: rgba(249, 115, 22, 0.3);
+            --progress-bg: rgba(249, 115, 22, 0.2);
+            --progress-fill: var(--text-secondary);
+            --step-default-bg: rgba(249, 115, 22, 0.2);
+            --step-default-text: #fed7aa;
+            --step-active-bg: var(--text-accent);
+            --step-active-text: #fff7ed;
+            --step-complete-bg: #ef4444; /* Red */
+            --step-complete-text: #ffffff;
+            --rating-inactive-color: rgba(249, 115, 22, 0.4);
+            --rating-active-color: #fde047; /* Yellow */
+            --slider-track-bg: rgba(249, 115, 22, 0.3);
+            --slider-thumb-bg: var(--text-secondary);
+            --color-picker-border: var(--text-secondary);
+        }
+
+        .theme-holographic-interface {
+             --bg-gradient-start: #e0f2fe; /* Light Blue */
+            --bg-gradient-end: #f0f9ff; /* Very Light Blue */
+            --bg-image: linear-gradient(45deg, #bae6fd 25%, transparent 25%), linear-gradient(-45deg, #bae6fd 25%, transparent 25%); background-size: 10px 10px;
+            --card-bg: rgba(255, 255, 255, 0.7); /* Semi-transparent White */
+            --card-border: rgba(56, 189, 248, 0.3); /* Light Blue */
+            --card-shadow: 0 6px 20px rgba(100, 150, 200, 0.2);
+            --card-shadow-glow: 0 0 20px rgba(56, 189, 248, 0.2);
+            --text-primary: #075985; /* Dark Cyan */
+            --text-secondary: #0ea5e9; /* Sky Blue */
+            --text-accent: #0284c7; /* Medium Blue */
+            --text-muted: #7dd3fc; /* Lighter Sky Blue */
+            --button-bg: linear-gradient(145deg, var(--text-secondary), var(--text-accent));
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #38bdf8, var(--text-secondary));
+            --button-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+            --button-secondary-bg: rgba(2, 132, 199, 0.1);
+            --button-secondary-text: #0369a1;
+            --button-secondary-border: rgba(2, 132, 199, 0.3);
+            --button-secondary-hover-bg: rgba(2, 132, 199, 0.15);
+            --select-bg: rgba(224, 242, 254, 0.9);
+            --select-border: var(--card-border);
+            --select-text: var(--text-accent);
+            --select-arrow: var(--text-accent);
+            --input-bg: rgba(240, 249, 255, 0.8);
+            --input-border: #bae6fd;
+            --input-text: var(--text-primary);
+            --input-focus-ring: var(--text-secondary);
+            --code-bg: rgba(224, 242, 254, 0.9);
+            --code-text: #0369a1;
+            --code-border: #7dd3fc;
+            --progress-bg: #e0f2fe;
+            --progress-fill: var(--text-secondary);
+            --step-default-bg: #bfdbfe;
+            --step-default-text: #1e40af;
+            --step-active-bg: var(--text-accent);
+            --step-active-text: #ffffff;
+            --step-complete-bg: #34d399; /* Emerald */
+            --step-complete-text: #065f46;
+            --rating-inactive-color: #93c5fd; /* Light Blue */
+            --rating-active-color: #fbbf24; /* Amber */
+            --slider-track-bg: #bae6fd;
+            --slider-thumb-bg: var(--text-secondary);
+            --color-picker-border: var(--text-secondary);
+        }
+
+         /* Add 4-9 more themes here following the pattern */
+         .theme-deep-space-void { /* Placeholder */ }
+         .theme-bio-luminescent { /* Placeholder */ }
+         .theme-rust-and-chrome { /* Placeholder */ }
+         .theme-synthwave-sunset { /* Placeholder */ }
+
+
+        /* --- Apply Variables & Base Styles --- */
+        body {
+            background-color: var(--bg-gradient-start);
+            background-image: var(--bg-image), linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            transition: background var(--transition-speed) ease-in-out, color var(--transition-speed) ease-in-out;
+        }
+        .component-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow), var(--card-shadow-glow);
+            backdrop-filter: blur(4px);
+            transition: background-color var(--transition-speed) ease-in-out, border-color var(--transition-speed) ease-in-out, box-shadow var(--transition-speed) ease-in-out;
+        }
+        .themed-button {
+            background-image: var(--button-bg);
+            color: var(--button-text);
+            font-family: var(--font-heading);
+            box-shadow: var(--button-shadow);
+            transition: background-image var(--transition-speed) ease-in-out, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        .themed-button:hover {
+            background-image: var(--button-hover-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15), var(--button-shadow);
+        }
+        .themed-button-secondary {
+            background-color: var(--button-secondary-bg);
+            color: var(--button-secondary-text);
+            border: 1px solid var(--button-secondary-border);
+            font-family: var(--font-heading);
+            transition: background-color var(--transition-speed) ease, transform 0.2s ease;
+        }
+        .themed-button-secondary:hover {
+            background-color: var(--button-secondary-hover-bg);
+            transform: translateY(-1px);
+        }
+        .themed-select {
+             background-color: var(--select-bg);
+            border: 1px solid var(--select-border);
+            color: var(--select-text);
+            font-family: var(--font-heading);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em;
+            appearance: none;
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+         .themed-input {
+             background-color: var(--input-bg);
+             border: 1px solid var(--input-border);
+             color: var(--input-text);
+             transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
+         }
+         .themed-input:focus {
+             outline: 2px solid transparent;
+             outline-offset: 2px;
+             border-color: var(--input-focus-ring);
+             box-shadow: 0 0 0 2px var(--input-focus-ring);
+         }
+         .code-preview-container {
+             background-color: var(--code-bg);
+             border: 1px solid var(--code-border);
+             color: var(--code-text);
+             font-family: var(--font-code);
+             max-height: 400px; /* Limit height */
+             overflow: auto; /* Add scrollbars */
+             transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
+         }
+         .code-preview-container pre { margin: 0; }
+         .code-preview-container code { font-size: 0.875rem; }
+
+        /* --- Component-Specific Styles --- */
+
+        /* Progress Bar */
+        .progress-bar-container { background-color: var(--progress-bg); }
+        .progress-bar-fill {
+            background-color: var(--progress-fill);
+            transition: width 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Ease with bounce */
+            box-shadow: 0 0 10px var(--progress-fill); /* Glow effect */
+        }
+
+        /* Step Form */
+        .step-indicator {
+            background-color: var(--step-default-bg);
+            color: var(--step-default-text);
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+        .step-indicator.active {
+            background-color: var(--step-active-bg);
+            color: var(--step-active-text);
+            box-shadow: 0 0 10px var(--step-active-bg);
+        }
+        .step-indicator.completed {
+            background-color: var(--step-complete-bg);
+            color: var(--step-complete-text);
+        }
+        .step-content { animation: stepFadeIn 0.5s ease-in-out; }
+        @keyframes stepFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Rating Component */
+        .rating-stars i {
+            color: var(--rating-inactive-color);
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+        .rating-stars i:hover,
+        .rating-stars i.hover {
+            color: var(--rating-active-color);
+            transform: scale(1.2);
+        }
+        .rating-stars i.active {
+            color: var(--rating-active-color);
+        }
+
+        /* Range Slider */
+        .range-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: var(--slider-track-bg);
+            outline: none;
+            opacity: 0.9;
+            transition: opacity .2s, background-color var(--transition-speed) ease;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .range-slider:hover { opacity: 1; }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--slider-thumb-bg);
+            border-radius: 50%;
+            border: 2px solid var(--card-bg); /* Match card background for effect */
+            cursor: pointer;
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+            box-shadow: 0 0 8px var(--slider-thumb-bg);
+        }
+        .range-slider::-moz-range-thumb { /* Firefox */
+             width: 18px;
+            height: 18px;
+            background: var(--slider-thumb-bg);
+            border-radius: 50%;
+            border: 1px solid var(--card-bg);
+            cursor: pointer;
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+        }
+        .range-value-output {
+            color: var(--text-secondary);
+            font-family: var(--font-heading);
+            text-shadow: 0 0 5px var(--text-secondary);
+        }
+
+        /* Color Picker */
+        .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+        .color-picker::-webkit-color-swatch {
+            border: 2px solid var(--color-picker-border);
+            border-radius: 50%; /* Make it circular */
+            transition: border-color var(--transition-speed) ease;
+        }
+        .color-picker::-moz-color-swatch { /* Firefox */
+             border: 2px solid var(--color-picker-border);
+             border-radius: 50%;
+             transition: border-color var(--transition-speed) ease;
+        }
+        .color-preview-box {
+            transition: background-color 0.3s ease;
+             border: 1px solid var(--card-border);
+        }
+
+        /* Code Preview Tabs/Buttons */
+        .code-tab {
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+            margin-bottom: -1px; /* Overlap border */
+            color: var(--text-muted);
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .code-tab.active-tab {
+            color: var(--text-secondary);
+            border-bottom-color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 transition-colors duration-500">
+
+    <!-- Header & Theme Selector -->
+    <header class="mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <h1 class="text-3xl md:text-4xl font-bold text-center sm:text-left font-orbitron" style="color: var(--text-primary); text-shadow: 0 0 8px var(--text-secondary);">UI Component Showcase</h1>
+        <div class="flex items-center space-x-2">
+             <label for="theme-selector" class="text-sm font-medium" style="color: var(--text-muted);">Theme:</label>
+             <select id="theme-selector" class="themed-select w-48 p-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--bg-gradient-start)] focus:ring-[var(--input-focus-ring)] cursor-pointer">
+                 <option value="cyber-circuit">Cyber Circuit</option>
+                 <option value="star-navigator">Star Navigator</option>
+                 <option value="plasma-fusion">Plasma Fusion</option>
+                 <option value="quantum-grid">Quantum Grid</option>
+                 <option value="molten-core">Molten Core</option>
+                 <option value="holographic-interface">Holographic Interface</option>
+                 <option value="deep-space-void">Deep Space Void</option>
+                 <option value="bio-luminescent">Bio Luminescent</option>
+                 <option value="rust-and-chrome">Rust & Chrome</option>
+                 <option value="synthwave-sunset">Synthwave Sunset</option>
+                 <option value="default-light">Default Light</option>
+            </select>
+        </div>
+    </header>
+
+    <!-- Components Grid -->
+    <main class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+
+        <!-- Component 1: Progress Bar -->
+        <section class="component-card rounded-xl p-6" data-component-id="progress-bar">
+            <h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-secondary);">Progress Bar Animation</h2>
+            <div class="preview-area mb-4">
+                <div class="progress-bar-container w-full h-4 bg-opacity-50 rounded-full overflow-hidden mb-2">
+                    <div id="progress-bar-fill" class="progress-bar-fill h-full rounded-full" style="width: 0%;"></div>
+                </div>
+                <button id="start-progress-btn" class="themed-button text-sm py-1 px-3 rounded-md">Start Progress</button>
+            </div>
+            <div class="controls flex justify-end mb-3">
+                <button class="toggle-code-btn themed-button-secondary text-xs py-1 px-3 rounded-md" data-target="progress-bar">Preview Code</button>
+            </div>
+            <div class="code-display hidden relative" data-id="progress-bar">
+                <div class="flex border-b mb-2" style="border-color: var(--code-border);">
+                    <button class="code-tab active-tab px-3 py-1 text-sm" data-type="html">HTML</button>
+                    <button class="code-tab px-3 py-1 text-sm" data-type="css">CSS</button>
+                    <button class="code-tab px-3 py-1 text-sm" data-type="js">JS</button>
+                    <button class="copy-code-btn themed-button-secondary absolute top-0 right-0 text-xs py-1 px-2 rounded-md m-1">
+                        <i class="far fa-copy mr-1"></i>Copy
+                    </button>
+                </div>
+                <div class="code-content">
+                    <div class="code-snippet" data-type="html">
+                        <pre><code class="language-html"><!-- Preview Area -->
+<div class="progress-bar-container w-full h-4 bg-opacity-50 rounded-full overflow-hidden mb-2">
+    <div id="progress-bar-fill" class="progress-bar-fill h-full rounded-full" style="width: 0%;"></div>
+</div>
+<button id="start-progress-btn" class="themed-button text-sm py-1 px-3 rounded-md">Start Progress</button>
+
+<!-- Note: themed-button class applies global theme styles -->
+                        </code></pre>
+                    </div>
+                    <div class="code-snippet hidden" data-type="css">
+                        <pre><code class="language-css">/* Custom CSS for Progress Bar (Theme variables handle colors) */
+.progress-bar-container {
+    background-color: var(--progress-bg); /* From theme */
+    /* Tailwind: w-full h-4 rounded-full overflow-hidden mb-2 */
+}
+.progress-bar-fill {
+    background-color: var(--progress-fill); /* From theme */
+    transition: width 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Ease with bounce */
+    box-shadow: 0 0 10px var(--progress-fill); /* Glow effect from theme */
+    /* Tailwind: h-full rounded-full */
+}
+/* Ensure global theme variables like --progress-bg, --progress-fill are defined */
+                        </code></pre>
+                    </div>
+                    <div class="code-snippet hidden" data-type="js">
+                        <pre><code class="language-javascript">const progressBarFill = document.getElementById('progress-bar-fill');
+const startProgressBtn = document.getElementById('start-progress-btn');
+let progressInterval;
+
+function startProgress() {
+    let width = 0;
+    progressBarFill.style.width = '0%'; // Reset
+    clearInterval(progressInterval); // Clear existing interval if any
+
+    progressInterval = setInterval(() => {
+        if (width >= 100) {
+            clearInterval(progressInterval);
+            // Optional: Reset or indicate completion
+            setTimeout(() => { progressBarFill.style.width = '0%'; }, 1000);
+        } else {
+            width++;
+            progressBarFill.style.width = width + '%';
+        }
+    }, 30); // Adjust speed (milliseconds)
+}
+
+startProgressBtn?.addEventListener('click', startProgress);
+
+// Initial call if you want it to run on load for demo
+// startProgress();
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Component 2: Step Form -->
+        <section class="component-card rounded-xl p-6" data-component-id="step-form">
+            <h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-secondary);">Step Form</h2>
+            <div class="preview-area mb-4">
+                <!-- Step Indicators -->
+                <div class="flex justify-between items-center mb-6 relative">
+                    <div class="absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2" style="background-color: var(--step-default-bg);">
+                        <div id="step-progress-line" class="h-full" style="background-color: var(--step-complete-bg); width: 0%; transition: width var(--transition-speed) ease;"></div>
+                    </div>
+                    <div class="step-indicator relative z-10 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm active" data-step="1">1</div>
+                    <div class="step-indicator relative z-10 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm" data-step="2">2</div>
+                    <div class="step-indicator relative z-10 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm" data-step="3">3</div>
+                    <div class="step-indicator relative z-10 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm" data-step="4">4</div>
+                </div>
+
+                <!-- Step Content -->
+                <div id="step-form-content">
+                    <div class="step-content" data-step-content="1">
+                        <h3 class="text-lg font-semibold mb-2">Step 1: Personal Information</h3>
+                        <label class="block mb-2 text-sm" style="color: var(--text-muted);">Name:</label>
+                        <input type="text" class="themed-input w-full p-2 rounded mb-3 text-sm" placeholder="Enter your name">
+                    </div>
+                    <div class="step-content hidden" data-step-content="2">
+                        <h3 class="text-lg font-semibold mb-2">Step 2: Contact Details</h3>
+                         <label class="block mb-2 text-sm" style="color: var(--text-muted);">Email:</label>
+                        <input type="email" class="themed-input w-full p-2 rounded mb-3 text-sm" placeholder="Enter your email">
+                    </div>
+                    <div class="step-content hidden" data-step-content="3">
+                        <h3 class="text-lg font-semibold mb-2">Step 3: Account Setup</h3>
+                         <label class="block mb-2 text-sm" style="color: var(--text-muted);">Password:</label>
+                        <input type="password" class="themed-input w-full p-2 rounded mb-3 text-sm" placeholder="Create a password">
+                    </div>
+                     <div class="step-content hidden" data-step-content="4">
+                        <h3 class="text-lg font-semibold mb-2">Step 4: Confirmation</h3>
+                        <p style="color: var(--text-muted);">Review your details and confirm.</p>
+                        <div class="mt-4 p-3 rounded border" style="border-color: var(--card-border); background-color: rgba(0,0,0,0.05);">
+                            <p class="text-sm">Details submitted successfully!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between mt-6">
+                    <button id="prev-step-btn" class="themed-button-secondary text-sm py-2 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed" disabled>Previous</button>
+                    <button id="next-step-btn" class="themed-button text-sm py-2 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                </div>
+            </div>
+             <div class="controls flex justify-end mb-3">
+                <button class="toggle-code-btn themed-button-secondary text-xs py-1 px-3 rounded-md" data-target="step-form">Preview Code</button>
+            </div>
+            <div class="code-display hidden relative" data-id="step-form">
+                <div class="flex border-b mb-2" style="border-color: var(--code-border);">
+                    <button class="code-tab active-tab px-3 py-1 text-sm" data-type="html">HTML</button>
+                    <button class="code-tab px-3 py-1 text-sm" data-type="css">CSS</button>
+                    <button class="code-tab px-3 py-1 text-sm" data-type="js">JS</button>
+                     <button class="copy-code-btn themed-button-secondary absolute top-0 right-0 text-xs py-1 px-2 rounded-md m-1">
+                         <i class="far fa-copy mr-1"></i>Copy
+                     </button>
+                </div>
+                 <div class="code-content">
+                    <div class="code-snippet" data-type="html">
+                        <pre><code class="language-html"><!-- Step Indicators -->
+<div class="flex justify-between items-center mb-6 relative">
+    <div class="absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2" style="background-color: var(--step-default-bg);">
+        <div id="step-progress-line" class="h-full" style="background-color: var(--step-complete-bg); width: 0%; transition: width var(--transition-speed) ease;"></div>
+    </div>
+    <div class="step-indicator relative z-10 ... active" data-step="1">1</div>
+    <div class="step-indicator relative z-10 ..." data-step="2">2</div>
+    <!-- More indicators -->
+</div>
+
+<!-- Step Content Wrapper -->
+<div id="step-form-content">
+    <div class="step-content" data-step-content="1">
+        <h3>Step 1</h3> <!-- Input fields -->
+    </div>
+    <div class="step-content hidden" data-step-content="2">
+         <h3>Step 2</h3> <!-- Input fields -->
+    </div>
+    <!-- More steps -->
+</div>
+
+<!-- Navigation -->
+<div class="flex justify-between mt-6">
+    <button id="prev-step-btn" class="themed-button-secondary ... " disabled>Previous</button>
+    <button id="next-step-btn" class="themed-button ... ">Next</button>
+</div>
+
+<!-- Note: themed-input, themed-button etc. apply global styles -->
+                        </code></pre>
+                    </div>
+                    <div class="code-snippet hidden" data-type="css">
+                        <pre><code class="language-css">/* Custom CSS for Step Form (Theme variables handle colors) */
+.step-indicator {
+    background-color: var(--step-default-bg);
+    color: var(--step-default-text);
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    /* Tailwind: relative z-10 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm */
+}
+.step-indicator.active {
+    background-color: var(--step-active-bg);
+    color: var(--step-active-text);
+    box-shadow: 0 0 10px var(--step-active-bg); /* Glow for active */
+}
+.step-indicator.completed {
+    background-color: var(--step-complete-bg);
+    color: var(--step-complete-text);
+}
+#step-progress-line { /* The line connecting steps */
+     background-color: var(--step-complete-bg);
+     transition: width var(--transition-speed) ease;
+}
+.step-content { /* Simple fade-in for steps */
+    animation: stepFadeIn 0.5s ease-in-out;
+}
+@keyframes stepFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* Ensure global theme variables like --step-default-bg, --step-active-bg etc. are defined */
+                        </code></pre>
+                    </div>
+                    <div class="code-snippet hidden" data-type="js">
+                        <pre><code class="language-javascript">const prevBtn = document.getElementById('prev-step-btn');
+const nextBtn = document.getElementById('next-step-btn');
+const stepIndicators = document.querySelectorAll('.step-indicator');
+const stepContents = document.querySelectorAll('.step-content');
+const progressLine = document.getElementById('step-progress-line');
+const totalSteps = stepIndicators.length;
+let currentStep = 1;
+
+function updateStepForm() {
+    // Update Indicators
+    stepIndicators.forEach((indicator, index) => {
+        indicator.classList.remove('active', 'completed');
+        const step = parseInt(indicator.dataset.step);
+        if (step === currentStep) {
+            indicator.classList.add('active');
+        } else if (step < currentStep) {
+            indicator.classList.add('completed');
+        }
+    });
+
+    // Update Content Visibility
+    stepContents.forEach(content => {
+        content.classList.add('hidden');
+        if (parseInt(content.dataset.stepContent) === currentStep) {
+            content.classList.remove('hidden');
+        }
+    });
+
+    // Update Buttons State
+    prevBtn.disabled = currentStep === 1;
+    nextBtn.disabled = currentStep === totalSteps;
+    // Change Next button text on last step (optional)
+    nextBtn.textContent = currentStep === totalSteps ? 'Finish' : 'Next';
+
+
+    // Update Progress Line Width
+    const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
+    progressLine.style.width = `${progressPercentage}%`;
+}
+
+prevBtn?.addEventListener('click', () => {
+    if (currentStep > 1) {
+        currentStep--;
+        updateStepForm();
+    }
+});
+
+nextBtn?.addEventListener('click', () => {
+    if (currentStep < totalSteps) {
+        currentStep++;
+        updateStepForm();
+    } else {
+        // Handle form submission or final action
+        console.log('Form Finished!');
+         // Maybe show a confirmation inside the last step
+    }
+});
+
+// Initial setup
+updateStepForm();
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Component 3: Rating Component -->
+        <section class="component-card rounded-xl p-6" data-component-id="rating">
+             <h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-secondary);">Rating Component</h2>
+             <div class="preview-area mb-4 text-center">
+                 <p class="mb-2" style="color: var(--text-muted);">Rate this component:</p>
+                 <div class="rating-stars text-3xl inline-block" data-rating="0">
+                     <i class="fa-regular fa-star" data-value="1"></i><i class="fa-regular fa-star" data-value="2"></i><i class="fa-regular fa-star" data-value="3"></i><i class="fa-regular fa-star" data-value="4"></i><i class="fa-regular fa-star" data-value="5"></i>
+                 </div>
+                 <p id="rating-feedback" class="text-sm mt-2 h-5" style="color: var(--text-accent);"></p>
+             </div>
+              <div class="controls flex justify-end mb-3">
+                <button class="toggle-code-btn themed-button-secondary text-xs py-1 px-3 rounded-md" data-target="rating">Preview Code</button>
+            </div>
+            <div class="code-display hidden relative" data-id="rating">
+                <div class="flex border-b mb-2" style="border-color: var(--code-border);">
+                    <button class="code-tab active-tab px-3 py-1 text-sm" data-type="html">HTML</button>
+                    <button class="code-tab px-3 py-1 text-sm" data-type="css">CSS</button>
+                    <button class="code-tab px-3 py-1 text-sm" data-type="js">JS</button>
+                     <button class="copy-code-btn themed-button-secondary absolute top-0 right-0 text-xs py-1 px-2 rounded-md m-1">
+                         <i class="far fa-copy mr-1"></i>Copy
+                     </button>
+                </div>
+                 <div class="code-content">
+                    <div class="code-snippet" data-type="html">
+                        <pre><code class="language-html"><!-- Requires Font Awesome -->
+<div class="rating-stars text-3xl inline-block" data-rating="0">
+    <i class="fa-regular fa-star" data-value="1"></i>
+    <i class="fa-regular fa-star" data-value="2"></i>
+    <i class="fa-regular fa-star" data-value="3"></i>
+    <i class="fa-regular fa-star" data-value="4"></i>
+    <i class="fa-regular fa-star" data-value="5"></i>
+</div>
+<p id="rating-feedback" class="text-sm mt-2 h-5"></p>
+                        </code></pre>
+                    </div>
+                     <div class="code-snippet hidden" data-type="css">
+                        <pre><code class="language-css">/* Custom CSS for Rating (Theme variables handle colors) */
+.rating-stars i {
+    color: var(--rating-inactive-color); /* From theme */
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+    /* Using Font Awesome classes fa-regular fa-star / fa-solid fa-star */
+}
+/* Class applied on hover */
+.rating-stars i:hover,
+.rating-stars i.hover {
+    color: var(--rating-active-color); /* From theme */
+    transform: scale(1.2); /* Pop effect */
+}
+/* Class applied on click/active state */
+.rating-stars i.active {
+    color: var(--rating-active-color); /* From theme */
+    /* Switches to solid star in JS */
+}
+/* Ensure global theme variables like --rating-inactive-color, --rating-active-color are defined */
+                        </code></pre>
+                    </div>
+                    <div class="code-snippet hidden" data-type="js">
+                        <pre><code class="language-javascript">const ratingContainers = document.querySelectorAll('.rating-stars');
+const ratingFeedback = document.getElementById('rating-feedback');
+
+ratingContainers.forEach(container => {
+    const stars = container.querySelectorAll('i');
+    let currentRating = parseInt(container.dataset.rating) || 0;
+
+    function updateStars(rating) {
+        stars.forEach(star => {
+            const starValue = parseInt(star.dataset.value);
+            if (starValue <= rating) {
+                star.classList.remove('fa-regular', 'hover'); // Remove hover if needed
+                star.classList.add('fa-solid', 'active');
+            } else {
+                star.classList.remove('fa-solid', 'active', 'hover');
+                star.classList.add('fa-regular');
+            }
+        });
+    }
+
+    stars.forEach(star => {
+        star.addEventListener('mouseover', () => {
+            const hoverValue = parseInt(star.dataset.value);
+            stars.forEach(s => {
+                const sValue = parseInt(s.dataset.value);
+                if (sValue <= hoverValue) {
+                    s.classList.add('hover', 'fa-solid'); // Show solid on hover temporarily
+                    s.classList.remove('fa-regular');
+                } else {
+                     s.classList.remove('hover', 'fa-solid');
+                     if (!s.classList.contains('active')) { // Don't remove regular if not active
+                         s.classList.add('fa-regular');
+                     }
+                }
+                 // Ensure active color is applied based on hover/active state
+                s.style.color = (s.classList.contains('hover') || s.classList.contains('active')) ? 'var(--rating-active-color)' : 'var(--rating-inactive-color)';
+            });
+        });
+
+        star.addEventListener('mouseout', () => {
+            updateStars(currentRating); // Revert to current permanent rating
+        });
+
+        star.addEventListener('click', () => {
+            currentRating = parseInt(star.dataset.value);
+            container.dataset.rating = currentRating;
+            updateStars(currentRating);
+            if(ratingFeedback) ratingFeedback.textContent = `You rated ${currentRating} star(s)!`;
+            // You might want to send this rating somewhere
+        });
+    });
+
+    // Initialize display
+    updateStars(currentRating);
+});
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Component 4: Range Slider -->
+        <section class="component-card rounded-xl p-6" data-component-id="range-slider">
+             <h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-secondary);">Range Slider</h2>
+              <div class="preview-area mb-4">
+                <label for="range-slider-input" class="block mb-2 text-sm font-medium" style="color: var(--text-muted);">Adjust Value:</label>
+                <div class="flex items-center gap-4">
+                    <input type="range" id="range-slider-input" min="0" max="100" value="50" class="range-slider flex-grow">
+                    <output id="range-value-output" class="range-value-output text-xl font-bold w-12 text-center">50</output>
+                </div>
+             </div>
+             <div class="controls flex justify-end mb-3">
+                <button class="toggle-code-btn themed-button-secondary text-xs py-1 px-3 rounded-md" data-target="range-slider">Preview Code</button>
+            </div>
+            <div class="code-display hidden relative" data-id="range-slider">
+                 <div class="flex border-b mb-2" style="border-color: var(--code-border);">
+                    <button class="code-tab active-tab px-3 py-1 text-sm" data-type="html">HTML</button>
+                    <button class="code-tab px-3 py-1 text-sm" data-type="css">CSS</button>
+                    <button class="code-tab px-3 py-1 text-sm" data-type="js">JS</button>
+                     <button class="copy-code-btn themed-button-secondary absolute top-0 right-0 text-xs py-1 px-2 rounded-md m-1">
+                         <i class="far fa-copy mr-1"></i>Copy
+                     </button>
+                </div>
+                 <div class="code-content">
+                    <div class="code-snippet" data-type="html">
+                        <pre><code class="language-html"><div class="flex items-center gap-4">
+    <input type="range" id="range-slider-input" min="0" max="100" value="50" class="range-slider flex-grow">
+    <output id="range-value-output" class="range-value-output text-xl font-bold w-12 text-center">50</output>
+</div>
+                        </code></pre>
+                    </div>
+                     <div class="code-snippet hidden" data-type="css">
+                        <pre><code class="language-css">/* Custom CSS for Range Slider (Theme variables handle colors) */
+/* Note: Styling range inputs across browsers is complex. Prefixes needed. */
+.range-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%; /* Tailwind: flex-grow */
+    height: 8px;
+    background: var(--slider-track-bg); /* From theme */
+    outline: none;
+    opacity: 0.9;
+    transition: opacity .2s, background-color var(--transition-speed) ease;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.range-slider:hover { opacity: 1; }
+
+/* Thumb (Chrome, Safari, Edge, Opera) */
+.range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px; /* Adjust size */
+    height: 20px;
+    background: var(--slider-thumb-bg); /* From theme */
+    border-radius: 50%;
+    border: 2px solid var(--card-bg); /* Use card bg for cutout effect */
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    box-shadow: 0 0 8px var(--slider-thumb-bg); /* Glow */
+}
+
+/* Thumb (Firefox) */
+.range-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--slider-thumb-bg);
+    border-radius: 50%;
+    border: 1px solid var(--card-bg);
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+
+/* Output style */
+.range-value-output {
+    color: var(--text-secondary); /* From theme */
+    font-family: var(--font-heading); /* From theme */
+    text-shadow: 0 0 5px var(--text-secondary); /* Glow */
+    /* Tailwind: text-xl font-bold w-12 text-center */
+}
+/* Ensure global theme variables like --slider-track-bg, --slider-thumb-bg etc. are defined */
+                        </code></pre>
+                    </div>
+                    <div class="code-snippet hidden" data-type="js">
+                        <pre><code class="language-javascript">const rangeSlider = document.getElementById('range-slider-input');
+const rangeOutput = document.getElementById('range-value-output');
+
+if (rangeSlider && rangeOutput) {
+    // Function to update output
+    const updateOutput = () => {
+        rangeOutput.textContent = rangeSlider.value;
+        // Optional: Update slider background gradient based on value
+        // const percentage = (rangeSlider.value - rangeSlider.min) / (rangeSlider.max - rangeSlider.min) * 100;
+        // rangeSlider.style.background = `linear-gradient(to right, var(--slider-thumb-bg) ${percentage}%, var(--slider-track-bg) ${percentage}%)`;
+    };
+
+    // Initial update
+    updateOutput();
+
+    // Update on input change
+    rangeSlider.addEventListener('input', updateOutput);
+}
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+         <!-- Component 5: Color Picker -->
+        <section class="component-card rounded-xl p-6" data-component-id="color-picker">
+             <h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-secondary);">Color Picker</h2>
+             <div class="preview-area mb-4 flex flex-col sm:flex-row items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <label for="color-picker-input" class="text-sm font-medium" style="color: var(--text-muted);">Choose Color:</label>
+                    <input type="color" id="color-picker-input" value="#2dd4bf" class="color-picker w-10 h-10 rounded-full cursor-pointer">
+                </div>
+                <div class="flex-grow w-full sm:w-auto flex items-center gap-3 p-3 rounded-lg border" style="border-color: var(--card-border); background-color: rgba(0,0,0,0.05);">
+                     <div id="color-preview-box" class="color-preview-box w-12 h-12 rounded-lg flex-shrink-0" style="background-color: #2dd4bf;"></div>
+                     <div class="text-sm">
+                         <p>Selected Color:</p>
+                         <span id="color-value-display" class="font-roboto-mono font-medium">#2dd4bf</span>
+                    </div>
+                </div>
+             </div>
+             <div class="controls flex justify-end mb-3">
+                <button class="toggle-code-btn themed-button-secondary text-xs py-1 px-3 rounded-md" data-target="color-picker">Preview Code</button>
+            </div>
+            <div class="code-display hidden relative" data-id="color-picker">
+                <div class="flex border-b mb-2" style="border-color: var(--code-border);">
+                    <button class="code-tab active-tab px-3 py-1 text-sm" data-type="html">HTML</button>
+                    <button class="code-tab px-3 py-1 text-sm" data-type="css">CSS</button>
+                    <button class="code-tab px-3 py-1 text-sm" data-type="js">JS</button>
+                     <button class="copy-code-btn themed-button-secondary absolute top-0 right-0 text-xs py-1 px-2 rounded-md m-1">
+                         <i class="far fa-copy mr-1"></i>Copy
+                     </button>
+                </div>
+                 <div class="code-content">
+                    <div class="code-snippet" data-type="html">
+                        <pre><code class="language-html"><div class="flex items-center gap-3">
+    <label for="color-picker-input">Choose Color:</label>
+    <input type="color" id="color-picker-input" value="#2dd4bf" class="color-picker w-10 h-10 rounded-full cursor-pointer">
+</div>
+<div class="flex items-center gap-3 p-3 rounded-lg border ...">
+    <div id="color-preview-box" class="color-preview-box w-12 h-12 rounded-lg" style="background-color: #2dd4bf;"></div>
+    <div>
+        <p>Selected Color:</p>
+        <span id="color-value-display" class="font-roboto-mono">#2dd4bf</span>
+    </div>
+</div>
+                        </code></pre>
+                    </div>
+                     <div class="code-snippet hidden" data-type="css">
+                        <pre><code class="language-css">/* Custom CSS for Color Picker (Theme variables handle borders) */
+/* Styling native color pickers is limited and browser-dependent */
+.color-picker {
+    /* Tailwind: w-10 h-10 rounded-full cursor-pointer */
+    /* Basic appearance reset */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    border: none; /* Remove default border */
+    padding: 0; /* Remove default padding */
+}
+/* Style the swatch preview area */
+.color-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+.color-picker::-webkit-color-swatch {
+    border: 2px solid var(--color-picker-border); /* From theme */
+    border-radius: 50%; /* Make it circular */
+    transition: border-color var(--transition-speed) ease;
+}
+.color-picker::-moz-color-swatch { /* Firefox */
+    border: 2px solid var(--color-picker-border);
+    border-radius: 50%;
+    transition: border-color var(--transition-speed) ease;
+}
+
+.color-preview-box {
+    transition: background-color 0.3s ease;
+    border: 1px solid var(--card-border); /* From theme */
+     /* Tailwind: w-12 h-12 rounded-lg flex-shrink-0 */
+}
+/* Ensure global theme variables like --color-picker-border, --card-border are defined */
+                        </code></pre>
+                    </div>
+                    <div class="code-snippet hidden" data-type="js">
+                        <pre><code class="language-javascript">const colorPicker = document.getElementById('color-picker-input');
+const colorPreviewBox = document.getElementById('color-preview-box');
+const colorValueDisplay = document.getElementById('color-value-display');
+
+if (colorPicker && colorPreviewBox && colorValueDisplay) {
+    // Function to update preview and text
+    const updateColorPreview = () => {
+        const selectedColor = colorPicker.value;
+        colorPreviewBox.style.backgroundColor = selectedColor;
+        colorValueDisplay.textContent = selectedColor;
+        // Optional: Apply color elsewhere, e.g., body text or background
+        // document.documentElement.style.setProperty('--text-primary', selectedColor);
+    };
+
+    // Initial update
+    updateColorPreview();
+
+    // Update on input change
+    colorPicker.addEventListener('input', updateColorPreview);
+}
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center mt-12 text-sm" style="color: var(--text-muted);">
+        Interactive Component Showcase | Built with Tailwind & Vanilla JS
+    </footer>
+
+    <script>
+        // --- THEME SWITCHER ---
+        const themeSelector = document.getElementById('theme-selector');
+        const htmlElement = document.documentElement;
+
+        function applyTheme(themeName) {
+             // Remove previous theme classes
+            const classList = htmlElement.classList;
+            for (let i = classList.length - 1; i >= 0; i--) {
+                if (classList[i].startsWith('theme-')) {
+                    classList.remove(classList[i]);
+                }
+            }
+            // Add new theme class
+            htmlElement.classList.add(`theme-${themeName}`);
+            localStorage.setItem('uiShowcaseTheme', themeName);
+            // Ensure dropdown matches
+            if (themeSelector.value !== themeName) {
+                themeSelector.value = themeName;
+            }
+            console.log(`Theme applied: ${themeName}`);
+        }
+
+        themeSelector?.addEventListener('change', (e) => {
+            applyTheme(e.target.value);
+        });
+
+        // --- CODE PREVIEW & COPY ---
+        const toggleCodeBtns = document.querySelectorAll('.toggle-code-btn');
+        const copyCodeBtns = document.querySelectorAll('.copy-code-btn');
+        const codeTabs = document.querySelectorAll('.code-tab');
+
+        toggleCodeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.dataset.target;
+                const codeDisplay = document.querySelector(`.code-display[data-id="${targetId}"]`);
+                if (codeDisplay) {
+                    const isHidden = codeDisplay.classList.contains('hidden');
+                    codeDisplay.classList.toggle('hidden');
+                    btn.textContent = isHidden ? 'Hide Code' : 'Preview Code';
+                }
+            });
+        });
+
+         codeTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const componentCard = tab.closest('.component-card');
+                const codeDisplay = componentCard.querySelector('.code-display');
+                const codeType = tab.dataset.type;
+
+                // Update tab active state
+                codeDisplay.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active-tab'));
+                tab.classList.add('active-tab');
+
+                // Show correct code snippet
+                codeDisplay.querySelectorAll('.code-snippet').forEach(snippet => {
+                    snippet.classList.add('hidden');
+                    if (snippet.dataset.type === codeType) {
+                        snippet.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+
+        copyCodeBtns.forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const codeDisplay = btn.closest('.code-display');
+                const activeTab = codeDisplay.querySelector('.code-tab.active-tab');
+                const activeType = activeTab ? activeTab.dataset.type : 'html'; // Default to HTML if none active somehow
+                const codeSnippet = codeDisplay.querySelector(`.code-snippet[data-type="${activeType}"] code`);
+
+                if (codeSnippet) {
+                    try {
+                        await navigator.clipboard.writeText(codeSnippet.textContent);
+                        const originalText = btn.innerHTML;
+                        btn.innerHTML = '<i class="fa-solid fa-check mr-1"></i>Copied!';
+                        btn.disabled = true;
+                        setTimeout(() => {
+                            btn.innerHTML = originalText;
+                             btn.disabled = false;
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy code: ', err);
+                         const originalText = btn.innerHTML;
+                         btn.innerHTML = '<i class="fa-solid fa-times mr-1"></i>Failed';
+                         setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+                    }
+                } else {
+                     console.error('Could not find code snippet for type:', activeType);
+                }
+            });
+        });
+
+
+        // --- COMPONENT JAVASCRIPT INITIALIZATION ---
+
+        // 1. Progress Bar
+        (function initProgressBar() {
+            const progressBarFill = document.getElementById('progress-bar-fill');
+            const startProgressBtn = document.getElementById('start-progress-btn');
+            let progressInterval;
+
+            function startProgress() {
+                if (!progressBarFill) return;
+                let width = 0;
+                progressBarFill.style.width = '0%';
+                clearInterval(progressInterval);
+
+                progressInterval = setInterval(() => {
+                    if (width >= 100) {
+                        clearInterval(progressInterval);
+                        setTimeout(() => { if (progressBarFill) progressBarFill.style.width = '0%'; }, 1000);
+                    } else {
+                        width++;
+                        progressBarFill.style.width = width + '%';
+                    }
+                }, 30);
+            }
+            startProgressBtn?.addEventListener('click', startProgress);
+        })();
+
+
+        // 2. Step Form
+        (function initStepForm() {
+            const prevBtn = document.getElementById('prev-step-btn');
+            const nextBtn = document.getElementById('next-step-btn');
+            const stepIndicators = document.querySelectorAll('.step-indicator');
+            const stepContents = document.querySelectorAll('.step-content');
+            const progressLine = document.getElementById('step-progress-line');
+            const totalSteps = stepIndicators.length;
+            let currentStep = 1;
+
+            if (!prevBtn || !nextBtn || stepIndicators.length === 0 || stepContents.length === 0 || !progressLine) return; // Exit if elements missing
+
+            function updateStepForm() {
+                stepIndicators.forEach((indicator, index) => {
+                    indicator.classList.remove('active', 'completed');
+                    const step = parseInt(indicator.dataset.step);
+                    if (step === currentStep) indicator.classList.add('active');
+                    else if (step < currentStep) indicator.classList.add('completed');
+                });
+
+                stepContents.forEach(content => {
+                    content.classList.add('hidden');
+                    if (parseInt(content.dataset.stepContent) === currentStep) content.classList.remove('hidden');
+                });
+
+                prevBtn.disabled = currentStep === 1;
+                nextBtn.disabled = currentStep === totalSteps;
+                nextBtn.textContent = currentStep === totalSteps ? 'Finish' : 'Next';
+
+                const progressPercentage = totalSteps > 1 ? ((currentStep - 1) / (totalSteps - 1)) * 100 : 0;
+                progressLine.style.width = `${progressPercentage}%`;
+            }
+
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 1) { currentStep--; updateStepForm(); }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < totalSteps) { currentStep++; updateStepForm(); }
+                else { console.log('Step Form Finished!'); /* Handle submission */ }
+            });
+
+            updateStepForm(); // Initial setup
+        })();
+
+
+        // 3. Rating Component
+        (function initRating() {
+            const ratingContainers = document.querySelectorAll('.rating-stars');
+
+            ratingContainers.forEach(container => {
+                const stars = container.querySelectorAll('i');
+                 const feedbackEl = container.nextElementSibling; // Assumes feedback p is next sibling
+                let currentRating = parseInt(container.dataset.rating) || 0;
+
+                function updateStars(rating, isHovering = false) {
+                    stars.forEach(star => {
+                        const starValue = parseInt(star.dataset.value);
+                        const shouldBeSolid = starValue <= rating;
+
+                        star.classList.toggle('fa-regular', !shouldBeSolid);
+                        star.classList.toggle('fa-solid', shouldBeSolid);
+                        star.classList.toggle('active', starValue <= currentRating && !isHovering); // Only active if it's part of the permanent rating and not just hover
+                         star.classList.toggle('hover', starValue <= rating && isHovering); // Add hover class for hover state
+
+                        // Set color based on final state
+                         star.style.color = (star.classList.contains('active') || star.classList.contains('hover')) ? 'var(--rating-active-color)' : 'var(--rating-inactive-color)';
+                    });
+                }
+
+                stars.forEach(star => {
+                    star.addEventListener('mouseover', () => {
+                         const hoverValue = parseInt(star.dataset.value);
+                         updateStars(hoverValue, true); // Update with hover state
+                    });
+
+                    star.addEventListener('mouseout', () => {
+                        updateStars(currentRating); // Revert to current permanent rating
+                    });
+
+                    star.addEventListener('click', () => {
+                        currentRating = parseInt(star.dataset.value);
+                        container.dataset.rating = currentRating;
+                        updateStars(currentRating);
+                        if (feedbackEl) feedbackEl.textContent = `Rated ${currentRating} star(s).`;
+                    });
+                });
+                updateStars(currentRating); // Initial setup
+            });
+        })();
+
+
+        // 4. Range Slider
+        (function initRangeSlider() {
+            const rangeSlider = document.getElementById('range-slider-input');
+            const rangeOutput = document.getElementById('range-value-output');
+
+            if (rangeSlider && rangeOutput) {
+                const updateOutput = () => { rangeOutput.textContent = rangeSlider.value; };
+                updateOutput();
+                rangeSlider.addEventListener('input', updateOutput);
+            }
+        })();
+
+
+        // 5. Color Picker
+        (function initColorPicker() {
+            const colorPicker = document.getElementById('color-picker-input');
+            const colorPreviewBox = document.getElementById('color-preview-box');
+            const colorValueDisplay = document.getElementById('color-value-display');
+
+            if (colorPicker && colorPreviewBox && colorValueDisplay) {
+                const updateColorPreview = () => {
+                    const selectedColor = colorPicker.value;
+                    colorPreviewBox.style.backgroundColor = selectedColor;
+                    colorValueDisplay.textContent = selectedColor;
+                };
+                updateColorPreview();
+                colorPicker.addEventListener('input', updateColorPreview);
+            }
+        })();
+
+
+        // --- ON PAGE LOAD ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('uiShowcaseTheme') || 'cyber-circuit'; // Default theme
+            applyTheme(savedTheme);
+             console.log("Component Showcase Initialized.");
+        });
+
+    </script>
+
+</body>
+</html>

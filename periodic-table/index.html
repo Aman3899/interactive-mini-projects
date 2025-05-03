@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-lab-neon">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Periodic Table</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Orbitron:wght@500;700&family=Exo+2:wght@400;700&family=Goldman:wght@400;700&family=Rajdhani:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Base Font */
+        body {
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Prevent body scroll */
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-exo {
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .font-goldman {
+            font-family: 'Goldman', sans-serif;
+        }
+
+        .font-rajdhani {
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        /* --- CSS Variables for Themes --- */
+        :root {
+            /* Define base variables in root for fallback */
+            --bg-gradient-start: #f0f0f0;
+            --bg-gradient-via: #e0e0e0;
+            --bg-gradient-end: #d0d0d0;
+            --bg-image: none;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --card-shadow-glow: none;
+            --text-primary: #333333;
+            --text-secondary: #007bff;
+            --text-accent: #0056b3;
+            --button-bg: linear-gradient(145deg, #007bff, #0056b3);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #339aff, #0069d9);
+            --button-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+            --select-bg: rgba(230, 230, 230, 0.9);
+            --select-border: var(--card-border);
+            --select-text: var(--text-accent);
+            --select-arrow: var(--text-accent);
+            --element-bg: rgba(0, 123, 255, 0.1);
+            --element-hover-bg: rgba(0, 123, 255, 0.2);
+            --transition-duration: 0.5s;
+            --element-font-family: 'Roboto', sans-serif;
+            --heading-font-family: 'Roboto', sans-serif;
+        }
+
+        /* --- Theme Definitions --- */
+        .theme-lab-neon {
+            --bg-gradient-start: #0f172a;
+            /* Dark Slate Blue */
+            --bg-gradient-via: #1e293b;
+            /* Mid Slate Blue */
+            --bg-gradient-end: #334155;
+            /* Lighter Slate Blue */
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle fill="%232dd4bf20" cx="20" cy="20" r="1"/><circle fill="%232dd4bf10" cx="80" cy="80" r="0.5"/></svg>');
+            --card-bg: rgba(30, 41, 59, 0.85);
+            /* Semi-transparent card */
+            --card-border: rgba(45, 212, 191, 0.5);
+            /* Teal border */
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            --card-shadow-glow: 0 0 20px rgba(45, 212, 191, 0.4);
+            /* Teal glow */
+            --text-primary: #e0f2fe;
+            /* Light cyan text */
+            --text-secondary: #2dd4bf;
+            /* Bright Teal */
+            --text-accent: #14b8a6;
+            /* Darker Teal */
+            --button-bg: linear-gradient(145deg, #2dd4bf, #14b8a6);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #5eead4, #2dd4bf);
+            /* Lighter teal hover */
+            --button-shadow: 0 4px 15px rgba(45, 212, 191, 0.4);
+            --select-bg: rgba(51, 65, 85, 0.9);
+            /* Darker select bg */
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --element-bg: rgba(45, 212, 191, 0.15);
+            /* Faint teal element bg */
+            --element-hover-bg: rgba(45, 212, 191, 0.3);
+            /* Brighter teal hover */
+            --element-font-family: 'Orbitron', sans-serif;
+            --heading-font-family: 'Orbitron', sans-serif;
+        }
+
+        .theme-atomic-glow {
+            --bg-gradient-start: #1e1e2e;
+            /* Very Dark Purple/Blue */
+            --bg-gradient-via: #3b0764;
+            /* Deep Purple */
+            --bg-gradient-end: #7c3aed;
+            /* Bright Violet */
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect x="10" y="10" width="80" height="80" fill="none" stroke="%23ec489920" stroke-width="1"/></svg>');
+            --card-bg: rgba(30, 30, 46, 0.85);
+            /* Dark card */
+            --card-border: rgba(236, 72, 153, 0.5);
+            /* Pink border */
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            --card-shadow-glow: 0 0 20px rgba(236, 72, 153, 0.4);
+            /* Pink glow */
+            --text-primary: #f5f3ff;
+            /* Light lavender text */
+            --text-secondary: #ec4899;
+            /* Hot Pink */
+            --text-accent: #d946ef;
+            /* Fuchsia */
+            --button-bg: linear-gradient(145deg, #ec4899, #c026d3);
+            /* Pink to Purple */
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #f472b6, #ec4899);
+            /* Lighter pink hover */
+            --button-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+            --select-bg: rgba(59, 7, 100, 0.9);
+            /* Deep purple select */
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --element-bg: rgba(236, 72, 153, 0.15);
+            /* Faint pink element */
+            --element-hover-bg: rgba(236, 72, 153, 0.3);
+            /* Brighter pink hover */
+            --element-font-family: 'Rajdhani', sans-serif;
+            --heading-font-family: 'Orbitron', sans-serif;
+        }
+
+        .theme-reactor-core {
+            --bg-gradient-start: #7f0000;
+            /* Dark Red */
+            --bg-gradient-via: #b91c1c;
+            /* Red */
+            --bg-gradient-end: #dc2626;
+            /* Brighter Red */
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 0 50 Q 25 30, 50 50 T 100 50" stroke="%23f8717120" stroke-width="2" fill="none"/></svg>');
+            --card-bg: rgba(69, 10, 10, 0.85);
+            /* Dark red card */
+            --card-border: rgba(239, 68, 68, 0.6);
+            /* Red border */
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            --card-shadow-glow: 0 0 25px rgba(239, 68, 68, 0.4);
+            /* Red glow */
+            --text-primary: #fee2e2;
+            /* Light pink text */
+            --text-secondary: #f87171;
+            /* Salmon Red */
+            --text-accent: #ef4444;
+            /* Strong Red */
+            --button-bg: linear-gradient(145deg, #ef4444, #b91c1c);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #f87171, #ef4444);
+            --button-shadow: 0 4px 15px rgba(239, 68, 68, 0.5);
+            --select-bg: rgba(127, 29, 29, 0.9);
+            /* Darker red select */
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --element-bg: rgba(239, 68, 68, 0.15);
+            /* Faint red element */
+            --element-hover-bg: rgba(239, 68, 68, 0.3);
+            /* Brighter red hover */
+            --element-font-family: 'Goldman', cursive;
+            --heading-font-family: 'Orbitron', sans-serif;
+        }
+
+        .theme-quantum-field {
+            --bg-gradient-start: #022c22;
+            /* Very Dark Green */
+            --bg-gradient-via: #064e3b;
+            /* Dark Green */
+            --bg-gradient-end: #047857;
+            /* Emerald Green */
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><path d="M 10 10 C 20 30, 40 30, 50 10" stroke="%2347b26520" stroke-width="1" fill="none"/></svg>');
+            --card-bg: rgba(2, 44, 34, 0.85);
+            /* Dark green card */
+            --card-border: rgba(71, 178, 101, 0.5);
+            /* Green border */
+            --card-shadow: 0 8px 30px rgba(0, 20, 0, 0.6);
+            --card-shadow-glow: 0 0 25px rgba(71, 178, 101, 0.3);
+            /* Green glow */
+            --text-primary: #d1fae5;
+            /* Light mint text */
+            --text-secondary: #47b265;
+            /* Medium Green */
+            --text-accent: #22c55e;
+            /* Lime Green */
+            --button-bg: linear-gradient(145deg, #47b265, #2f855a);
+            /* Green gradient */
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #6ee7b7, #47b265);
+            /* Lighter green */
+            --button-shadow: 0 4px 15px rgba(71, 178, 101, 0.4);
+            --select-bg: rgba(6, 78, 59, 0.9);
+            /* Deep green select */
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --element-bg: rgba(71, 178, 101, 0.15);
+            /* Faint green element */
+            --element-hover-bg: rgba(71, 178, 101, 0.3);
+            /* Brighter green hover */
+            --element-font-family: 'Exo 2', sans-serif;
+            --heading-font-family: 'Orbitron', sans-serif;
+        }
+
+        .theme-plasma-arc {
+            --bg-gradient-start: #4c0519;
+            /* Dark Magenta */
+            --bg-gradient-via: #831843;
+            /* Medium Magenta */
+            --bg-gradient-end: #be185d;
+            /* Bright Magenta */
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 10 10 L 90 90" stroke="%23f43f5e20" stroke-width="1.5" fill="none"/><path d="M 90 10 L 10 90" stroke="%23ec489915" stroke-width="1" fill="none"/></svg>');
+            --card-bg: rgba(76, 5, 25, 0.85);
+            /* Very dark magenta card */
+            --card-border: rgba(244, 63, 94, 0.5);
+            /* Rose border */
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            --card-shadow-glow: 0 0 25px rgba(244, 63, 94, 0.4);
+            /* Rose glow */
+            --text-primary: #fce7f3;
+            /* Light Pink */
+            --text-secondary: #f43f5e;
+            /* Rose Red */
+            --text-accent: #ec4899;
+            /* Pink */
+            --button-bg: linear-gradient(145deg, #f43f5e, #be185d);
+            /* Rose to Magenta */
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #fb7185, #f43f5e);
+            /* Lighter Rose */
+            --button-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
+            --select-bg: rgba(131, 24, 67, 0.9);
+            /* Dark magenta select */
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --element-bg: rgba(244, 63, 94, 0.15);
+            /* Faint rose element */
+            --element-hover-bg: rgba(244, 63, 94, 0.3);
+            /* Brighter rose hover */
+            --element-font-family: 'Rajdhani', sans-serif;
+            --heading-font-family: 'Orbitron', sans-serif;
+        }
+
+        .theme-golden-age {
+            --bg-gradient-start: #fef9c3;
+            /* Light Yellow */
+            --bg-gradient-via: #fde047;
+            /* Yellow */
+            --bg-gradient-end: #eab308;
+            /* Amber */
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><circle cx="30" cy="30" r="25" fill="none" stroke="%23ca8a0430" stroke-width="2"/><circle cx="30" cy="30" r="15" fill="none" stroke="%23facc1520" stroke-width="1"/></svg>');
+            --card-bg: rgba(255, 251, 235, 0.9);
+            /* Creamy card */
+            --card-border: rgba(202, 138, 4, 0.5);
+            /* Gold border */
+            --card-shadow: 0 8px 25px rgba(100, 80, 20, 0.3);
+            --card-shadow-glow: 0 0 20px rgba(234, 179, 8, 0.3);
+            /* Gold glow */
+            --text-primary: #422006;
+            /* Dark Brown */
+            --text-secondary: #ca8a04;
+            /* Dark Gold */
+            --text-accent: #a16207;
+            /* Darker Gold/Brown */
+            --button-bg: linear-gradient(145deg, #facc15, #ca8a04);
+            /* Yellow to Gold */
+            --button-text: #422006;
+            --button-hover-bg: linear-gradient(145deg, #fde047, #eab308);
+            /* Lighter Yellow */
+            --button-shadow: 0 4px 15px rgba(202, 138, 4, 0.4);
+            --select-bg: rgba(254, 243, 199, 0.9);
+            /* Light yellow select */
+            --select-border: var(--card-border);
+            --select-text: var(--text-accent);
+            --select-arrow: var(--text-accent);
+            --element-bg: rgba(234, 179, 8, 0.15);
+            /* Faint gold element */
+            --element-hover-bg: rgba(234, 179, 8, 0.3);
+            /* Brighter gold hover */
+            --element-font-family: 'Times New Roman', serif;
+            /* More classic */
+            --heading-font-family: 'Orbitron', sans-serif;
+        }
+
+        .theme-deep-ocean {
+            --bg-gradient-start: #0c4a6e;
+            /* Deep Blue */
+            --bg-gradient-via: #075985;
+            /* Medium Blue */
+            --bg-gradient-end: #0369a1;
+            /* Lighter Ocean Blue */
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><path d="M 0 40 C 20 60, 60 60, 80 40 S 60 20, 40 20 S 20 20, 0 40" fill="none" stroke="%2338bdf820" stroke-width="1.5"/></svg>');
+            --card-bg: rgba(14, 116, 144, 0.85);
+            /* Cyan/Blue card */
+            --card-border: rgba(56, 189, 248, 0.5);
+            /* Sky Blue border */
+            --card-shadow: 0 8px 30px rgba(0, 20, 40, 0.6);
+            --card-shadow-glow: 0 0 20px rgba(56, 189, 248, 0.3);
+            /* Sky Blue glow */
+            --text-primary: #e0f2fe;
+            /* Very Light Blue */
+            --text-secondary: #38bdf8;
+            /* Sky Blue */
+            --text-accent: #0ea5e9;
+            /* Brighter Blue */
+            --button-bg: linear-gradient(145deg, #38bdf8, #0ea5e9);
+            /* Sky Blue gradient */
+            --button-text: #082f49;
+            /* Dark blue text */
+            --button-hover-bg: linear-gradient(145deg, #7dd3fc, #38bdf8);
+            /* Lighter blue */
+            --button-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+            --select-bg: rgba(15, 81, 114, 0.9);
+            /* Darker blue select */
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --element-bg: rgba(56, 189, 248, 0.15);
+            /* Faint blue element */
+            --element-hover-bg: rgba(56, 189, 248, 0.3);
+            /* Brighter blue hover */
+            --element-font-family: 'Exo 2', sans-serif;
+            --heading-font-family: 'Orbitron', sans-serif;
+        }
+
+
+        /* --- Apply Variables --- */
+        body {
+            background-color: var(--bg-gradient-start);
+            background-image: var(--bg-image), linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-via), var(--bg-gradient-end));
+            color: var(--text-primary);
+            transition: background-color var(--transition-duration) ease-in-out, background-image var(--transition-duration) ease-in-out, color var(--transition-duration) ease-in-out;
+            font-family: var(--element-font-family);
+            /* Use element font for body */
+        }
+
+        .app-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow), var(--card-shadow-glow);
+            backdrop-filter: blur(5px);
+            /* Subtle blur effect */
+            transition: background-color var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out, box-shadow var(--transition-duration) ease-in-out, backdrop-filter var(--transition-duration) ease-in-out;
+            overflow: hidden;
+            /* Prevent content scroll */
+        }
+
+        .main-heading {
+            font-family: var(--heading-font-family);
+            color: var(--text-primary);
+            text-shadow: 0 0 10px var(--text-secondary);
+            /* Add subtle glow */
+        }
+
+        .element {
+            background-color: var(--element-bg);
+            border: 1px solid var(--card-border);
+            font-family: var(--element-font-family);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease;
+            cursor: pointer;
+            /* Crucial for preventing content overflow */
+            min-width: 0;
+            display: flex;
+            /* Use flex for better internal alignment */
+            flex-direction: column;
+            justify-content: center;
+            /* Center content vertically */
+            align-items: center;
+            /* Center content horizontally */
+            overflow: hidden;
+            /* Clip any potential internal overflow */
+        }
+
+        .element:hover {
+            background-color: var(--element-hover-bg);
+            transform: scale(1.08);
+            /* Slightly larger hover effect */
+            box-shadow: var(--card-shadow-glow);
+            z-index: 10;
+            /* Ensure hovered element is on top */
+            color: var(--text-secondary);
+            /* Highlight text on hover */
+        }
+
+        .theme-selector {
+            background-color: var(--select-bg);
+            border: 1px solid var(--select-border);
+            transition: background-color var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out;
+        }
+
+        .theme-selector select {
+            background-color: transparent;
+            color: var(--select-text);
+            border: none;
+            appearance: none;
+            /* Custom arrow using SVG - color adapts via currentColor */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em;
+            padding-right: 2.5rem;
+            transition: color var(--transition-duration) ease-in-out;
+            font-family: var(--heading-font-family);
+            /* Use heading font for select */
+        }
+
+        .theme-selector select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--text-accent);
+            /* Use accent color for focus ring */
+        }
+
+        .modal {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow), var(--card-shadow-glow);
+            backdrop-filter: blur(10px);
+            /* Stronger blur for modal */
+            animation: fadeIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* Smoother fade-in */
+            transition: background-color var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out, box-shadow var(--transition-duration) ease-in-out;
+        }
+
+        .modal-content p {
+            /* Style modal text */
+            font-family: var(--element-font-family);
+            margin-bottom: 0.6rem;
+        }
+
+        .modal-content #modal-symbol {
+            /* Style symbol */
+            font-family: var(--heading-font-family);
+            color: var(--text-secondary);
+            text-shadow: 0 0 8px var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+
+        .modal-close {
+            background-image: var(--button-bg);
+            color: var(--button-text);
+            box-shadow: var(--button-shadow);
+            transition: background-image var(--transition-duration) ease-in-out, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background-image: var(--button-hover-bg);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), var(--card-shadow-glow);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Responsive Grid Adjustments */
+        .periodic-table {
+            /* Removed fixed font size - control is within element divs */
+            /* Removed gap */
+            display: grid;
+            grid-template-columns: repeat(18, minmax(0, 1fr));
+            /* Key change for responsive columns */
+            /* Add a small gap back if desired, but padding might be enough */
+            gap: 2px;
+            /* Optional: Small gap */
+            padding: 2px;
+            /* Add padding to container instead of relying on large gaps */
+        }
+
+        /* Element inner text sizing - more granular control */
+        .element .atomic-number {
+            font-size: clamp(0.5rem, 1.5vw, 0.7rem);
+        }
+
+        .element .symbol {
+            font-size: clamp(0.75rem, 3vw, 1.1rem);
+            font-weight: bold;
+            margin: 1px 0;
+        }
+
+        .element .name {
+            font-size: clamp(0.45rem, 1.4vw, 0.65rem);
+            line-height: 1.1;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            // No custom config needed here now as fonts are handled in CSS variables/style tag
+        }
+    </script>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4">
+    <div class="app-container w-full max-w-7xl rounded-2xl p-4 sm:p-6">
+        <h1 class="main-heading text-3xl sm:text-4xl font-bold text-center mb-4 sm:mb-6">Interactive Periodic Table</h1>
+
+        <!-- Theme Selector -->
+        <div class="theme-selector w-full sm:w-56 rounded-lg mb-4 sm:mb-6 mx-auto shadow-md">
+            <label for="theme-select" class="sr-only">Select Theme</label>
+            <select id="theme-select"
+                class="w-full p-2.5 rounded-lg text-center font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--text-accent)]">
+                <option value="lab-neon">Lab Neon</option>
+                <option value="atomic-glow">Atomic Glow</option>
+                <option value="reactor-core">Reactor Core</option>
+                <option value="quantum-field">Quantum Field</option>
+                <option value="plasma-arc">Plasma Arc</option>
+                <option value="golden-age">Golden Age</option>
+                <option value="deep-ocean">Deep Ocean</option>
+                <!-- Add more theme options here -->
+            </select>
+        </div>
+
+        <!-- Periodic Table -->
+        <div class="periodic-table" id="periodic-table">
+            <!-- Elements will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Modal for Element Details -->
+    <div id="element-modal"
+        class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden z-50">
+        <div class="modal w-full max-w-md rounded-xl p-6 text-[var(--text-primary)] relative">
+            <button id="modal-close"
+                class="modal-close absolute top-3 right-3 rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold leading-none">×</button>
+            <div class="modal-content">
+                <h2 id="modal-title" class="text-2xl font-bold mb-3"
+                    style="font-family: var(--heading-font-family); color: var(--text-accent);"></h2>
+                <p id="modal-symbol" class="text-center font-bold"></p> <!-- Symbol moved here for prominence -->
+                <p id="modal-atomic-number"></p>
+                <p id="modal-name"></p>
+                <p id="modal-atomic-mass"></p>
+                <p id="modal-electron-config" class="text-sm break-words"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Complete Element Data (no changes needed here)
+        const elements = [
+            { atomicNumber: 1, symbol: 'H', name: 'Hydrogen', atomicMass: 1.008, electronConfig: '1s¹' },
+            { atomicNumber: 2, symbol: 'He', name: 'Helium', atomicMass: 4.0026, electronConfig: '1s²' },
+            { atomicNumber: 3, symbol: 'Li', name: 'Lithium', atomicMass: 6.941, electronConfig: '[He] 2s¹' },
+            { atomicNumber: 4, symbol: 'Be', name: 'Beryllium', atomicMass: 9.0122, electronConfig: '[He] 2s²' },
+            { atomicNumber: 5, symbol: 'B', name: 'Boron', atomicMass: 10.811, electronConfig: '[He] 2s² 2p¹' },
+            { atomicNumber: 6, symbol: 'C', name: 'Carbon', atomicMass: 12.011, electronConfig: '[He] 2s² 2p²' },
+            { atomicNumber: 7, symbol: 'N', name: 'Nitrogen', atomicMass: 14.007, electronConfig: '[He] 2s² 2p³' },
+            { atomicNumber: 8, symbol: 'O', name: 'Oxygen', atomicMass: 15.999, electronConfig: '[He] 2s² 2p⁴' },
+            { atomicNumber: 9, symbol: 'F', name: 'Fluorine', atomicMass: 18.998, electronConfig: '[He] 2s² 2p⁵' },
+            { atomicNumber: 10, symbol: 'Ne', name: 'Neon', atomicMass: 20.180, electronConfig: '[He] 2s² 2p⁶' },
+            { atomicNumber: 11, symbol: 'Na', name: 'Sodium', atomicMass: 22.990, electronConfig: '[Ne] 3s¹' },
+            { atomicNumber: 12, symbol: 'Mg', name: 'Magnesium', atomicMass: 24.305, electronConfig: '[Ne] 3s²' },
+            { atomicNumber: 13, symbol: 'Al', name: 'Aluminum', atomicMass: 26.982, electronConfig: '[Ne] 3s² 3p¹' },
+            { atomicNumber: 14, symbol: 'Si', name: 'Silicon', atomicMass: 28.085, electronConfig: '[Ne] 3s² 3p²' },
+            { atomicNumber: 15, symbol: 'P', name: 'Phosphorus', atomicMass: 30.974, electronConfig: '[Ne] 3s² 3p³' },
+            { atomicNumber: 16, symbol: 'S', name: 'Sulfur', atomicMass: 32.06, electronConfig: '[Ne] 3s² 3p⁴' },
+            { atomicNumber: 17, symbol: 'Cl', name: 'Chlorine', atomicMass: 35.45, electronConfig: '[Ne] 3s² 3p⁵' },
+            { atomicNumber: 18, symbol: 'Ar', name: 'Argon', atomicMass: 39.948, electronConfig: '[Ne] 3s² 3p⁶' },
+            { atomicNumber: 19, symbol: 'K', name: 'Potassium', atomicMass: 39.098, electronConfig: '[Ar] 4s¹' },
+            { atomicNumber: 20, symbol: 'Ca', name: 'Calcium', atomicMass: 40.078, electronConfig: '[Ar] 4s²' },
+            { atomicNumber: 21, symbol: 'Sc', name: 'Scandium', atomicMass: 44.956, electronConfig: '[Ar] 3d¹ 4s²' },
+            { atomicNumber: 22, symbol: 'Ti', name: 'Titanium', atomicMass: 47.867, electronConfig: '[Ar] 3d² 4s²' },
+            { atomicNumber: 23, symbol: 'V', name: 'Vanadium', atomicMass: 50.942, electronConfig: '[Ar] 3d³ 4s²' },
+            { atomicNumber: 24, symbol: 'Cr', name: 'Chromium', atomicMass: 51.996, electronConfig: '[Ar] 3d⁵ 4s¹' },
+            { atomicNumber: 25, symbol: 'Mn', name: 'Manganese', atomicMass: 54.938, electronConfig: '[Ar] 3d⁵ 4s²' },
+            { atomicNumber: 26, symbol: 'Fe', name: 'Iron', atomicMass: 55.845, electronConfig: '[Ar] 3d⁶ 4s²' },
+            { atomicNumber: 27, symbol: 'Co', name: 'Cobalt', atomicMass: 58.933, electronConfig: '[Ar] 3d⁷ 4s²' },
+            { atomicNumber: 28, symbol: 'Ni', name: 'Nickel', atomicMass: 58.693, electronConfig: '[Ar] 3d⁸ 4s²' },
+            { atomicNumber: 29, symbol: 'Cu', name: 'Copper', atomicMass: 63.546, electronConfig: '[Ar] 3d¹⁰ 4s¹' }, // Corrected 'idade' to 'atomicMass'
+            { atomicNumber: 30, symbol: 'Zn', name: 'Zinc', atomicMass: 65.38, electronConfig: '[Ar] 3d¹⁰ 4s²' },
+            { atomicNumber: 31, symbol: 'Ga', name: 'Gallium', atomicMass: 69.723, electronConfig: '[Ar] 3d¹⁰ 4s² 4p¹' },
+            { atomicNumber: 32, symbol: 'Ge', name: 'Germanium', atomicMass: 72.630, electronConfig: '[Ar] 3d¹⁰ 4s² 4p²' },
+            { atomicNumber: 33, symbol: 'As', name: 'Arsenic', atomicMass: 74.922, electronConfig: '[Ar] 3d¹⁰ 4s² 4p³' },
+            { atomicNumber: 34, symbol: 'Se', name: 'Selenium', atomicMass: 78.971, electronConfig: '[Ar] 3d¹⁰ 4s² 4p⁴' },
+            { atomicNumber: 35, symbol: 'Br', name: 'Bromine', atomicMass: 79.904, electronConfig: '[Ar] 3d¹⁰ 4s² 4p⁵' },
+            { atomicNumber: 36, symbol: 'Kr', name: 'Krypton', atomicMass: 83.798, electronConfig: '[Ar] 3d¹⁰ 4s² 4p⁶' },
+            { atomicNumber: 37, symbol: 'Rb', name: 'Rubidium', atomicMass: 85.468, electronConfig: '[Kr] 5s¹' },
+            { atomicNumber: 38, symbol: 'Sr', name: 'Strontium', atomicMass: 87.62, electronConfig: '[Kr] 5s²' },
+            { atomicNumber: 39, symbol: 'Y', name: 'Yttrium', atomicMass: 88.906, electronConfig: '[Kr] 4d¹ 5s²' },
+            { atomicNumber: 40, symbol: 'Zr', name: 'Zirconium', atomicMass: 91.224, electronConfig: '[Kr] 4d² 5s²' },
+            { atomicNumber: 41, symbol: 'Nb', name: 'Niobium', atomicMass: 92.906, electronConfig: '[Kr] 4d⁴ 5s¹' },
+            { atomicNumber: 42, symbol: 'Mo', name: 'Molybdenum', atomicMass: 95.95, electronConfig: '[Kr] 4d⁵ 5s¹' },
+            { atomicNumber: 43, symbol: 'Tc', name: 'Technetium', atomicMass: '(98)', electronConfig: '[Kr] 4d⁵ 5s²' }, // Mass number for most stable isotope
+            { atomicNumber: 44, symbol: 'Ru', name: 'Ruthenium', atomicMass: 101.07, electronConfig: '[Kr] 4d⁷ 5s¹' },
+            { atomicNumber: 45, symbol: 'Rh', name: 'Rhodium', atomicMass: 102.91, electronConfig: '[Kr] 4d⁸ 5s¹' },
+            { atomicNumber: 46, symbol: 'Pd', name: 'Palladium', atomicMass: 106.42, electronConfig: '[Kr] 4d¹⁰' },
+            { atomicNumber: 47, symbol: 'Ag', name: 'Silver', atomicMass: 107.87, electronConfig: '[Kr] 4d¹⁰ 5s¹' },
+            { atomicNumber: 48, symbol: 'Cd', name: 'Cadmium', atomicMass: 112.41, electronConfig: '[Kr] 4d¹⁰ 5s²' },
+            { atomicNumber: 49, symbol: 'In', name: 'Indium', atomicMass: 114.82, electronConfig: '[Kr] 4d¹⁰ 5s² 5p¹' },
+            { atomicNumber: 50, symbol: 'Sn', name: 'Tin', atomicMass: 118.71, electronConfig: '[Kr] 4d¹⁰ 5s² 5p²' },
+            { atomicNumber: 51, symbol: 'Sb', name: 'Antimony', atomicMass: 121.76, electronConfig: '[Kr] 4d¹⁰ 5s² 5p³' },
+            { atomicNumber: 52, symbol: 'Te', name: 'Tellurium', atomicMass: 127.60, electronConfig: '[Kr] 4d¹⁰ 5s² 5p⁴' },
+            { atomicNumber: 53, symbol: 'I', name: 'Iodine', atomicMass: 126.90, electronConfig: '[Kr] 4d¹⁰ 5s² 5p⁵' },
+            { atomicNumber: 54, symbol: 'Xe', name: 'Xenon', atomicMass: 131.29, electronConfig: '[Kr] 4d¹⁰ 5s² 5p⁶' },
+            { atomicNumber: 55, symbol: 'Cs', name: 'Cesium', atomicMass: 132.91, electronConfig: '[Xe] 6s¹' },
+            { atomicNumber: 56, symbol: 'Ba', name: 'Barium', atomicMass: 137.33, electronConfig: '[Xe] 6s²' },
+            { atomicNumber: 57, symbol: 'La', name: 'Lanthanum', atomicMass: 138.91, electronConfig: '[Xe] 5d¹ 6s²' },
+            { atomicNumber: 58, symbol: 'Ce', name: 'Cerium', atomicMass: 140.12, electronConfig: '[Xe] 4f¹ 5d¹ 6s²' },
+            { atomicNumber: 59, symbol: 'Pr', name: 'Praseodymium', atomicMass: 140.91, electronConfig: '[Xe] 4f³ 6s²' },
+            { atomicNumber: 60, symbol: 'Nd', name: 'Neodymium', atomicMass: 144.24, electronConfig: '[Xe] 4f⁴ 6s²' },
+            { atomicNumber: 61, symbol: 'Pm', name: 'Promethium', atomicMass: '(145)', electronConfig: '[Xe] 4f⁵ 6s²' },
+            { atomicNumber: 62, symbol: 'Sm', name: 'Samarium', atomicMass: 150.36, electronConfig: '[Xe] 4f⁶ 6s²' },
+            { atomicNumber: 63, symbol: 'Eu', name: 'Europium', atomicMass: 151.96, electronConfig: '[Xe] 4f⁷ 6s²' },
+            { atomicNumber: 64, symbol: 'Gd', name: 'Gadolinium', atomicMass: 157.25, electronConfig: '[Xe] 4f⁷ 5d¹ 6s²' },
+            { atomicNumber: 65, symbol: 'Tb', name: 'Terbium', atomicMass: 158.93, electronConfig: '[Xe] 4f⁹ 6s²' },
+            { atomicNumber: 66, symbol: 'Dy', name: 'Dysprosium', atomicMass: 162.50, electronConfig: '[Xe] 4f¹⁰ 6s²' },
+            { atomicNumber: 67, symbol: 'Ho', name: 'Holmium', atomicMass: 164.93, electronConfig: '[Xe] 4f¹¹ 6s²' },
+            { atomicNumber: 68, symbol: 'Er', name: 'Erbium', atomicMass: 167.26, electronConfig: '[Xe] 4f¹² 6s²' },
+            { atomicNumber: 69, symbol: 'Tm', name: 'Thulium', atomicMass: 168.93, electronConfig: '[Xe] 4f¹³ 6s²' },
+            { atomicNumber: 70, symbol: 'Yb', name: 'Ytterbium', atomicMass: 173.05, electronConfig: '[Xe] 4f¹⁴ 6s²' },
+            { atomicNumber: 71, symbol: 'Lu', name: 'Lutetium', atomicMass: 174.97, electronConfig: '[Xe] 4f¹⁴ 5d¹ 6s²' },
+            { atomicNumber: 72, symbol: 'Hf', name: 'Hafnium', atomicMass: 178.49, electronConfig: '[Xe] 4f¹⁴ 5d² 6s²' },
+            { atomicNumber: 73, symbol: 'Ta', name: 'Tantalum', atomicMass: 180.95, electronConfig: '[Xe] 4f¹⁴ 5d³ 6s²' },
+            { atomicNumber: 74, symbol: 'W', name: 'Tungsten', atomicMass: 183.84, electronConfig: '[Xe] 4f¹⁴ 5d⁴ 6s²' },
+            { atomicNumber: 75, symbol: 'Re', name: 'Rhenium', atomicMass: 186.21, electronConfig: '[Xe] 4f¹⁴ 5d⁵ 6s²' },
+            { atomicNumber: 76, symbol: 'Os', name: 'Osmium', atomicMass: 190.23, electronConfig: '[Xe] 4f¹⁴ 5d⁶ 6s²' },
+            { atomicNumber: 77, symbol: 'Ir', name: 'Iridium', atomicMass: 192.22, electronConfig: '[Xe] 4f¹⁴ 5d⁷ 6s²' },
+            { atomicNumber: 78, symbol: 'Pt', name: 'Platinum', atomicMass: 195.08, electronConfig: '[Xe] 4f¹⁴ 5d⁹ 6s¹' },
+            { atomicNumber: 79, symbol: 'Au', name: 'Gold', atomicMass: 196.97, electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s¹' },
+            { atomicNumber: 80, symbol: 'Hg', name: 'Mercury', atomicMass: 200.59, electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s²' },
+            { atomicNumber: 81, symbol: 'Tl', name: 'Thallium', atomicMass: 204.38, electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹' },
+            { atomicNumber: 82, symbol: 'Pb', name: 'Lead', atomicMass: 207.2, electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²' },
+            { atomicNumber: 83, symbol: 'Bi', name: 'Bismuth', atomicMass: 208.98, electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³' },
+            { atomicNumber: 84, symbol: 'Po', name: 'Polonium', atomicMass: '(209)', electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴' },
+            { atomicNumber: 85, symbol: 'At', name: 'Astatine', atomicMass: '(210)', electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵' },
+            { atomicNumber: 86, symbol: 'Rn', name: 'Radon', atomicMass: '(222)', electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶' },
+            { atomicNumber: 87, symbol: 'Fr', name: 'Francium', atomicMass: '(223)', electronConfig: '[Rn] 7s¹' },
+            { atomicNumber: 88, symbol: 'Ra', name: 'Radium', atomicMass: '(226)', electronConfig: '[Rn] 7s²' },
+            { atomicNumber: 89, symbol: 'Ac', name: 'Actinium', atomicMass: '(227)', electronConfig: '[Rn] 6d¹ 7s²' },
+            { atomicNumber: 90, symbol: 'Th', name: 'Thorium', atomicMass: 232.04, electronConfig: '[Rn] 6d² 7s²' },
+            { atomicNumber: 91, symbol: 'Pa', name: 'Protactinium', atomicMass: 231.04, electronConfig: '[Rn] 5f² 6d¹ 7s²' },
+            { atomicNumber: 92, symbol: 'U', name: 'Uranium', atomicMass: 238.03, electronConfig: '[Rn] 5f³ 6d¹ 7s²' },
+            { atomicNumber: 93, symbol: 'Np', name: 'Neptunium', atomicMass: '(237)', electronConfig: '[Rn] 5f⁴ 6d¹ 7s²' },
+            { atomicNumber: 94, symbol: 'Pu', name: 'Plutonium', atomicMass: '(244)', electronConfig: '[Rn] 5f⁶ 7s²' },
+            { atomicNumber: 95, symbol: 'Am', name: 'Americium', atomicMass: '(243)', electronConfig: '[Rn] 5f⁷ 7s²' },
+            { atomicNumber: 96, symbol: 'Cm', name: 'Curium', atomicMass: '(247)', electronConfig: '[Rn] 5f⁷ 6d¹ 7s²' },
+            { atomicNumber: 97, symbol: 'Bk', name: 'Berkelium', atomicMass: '(247)', electronConfig: '[Rn] 5f⁹ 7s²' },
+            { atomicNumber: 98, symbol: 'Cf', name: 'Californium', atomicMass: '(251)', electronConfig: '[Rn] 5f¹⁰ 7s²' },
+            { atomicNumber: 99, symbol: 'Es', name: 'Einsteinium', atomicMass: '(252)', electronConfig: '[Rn] 5f¹¹ 7s²' },
+            { atomicNumber: 100, symbol: 'Fm', name: 'Fermium', atomicMass: '(257)', electronConfig: '[Rn] 5f¹² 7s²' },
+            { atomicNumber: 101, symbol: 'Md', name: 'Mendelevium', atomicMass: '(258)', electronConfig: '[Rn] 5f¹³ 7s²' },
+            { atomicNumber: 102, symbol: 'No', name: 'Nobelium', atomicMass: '(259)', electronConfig: '[Rn] 5f¹⁴ 7s²' },
+            { atomicNumber: 103, symbol: 'Lr', name: 'Lawrencium', atomicMass: '(262)', electronConfig: '[Rn] 5f¹⁴ 7s² 7p¹' }, // Note: Config can vary, 7p is common representation
+            { atomicNumber: 104, symbol: 'Rf', name: 'Rutherfordium', atomicMass: '(267)', electronConfig: '[Rn] 5f¹⁴ 6d² 7s²' },
+            { atomicNumber: 105, symbol: 'Db', name: 'Dubnium', atomicMass: '(268)', electronConfig: '[Rn] 5f¹⁴ 6d³ 7s²' },
+            { atomicNumber: 106, symbol: 'Sg', name: 'Seaborgium', atomicMass: '(271)', electronConfig: '[Rn] 5f¹⁴ 6d⁴ 7s²' },
+            { atomicNumber: 107, symbol: 'Bh', name: 'Bohrium', atomicMass: '(270)', electronConfig: '[Rn] 5f¹⁴ 6d⁵ 7s²' },
+            { atomicNumber: 108, symbol: 'Hs', name: 'Hassium', atomicMass: '(277)', electronConfig: '[Rn] 5f¹⁴ 6d⁶ 7s²' },
+            { atomicNumber: 109, symbol: 'Mt', name: 'Meitnerium', atomicMass: '(278)', electronConfig: '[Rn] 5f¹⁴ 6d⁷ 7s²' },
+            { atomicNumber: 110, symbol: 'Ds', name: 'Darmstadtium', atomicMass: '(281)', electronConfig: '[Rn] 5f¹⁴ 6d⁸ 7s²' }, // Or 6d⁹ 7s¹
+            { atomicNumber: 111, symbol: 'Rg', name: 'Roentgenium', atomicMass: '(280)', electronConfig: '[Rn] 5f¹⁴ 6d⁹ 7s²' }, // Or 6d¹⁰ 7s¹
+            { atomicNumber: 112, symbol: 'Cn', name: 'Copernicium', atomicMass: '(285)', electronConfig: '[Rn] 5f¹⁴ 6d¹⁰ 7s²' },
+            { atomicNumber: 113, symbol: 'Nh', name: 'Nihonium', atomicMass: '(286)', electronConfig: '[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹' },
+            { atomicNumber: 114, symbol: 'Fl', name: 'Flerovium', atomicMass: '(289)', electronConfig: '[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²' },
+            { atomicNumber: 115, symbol: 'Mc', name: 'Moscovium', atomicMass: '(288)', electronConfig: '[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³' },
+            { atomicNumber: 116, symbol: 'Lv', name: 'Livermorium', atomicMass: '(293)', electronConfig: '[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴' },
+            { atomicNumber: 117, symbol: 'Ts', name: 'Tennessine', atomicMass: '(294)', electronConfig: '[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵' },
+            { atomicNumber: 118, symbol: 'Og', name: 'Oganesson', atomicMass: '(294)', electronConfig: '[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶' }
+        ];
+
+        // Periodic Table Layout (no changes needed here)
+        const elementPositions = [ /* ... same layout data as before ... */
+            { atomicNumber: 1, row: 1, col: 1 }, { atomicNumber: 2, row: 1, col: 18 }, { atomicNumber: 3, row: 2, col: 1 }, { atomicNumber: 4, row: 2, col: 2 }, { atomicNumber: 5, row: 2, col: 13 }, { atomicNumber: 6, row: 2, col: 14 }, { atomicNumber: 7, row: 2, col: 15 }, { atomicNumber: 8, row: 2, col: 16 }, { atomicNumber: 9, row: 2, col: 17 }, { atomicNumber: 10, row: 2, col: 18 }, { atomicNumber: 11, row: 3, col: 1 }, { atomicNumber: 12, row: 3, col: 2 }, { atomicNumber: 13, row: 3, col: 13 }, { atomicNumber: 14, row: 3, col: 14 }, { atomicNumber: 15, row: 3, col: 15 }, { atomicNumber: 16, row: 3, col: 16 }, { atomicNumber: 17, row: 3, col: 17 }, { atomicNumber: 18, row: 3, col: 18 }, { atomicNumber: 19, row: 4, col: 1 }, { atomicNumber: 20, row: 4, col: 2 }, { atomicNumber: 21, row: 4, col: 3 }, { atomicNumber: 22, row: 4, col: 4 }, { atomicNumber: 23, row: 4, col: 5 }, { atomicNumber: 24, row: 4, col: 6 }, { atomicNumber: 25, row: 4, col: 7 }, { atomicNumber: 26, row: 4, col: 8 }, { atomicNumber: 27, row: 4, col: 9 }, { atomicNumber: 28, row: 4, col: 10 }, { atomicNumber: 29, row: 4, col: 11 }, { atomicNumber: 30, row: 4, col: 12 }, { atomicNumber: 31, row: 4, col: 13 }, { atomicNumber: 32, row: 4, col: 14 }, { atomicNumber: 33, row: 4, col: 15 }, { atomicNumber: 34, row: 4, col: 16 }, { atomicNumber: 35, row: 4, col: 17 }, { atomicNumber: 36, row: 4, col: 18 }, { atomicNumber: 37, row: 5, col: 1 }, { atomicNumber: 38, row: 5, col: 2 }, { atomicNumber: 39, row: 5, col: 3 }, { atomicNumber: 40, row: 5, col: 4 }, { atomicNumber: 41, row: 5, col: 5 }, { atomicNumber: 42, row: 5, col: 6 }, { atomicNumber: 43, row: 5, col: 7 }, { atomicNumber: 44, row: 5, col: 8 }, { atomicNumber: 45, row: 5, col: 9 }, { atomicNumber: 46, row: 5, col: 10 }, { atomicNumber: 47, row: 5, col: 11 }, { atomicNumber: 48, row: 5, col: 12 }, { atomicNumber: 49, row: 5, col: 13 }, { atomicNumber: 50, row: 5, col: 14 }, { atomicNumber: 51, row: 5, col: 15 }, { atomicNumber: 52, row: 5, col: 16 }, { atomicNumber: 53, row: 5, col: 17 }, { atomicNumber: 54, row: 5, col: 18 }, { atomicNumber: 55, row: 6, col: 1 }, { atomicNumber: 56, row: 6, col: 2 }, { atomicNumber: 57, row: 6, col: 3 }, { atomicNumber: 72, row: 6, col: 4 }, { atomicNumber: 73, row: 6, col: 5 }, { atomicNumber: 74, row: 6, col: 6 }, { atomicNumber: 75, row: 6, col: 7 }, { atomicNumber: 76, row: 6, col: 8 }, { atomicNumber: 77, row: 6, col: 9 }, { atomicNumber: 78, row: 6, col: 10 }, { atomicNumber: 79, row: 6, col: 11 }, { atomicNumber: 80, row: 6, col: 12 }, { atomicNumber: 81, row: 6, col: 13 }, { atomicNumber: 82, row: 6, col: 14 }, { atomicNumber: 83, row: 6, col: 15 }, { atomicNumber: 84, row: 6, col: 16 }, { atomicNumber: 85, row: 6, col: 17 }, { atomicNumber: 86, row: 6, col: 18 }, { atomicNumber: 87, row: 7, col: 1 }, { atomicNumber: 88, row: 7, col: 2 }, { atomicNumber: 89, row: 7, col: 3 }, { atomicNumber: 104, row: 7, col: 4 }, { atomicNumber: 105, row: 7, col: 5 }, { atomicNumber: 106, row: 7, col: 6 }, { atomicNumber: 107, row: 7, col: 7 }, { atomicNumber: 108, row: 7, col: 8 }, { atomicNumber: 109, row: 7, col: 9 }, { atomicNumber: 110, row: 7, col: 10 }, { atomicNumber: 111, row: 7, col: 11 }, { atomicNumber: 112, row: 7, col: 12 }, { atomicNumber: 113, row: 7, col: 13 }, { atomicNumber: 114, row: 7, col: 14 }, { atomicNumber: 115, row: 7, col: 15 }, { atomicNumber: 116, row: 7, col: 16 }, { atomicNumber: 117, row: 7, col: 17 }, { atomicNumber: 118, row: 7, col: 18 },
+            // Lanthanides (row 9)
+            { atomicNumber: 58, row: 9, col: 4 }, { atomicNumber: 59, row: 9, col: 5 }, { atomicNumber: 60, row: 9, col: 6 }, { atomicNumber: 61, row: 9, col: 7 }, { atomicNumber: 62, row: 9, col: 8 }, { atomicNumber: 63, row: 9, col: 9 }, { atomicNumber: 64, row: 9, col: 10 }, { atomicNumber: 65, row: 9, col: 11 }, { atomicNumber: 66, row: 9, col: 12 }, { atomicNumber: 67, row: 9, col: 13 }, { atomicNumber: 68, row: 9, col: 14 }, { atomicNumber: 69, row: 9, col: 15 }, { atomicNumber: 70, row: 9, col: 16 }, { atomicNumber: 71, row: 9, col: 17 },
+            // Actinides (row 10)
+            { atomicNumber: 90, row: 10, col: 4 }, { atomicNumber: 91, row: 10, col: 5 }, { atomicNumber: 92, row: 10, col: 6 }, { atomicNumber: 93, row: 10, col: 7 }, { atomicNumber: 94, row: 10, col: 8 }, { atomicNumber: 95, row: 10, col: 9 }, { atomicNumber: 96, row: 10, col: 10 }, { atomicNumber: 97, row: 10, col: 11 }, { atomicNumber: 98, row: 10, col: 12 }, { atomicNumber: 99, row: 10, col: 13 }, { atomicNumber: 100, row: 10, col: 14 }, { atomicNumber: 101, row: 10, col: 15 }, { atomicNumber: 102, row: 10, col: 16 }, { atomicNumber: 103, row: 10, col: 17 }
+        ];
+
+
+        const periodicTable = document.getElementById('periodic-table');
+        const modal = document.getElementById('element-modal');
+        const modalContent = modal.querySelector('.modal-content'); // Get content div
+        const modalTitle = document.getElementById('modal-title');
+        const modalAtomicNumber = document.getElementById('modal-atomic-number');
+        const modalSymbol = document.getElementById('modal-symbol');
+        const modalName = document.getElementById('modal-name');
+        const modalAtomicMass = document.getElementById('modal-atomic-mass');
+        const modalElectronConfig = document.getElementById('modal-electron-config');
+        const modalClose = document.getElementById('modal-close');
+        const themeSelect = document.getElementById('theme-select');
+        const htmlElement = document.documentElement;
+
+        // Theme Switching
+        function applyTheme(themeName) {
+            // Remove previous theme classes (safer than just setting className)
+            const classList = htmlElement.classList;
+            for (let i = classList.length - 1; i >= 0; i--) {
+                if (classList[i].startsWith('theme-')) {
+                    classList.remove(classList[i]);
+                }
+            }
+            // Add new theme class
+            htmlElement.classList.add(`theme-${themeName}`);
+            localStorage.setItem('periodicTableTheme', themeName);
+            // Ensure dropdown matches
+            if (themeSelect.value !== themeName) {
+                themeSelect.value = themeName;
+            }
+        }
+
+        themeSelect.addEventListener('change', (e) => {
+            applyTheme(e.target.value);
+        });
+
+        // Initialize Theme
+        const savedTheme = localStorage.getItem('periodicTableTheme') || 'lab-neon';
+        applyTheme(savedTheme);
+
+        // Render Periodic Table
+        function renderPeriodicTable() {
+            periodicTable.innerHTML = ''; // Clear previous content
+
+            // Create a map for quick lookup of element data by atomic number
+            const elementMap = new Map(elements.map(el => [el.atomicNumber, el]));
+
+            // Define the total grid size (10 rows, 18 columns)
+            const totalRows = 10;
+            const totalCols = 18;
+
+            // Create placeholder cells for the entire grid structure first
+            // This ensures correct spacing for lanthanides/actinides gap
+            for (let r = 1; r <= totalRows; r++) {
+                for (let c = 1; c <= totalCols; c++) {
+                    // Check if this grid cell should contain an element based on elementPositions
+                    const positionInfo = elementPositions.find(pos => pos.row === r && pos.col === c);
+                    const elementData = positionInfo ? elementMap.get(positionInfo.atomicNumber) : null;
+
+                    const cell = document.createElement('div');
+                    cell.style.gridRow = r;
+                    cell.style.gridColumn = c;
+
+                    if (elementData) {
+                        // Create and populate the element cell
+                        cell.className = 'element rounded p-1'; // Reduced padding
+                        cell.innerHTML = `
+                            <div class="atomic-number text-right w-full px-1 opacity-70">${elementData.atomicNumber}</div>
+                            <div class="symbol leading-tight">${elementData.symbol}</div>
+                            <div class="name leading-tight">${elementData.name}</div>
+                        `;
+                        cell.addEventListener('click', () => showElementDetails(elementData));
+                    } else {
+                        // Create an empty placeholder div if no element belongs here
+                        cell.className = 'empty-cell'; // Add a class for potential styling
+                        // Add specific placeholders for Lanthanide/Actinide series indicators if needed
+                        if (r === 6 && c === 3) { // Position for Lanthanide range text
+                            cell.innerHTML = `<div class="text-[0.6rem] opacity-60 leading-tight text-center self-center p-1">57-71</div>`;
+                            cell.classList.add('flex', 'items-center', 'justify-center');
+                        } else if (r === 7 && c === 3) { // Position for Actinide range text
+                            cell.innerHTML = `<div class="text-[0.6rem] opacity-60 leading-tight text-center self-center p-1">89-103</div>`;
+                            cell.classList.add('flex', 'items-center', 'justify-center');
+                        }
+                    }
+                    periodicTable.appendChild(cell);
+                }
+            }
+        }
+
+
+        // Show Element Details in Modal
+        function showElementDetails(element) {
+            modalTitle.textContent = `${element.atomicNumber} - ${element.name}`;
+            modalSymbol.textContent = element.symbol;
+            // Clear other fields before potentially hiding them if data is missing
+            modalAtomicNumber.textContent = `Atomic Number: ${element.atomicNumber}`;
+            modalName.textContent = `Name: ${element.name}`;
+            modalAtomicMass.textContent = `Atomic Mass: ${element.atomicMass} u`;
+            modalElectronConfig.textContent = `Config: ${element.electronConfig || 'N/A'}`;
+
+            // Add a class to modal content for potential animation trigger
+            modalContent.classList.add('modal-show');
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex'); // Use flex for centering
+        }
+
+        // Close Modal
+        function closeModal() {
+            // Remove animation trigger class
+            modalContent.classList.remove('modal-show');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        modalClose.addEventListener('click', closeModal);
+        // Close modal if clicking outside the content area
+        modal.addEventListener('click', (e) => {
+            // Check if the click target is the modal background itself
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        // Close modal on Escape key press
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape" && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        // Initialize
+        renderPeriodicTable();
+    </script>
+</body>
+
+</html>

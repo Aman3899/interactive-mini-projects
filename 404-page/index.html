@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Digital Void</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700&family=Chakra+Petch:wght@300;700&family=Major+Mono+Display&family=VT323&display=swap');
+
+        body {
+            overflow-x: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            min-height: 100vh;
+        }
+
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            /* Behind content, but above body background */
+            display: none;
+            /* Hidden by default */
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            /* Ensure content area takes full height */
+            padding: 1rem;
+        }
+
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            /* Match body background */
+            overflow: hidden;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00fff9;
+            clip: rect(24px, 450px, 36px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        /* Glitch Animations */
+        @keyframes glitch-anim {
+            0% {
+                clip: rect(82px, 9999px, 54px, 0);
+            }
+
+            5% {
+                clip: rect(17px, 9999px, 94px, 0);
+            }
+
+            10% {
+                clip: rect(16px, 9999px, 15px, 0);
+            }
+
+            15% {
+                clip: rect(42px, 9999px, 80px, 0);
+            }
+
+            20% {
+                clip: rect(30px, 9999px, 51px, 0);
+            }
+
+            25% {
+                clip: rect(13px, 9999px, 34px, 0);
+            }
+
+            30% {
+                clip: rect(56px, 9999px, 26px, 0);
+            }
+
+            35% {
+                clip: rect(28px, 9999px, 59px, 0);
+            }
+
+            40% {
+                clip: rect(42px, 9999px, 14px, 0);
+            }
+
+            45% {
+                clip: rect(84px, 9999px, 66px, 0);
+            }
+
+            50% {
+                clip: rect(64px, 9999px, 91px, 0);
+            }
+
+            55% {
+                clip: rect(75px, 9999px, 37px, 0);
+            }
+
+            60% {
+                clip: rect(12px, 9999px, 85px, 0);
+            }
+
+            65% {
+                clip: rect(32px, 9999px, 25px, 0);
+            }
+
+            70% {
+                clip: rect(67px, 9999px, 93px, 0);
+            }
+
+            75% {
+                clip: rect(43px, 9999px, 96px, 0);
+            }
+
+            80% {
+                clip: rect(80px, 9999px, 28px, 0);
+            }
+
+            85% {
+                clip: rect(83px, 9999px, 96px, 0);
+            }
+
+            90% {
+                clip: rect(36px, 9999px, 54px, 0);
+            }
+
+            95% {
+                clip: rect(46px, 9999px, 24px, 0);
+            }
+
+            100% {
+                clip: rect(23px, 9999px, 67px, 0);
+            }
+        }
+
+        @keyframes glitch-anim2 {
+            0% {
+                clip: rect(86px, 9999px, 91px, 0);
+            }
+
+            5% {
+                clip: rect(65px, 9999px, 25px, 0);
+            }
+
+            10% {
+                clip: rect(85px, 9999px, 56px, 0);
+            }
+
+            15% {
+                clip: rect(91px, 9999px, 66px, 0);
+            }
+
+            20% {
+                clip: rect(62px, 9999px, 29px, 0);
+            }
+
+            25% {
+                clip: rect(36px, 9999px, 25px, 0);
+            }
+
+            30% {
+                clip: rect(44px, 9999px, 52px, 0);
+            }
+
+            35% {
+                clip: rect(94px, 9999px, 35px, 0);
+            }
+
+            40% {
+                clip: rect(96px, 9999px, 15px, 0);
+            }
+
+            45% {
+                clip: rect(39px, 9999px, 37px, 0);
+            }
+
+            50% {
+                clip: rect(65px, 9999px, 19px, 0);
+            }
+
+            55% {
+                clip: rect(23px, 9999px, 37px, 0);
+            }
+
+            60% {
+                clip: rect(23px, 9999px, 72px, 0);
+            }
+
+            65% {
+                clip: rect(52px, 9999px, 81px, 0);
+            }
+
+            70% {
+                clip: rect(70px, 9999px, 47px, 0);
+            }
+
+            75% {
+                clip: rect(42px, 9999px, 63px, 0);
+            }
+
+            80% {
+                clip: rect(67px, 9999px, 78px, 0);
+            }
+
+            85% {
+                clip: rect(24px, 9999px, 93px, 0);
+            }
+
+            90% {
+                clip: rect(58px, 9999px, 18px, 0);
+            }
+
+            95% {
+                clip: rect(89px, 9999px, 92px, 0);
+            }
+
+            100% {
+                clip: rect(91px, 9999px, 23px, 0);
+            }
+        }
+
+        /* Bounce Animation (Subtle) */
+        .bounce {
+            animation: bounce 2s infinite alternate ease-in-out;
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Floating Animation */
+        .floating {
+            animation: floating 4s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(0, 10px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        /* Background Patterns (applied via theme classes) */
+        .pixel-bg {
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='5' height='5' fill='%2339ff14' fill-opacity='0.1'/%3E%3Crect x='5' y='5' width='5' height='5' fill='%2339ff14' fill-opacity='0.1'/%3E%3C/svg%3E");
+        }
+
+        .circuit-bg {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 304 304' width='304' height='304'%3E%3Cpath fill='%239C92AC' fill-opacity='0.1' d='M44.1 224a5 5 0 1 1 0 2H0v-2h44.1zm160 48a5 5 0 1 1 0 2H82v-2h122.1zm57.8-46a5 5 0 1 1 0-2H304v2h-42.1zm0 16a5 5 0 1 1 0-2H304v2h-42.1zm6.2-114a5 5 0 1 1 0 2h-86.2a5 5 0 1 1 0-2h86.2zm-256-48a5 5 0 1 1 0 2H0v-2h12.1zm185.8 34a5 5 0 1 1 0-2h86.2a5 5 0 1 1 0 2h-86.2zM258 12.1a5 5 0 1 1-2 0V0h2v12.1zm-64 208a5 5 0 1 1-2 0v-54.2a5 5 0 1 1 2 0v54.2zm48-198.2V80h62v2h-64V21.9a5 5 0 1 1 2 0zm16 16V64h46v2h-48V37.9a5 5 0 1 1 2 0zm-128 96V208h16v12.1a5 5 0 1 1-2 0V210h-16v-76.1a5 5 0 1 1 2 0zm-5.9-21.9a5 5 0 1 1 0 2H114v48H85.9a5 5 0 1 1 0-2H112v-48h12.1zm-6.2 130a5 5 0 1 1 0-2H176v-74.1a5 5 0 1 1 2 0V242h-60.1zm-16-64a5 5 0 1 1 0-2H114v48h10.1a5 5 0 1 1 0 2H112v-48h-10.1zM66 284.1a5 5 0 1 1-2 0V274H50v30h-2v-32h18v12.1zM236.1 176a5 5 0 1 1 0 2H226v94h48v32h-2v-30h-48v-98h12.1zm25.8-30a5 5 0 1 1 0-2H274v44.1a5 5 0 1 1-2 0V146h-10.1zm-64 96a5 5 0 1 1 0-2H208v-80h16v-14h-42.1a5 5 0 1 1 0-2H226v18h-16v80h-12.1zm86.2-210a5 5 0 1 1 0 2H272V0h2v32h10.1zM98 101.9V146H53.9a5 5 0 1 1 0-2H96v-42.1a5 5 0 1 1 2 0zM53.9 34a5 5 0 1 1 0-2H80V0h2v34H53.9zm60.1 3.9V66H82v64H69.9a5 5 0 1 1 0-2H80V64h32V37.9a5 5 0 1 1 2 0zM101.9 82a5 5 0 1 1 0-2H128V37.9a5 5 0 1 1 2 0V82h-28.1zm16-64a5 5 0 1 1 0-2H146v44.1a5 5 0 1 1-2 0V18h-26.1zm102.2 270a5 5 0 1 1 0 2H98v14h-2v-16h124.1zM242 149.9V160h16v34h-16v62h48v48h-2v-46h-48v-66h16v-30h-16v-12.1a5 5 0 1 1 2 0zM53.9 18a5 5 0 1 1 0-2H64V2H48V0h18v18H53.9zm112 32a5 5 0 1 1 0-2H192V0h50v2h-48v48h-28.1zm-48-48a5 5 0 0 1-9.8-2h2.07a3 3 0 1 0 5.66 0H178v34h-18V21.9a5 5 0 1 1 2 0V32h14V2h-58.1zm0 96a5 5 0 1 1 0-2H137l32-32h39V21.9a5 5 0 1 1 2 0V66h-40.17l-32 32H117.9zm28.1 90.1a5 5 0 1 1-2 0v-76.51L175.59 80H224V21.9a5 5 0 1 1 2 0V82h-49.59L146 112.41v75.69zm16 32a5 5 0 1 1-2 0v-99.51L184.59 96H300.1a5 5 0 0 1 3.9-3.9v2.07a3 3 0 0 0 0 5.66v2.07a5 5 0 0 1-3.9-3.9H185.41L162 121.41v98.69zm-144-64a5 5 0 1 1-2 0v-3.51l48-48V48h32V0h2v50H66v55.41l-48 48v2.69zM50 53.9v43.51l-48 48V208h26.1a5 5 0 1 1 0 2H0v-65.41l48-48V53.9a5 5 0 1 1 2 0zm-16 16V89.41l-34 34v-2.82l32-32V69.9a5 5 0 1 1 2 0zM12.1 32a5 5 0 1 1 0 2H9.41L0 43.41V40.6L8.59 32h3.51zm265.8 18a5 5 0 1 1 0-2h18.69l7.41-7.41v2.82L297.41 50H277.9zm-16 160a5 5 0 1 1 0-2H288v-71.41l16-16v2.82l-14 14V210h-28.1zm-208 32a5 5 0 1 1 0-2H64v-22.59L40.59 194H21.9a5 5 0 1 1 0-2H41.41L66 217.59V242H53.9zm150.2 14a5 5 0 1 1 0 2H96v-56.6L56.6 162H37.9a5 5 0 1 1 0-2h19.5L98 200.6V256h106.1zm-150.2 2a5 5 0 1 1 0-2H80v-46.59L48.59 178H21.9a5 5 0 1 1 0-2H49.41L82 208.59V258H53.9zM34 39.8v1.61L9.41 66H0v-2h8.59L32 40.59V0h2v39.8zM2 300.1a5 5 0 0 1 3.9 3.9H3.83A3 3 0 0 0 0 302.17V256h18v48h-2v-46H2v42.1zM34 241v63h-2v-62H0v-2h34v1zM17 18H0v-2h16V0h2v18h-1zm273-2h14v2h-16V0h2v16zm-32 273v15h-2v-14h-14v14h-2v-16h18v1zM0 92.1A5.02 5.02 0 0 1 6 97a5 5 0 0 1-6 4.9v-2.07a3 3 0 1 0 0-5.66V92.1zM80 272h2v32h-2v-32zm37.9 32h-2.07a3 3 0 0 0-5.66 0h-2.07a5 5 0 0 1 9.8 0zM5.9 0A5.02 5.02 0 0 1 0 5.9V3.83A3 3 0 0 0 3.83 0H5.9zm294.2 0h2.07A3 3 0 0 0 304 3.83V5.9a5 5 0 0 1-3.9-5.9zm3.9 300.1v2.07a3 3 0 0 0-1.83 1.83h-2.07a5 5 0 0 1 3.9-3.9zM97 100a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-48 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 48a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 96a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-144a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-96 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm96 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-32 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM49 36a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-32 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM33 68a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-48a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 240a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm80-176a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 48a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm112 176a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 180a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 84a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'%3E%3C/path%3E%3C/svg%3E");
+        }
+
+        .space-bg {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 800 800'%3E%3Cg fill='none' stroke='%23A0A0FF' stroke-width='1'%3E%3Cpath d='M769 229L1037 260.9M927 880L731 737 520 660 309 538 40 599 295 764 126.5 879.5 40 599-197 493 102 382-31 229 126.5 79.5-69-63'/%3E%3Cpath d='M-31 229L237 261 390 382 603 493 308.5 537.5 101.5 381.5M370 905L295 764'/%3E%3Cpath d='M520 660L578 842 731 737 840 599 603 493 520 660 295 764 309 538 390 382 539 269 769 229 577.5 41.5 370 105 295 -36 126.5 79.5 237 261 102 382 40 599 -69 737 127 880'/%3E%3Cpath d='M520-140L578.5 42.5 731-63M603 493L539 269 237 261 370 105M902 382L539 269M390 382L102 382'/%3E%3Cpath d='M-222 42L126.5 79.5 370 105 539 269 577.5 41.5 927 80 769 229 902 382 603 493 731 737M295-36L577.5 41.5M578 842L295 764M40-201L127 80M102 382L-261 269'/%3E%3C/g%3E%3Cg fill='%23C0C0FF' fill-opacity='0.3'%3E%3Ccircle cx='769' cy='229' r='5'/%3E%3Ccircle cx='539' cy='269' r='5'/%3E%3Ccircle cx='603' cy='493' r='5'/%3E%3Ccircle cx='731' cy='737' r='5'/%3E%3Ccircle cx='520' cy='660' r='5'/%3E%3Ccircle cx='309' cy='538' r='5'/%3E%3Ccircle cx='295' cy='764' r='5'/%3E%3Ccircle cx='40' cy='599' r='5'/%3E%3Ccircle cx='102' cy='382' r='5'/%3E%3Ccircle cx='127' cy='80' r='5'/%3E%3Ccircle cx='370' cy='105' r='5'/%3E%3Ccircle cx='578' cy='42' r='5'/%3E%3Ccircle cx='237' cy='261' r='5'/%3E%3Ccircle cx='390' cy='382' r='5'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: cover;
+        }
+
+        .stranger-bg {
+            background-image: radial-gradient(circle, #2d0404 10%, black 70%);
+        }
+
+        /* --- Themes --- */
+        /* Cyberpunk */
+        body.cyberpunk {
+            font-family: 'Chakra Petch', sans-serif;
+            background-color: #0a0a1b;
+            color: #f0e800;
+        }
+
+        body.cyberpunk .glitch::before {
+            text-shadow: -2px 0 #ff00c1;
+        }
+
+        body.cyberpunk .glitch::after {
+            text-shadow: -2px 0 #00fff9;
+        }
+
+        body.cyberpunk .theme-indicator {
+            color: #ff00c1;
+        }
+
+        body.cyberpunk .content-wrapper {
+            background: rgba(10, 10, 27, 0.8);
+        }
+
+        /* Slight overlay */
+        body.cyberpunk.circuit-bg {
+            background-color: #0a0a1b;
+        }
+
+        /* Ensure bg color blends */
+
+        /* Retro Gaming */
+        body.retro-gaming {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #000000;
+            color: #39ff14;
+        }
+
+        body.retro-gaming .glitch::before {
+            text-shadow: -2px 0 #ff3ea5;
+        }
+
+        body.retro-gaming .glitch::after {
+            text-shadow: -2px 0 #0ff;
+        }
+
+        body.retro-gaming .theme-indicator {
+            color: #ff3ea5;
+        }
+
+        body.retro-gaming .content-wrapper {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        body.retro-gaming.pixel-bg {
+            background-color: #000000;
+        }
+
+        /* Matrix */
+        body.matrix {
+            font-family: 'VT323', monospace;
+            background-color: #000000;
+            color: #00ff41;
+        }
+
+        body.matrix .glitch::before {
+            text-shadow: -2px 0 #0f0;
+        }
+
+        body.matrix .glitch::after {
+            text-shadow: -2px 0 #0a0;
+        }
+
+        body.matrix .theme-indicator {
+            color: #ccc;
+        }
+
+        body.matrix .content-wrapper {
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        /* More transparent for rain */
+
+        /* Space Odyssey */
+        body.space-odyssey {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #0a0a26;
+            color: #e9e9ff;
+        }
+
+        body.space-odyssey .glitch::before {
+            text-shadow: -2px 0 #7f7fff;
+        }
+
+        body.space-odyssey .glitch::after {
+            text-shadow: -2px 0 #ff7f7f;
+        }
+
+        body.space-odyssey .theme-indicator {
+            color: #ff7f7f;
+        }
+
+        body.space-odyssey .content-wrapper {
+            background: rgba(10, 10, 38, 0.7);
+        }
+
+        body.space-odyssey.space-bg {
+            background-color: #0a0a26;
+        }
+
+        /* Stranger Things */
+        body.stranger-things {
+            font-family: 'Major Mono Display', monospace;
+            background-color: #000000;
+            color: #e20a14;
+            text-shadow: 0 0 8px rgba(226, 10, 20, 0.5);
+        }
+
+        body.stranger-things .glitch::before {
+            text-shadow: -2px 0 #ffffff;
+            filter: blur(1px);
+        }
+
+        body.stranger-things .glitch::after {
+            text-shadow: 2px 0 #ffffff;
+            filter: blur(1px);
+        }
+
+        body.stranger-things .theme-indicator {
+            color: #ffffff;
+            text-shadow: none;
+        }
+
+        body.stranger-things .content-wrapper {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        body.stranger-things.stranger-bg {
+            background-color: #000000;
+        }
+
+        /* --- Theme Buttons --- */
+        .theme-btn {
+            transition: all 0.3s ease;
+            border-width: 2px;
+            border-style: solid;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-cyberpunk {
+            background: linear-gradient(90deg, #f0e800, #ff00c1);
+            color: #0a0a1b;
+            border-color: #00fff9;
+            font-family: 'Chakra Petch', sans-serif;
+        }
+
+        .btn-cyberpunk:hover {
+            box-shadow: 0 0 15px #ff00c1;
+        }
+
+        .btn-retro {
+            background-color: #39ff14;
+            color: #000;
+            border-color: #ff3ea5;
+            font-family: 'Press Start 2P', cursive;
+            padding: 0.7rem 1rem;
+            font-size: 0.6rem;
+        }
+
+        .btn-retro:hover {
+            background-color: #fff;
+            color: #ff3ea5;
+            box-shadow: 0 0 10px #39ff14;
+        }
+
+        .btn-matrix {
+            background-color: #00ff41;
+            color: #000;
+            border-color: #008F11;
+            font-family: 'VT323', monospace;
+            font-size: 1rem;
+        }
+
+        .btn-matrix:hover {
+            background-color: #fff;
+            color: #00ff41;
+            box-shadow: 0 0 10px #00ff41;
+        }
+
+        .btn-space {
+            background: linear-gradient(45deg, #7f7fff, #ff7f7f);
+            color: #0a0a26;
+            border-color: #e9e9ff;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .btn-space:hover {
+            box-shadow: 0 0 15px #e9e9ff;
+        }
+
+        .btn-stranger {
+            background-color: #e20a14;
+            color: #fff;
+            border-color: #fff;
+            font-family: 'Major Mono Display', monospace;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        .btn-stranger:hover {
+            background-color: #000;
+            color: #e20a14;
+            box-shadow: 0 0 15px #e20a14;
+        }
+
+        /* Active button style */
+        .theme-btn.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px currentColor;
+            /* Use button's text color for glow */
+            font-weight: bold;
+        }
+
+        /* Ensure active style overrides hover */
+        .theme-btn.active:hover {
+            transform: scale(1.1);
+            /* Prevent scale down on hover */
+        }
+
+
+        /* Back Button (General Style - Theme classes will override) */
+        .back-button {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            margin-top: 2rem;
+            text-decoration: none;
+            border: 2px solid currentColor;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .back-button:hover {
+            background-color: currentColor;
+            color: var(--bg-color, #000);
+            /* Use CSS variable for background color */
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Back Button Theme Specifics */
+        body.cyberpunk .back-button {
+            color: #f0e800;
+            border-color: #f0e800;
+            --bg-color: #0a0a1b;
+        }
+
+        body.retro-gaming .back-button {
+            color: #39ff14;
+            border-color: #39ff14;
+            --bg-color: #000;
+        }
+
+        body.matrix .back-button {
+            color: #00ff41;
+            border-color: #00ff41;
+            --bg-color: #000;
+        }
+
+        body.space-odyssey .back-button {
+            color: #e9e9ff;
+            border-color: #e9e9ff;
+            --bg-color: #0a0a26;
+        }
+
+        body.stranger-things .back-button {
+            color: #e20a14;
+            border-color: #e20a14;
+            --bg-color: #000;
+        }
+
+        body.stranger-things .back-button:hover {
+            color: #fff;
+        }
+
+        /* Special case for stranger things hover */
+    </style>
+</head>
+
+<body class="cyberpunk circuit-bg"> <!-- Default theme -->
+
+    <canvas id="matrix-canvas"></canvas>
+
+    <div class="content-wrapper flex flex-col items-center justify-center text-center">
+        <div id="main-content">
+            <h1 id="title-404" class="glitch text-6xl md:text-8xl lg:text-9xl font-bold mb-4" data-text="404">404</h1>
+            <p id="subtitle" class="text-xl md:text-2xl lg:text-3xl mb-6 floating">SYSTEM ERROR // PAGE NOT FOUND</p>
+            <p id="description" class="text-base md:text-lg max-w-md mb-8">
+                Oops! Looks like you've taken a wrong turn in the digital void. The page you seek has glitched out of
+                existence or never was.
+            </p>
+            <a href="/" id="back-button" class="back-button">RETURN TO SAFETY</a>
+            <!-- Or use: <a href="javascript:history.back()" class="back-button">GO BACK</a> -->
+        </div>
+
+        <div id="theme-switcher" class="mt-12">
+            <p class="mb-4 text-sm opacity-80 theme-indicator">// SELECT VISUAL INTERFACE //</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <button id="theme-cyberpunk" class="theme-btn btn-cyberpunk" data-theme="cyberpunk"
+                    data-bg="circuit-bg">Cyberpunk</button>
+                <button id="theme-retro" class="theme-btn btn-retro" data-theme="retro-gaming"
+                    data-bg="pixel-bg">Retro</button>
+                <button id="theme-matrix" class="theme-btn btn-matrix" data-theme="matrix"
+                    data-bg="matrix-bg">Matrix</button>
+                <button id="theme-space" class="theme-btn btn-space" data-theme="space-odyssey"
+                    data-bg="space-bg">Space</button>
+                <button id="theme-stranger" class="theme-btn btn-stranger" data-theme="stranger-things"
+                    data-bg="stranger-bg">Stranger</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // --- GSAP Animations ---
+            gsap.from("#title-404", { duration: 1, y: -50, opacity: 0, ease: "power2.out", delay: 0.2 });
+            gsap.from("#subtitle", { duration: 1, y: 30, opacity: 0, ease: "power2.out", delay: 0.5 });
+            gsap.from("#description", { duration: 1, opacity: 0, ease: "power1.inOut", delay: 0.8 });
+            gsap.from("#back-button", { duration: 1, scale: 0.5, opacity: 0, ease: "back.out(1.7)", delay: 1.1 });
+            gsap.from("#theme-switcher", { duration: 1, y: 50, opacity: 0, ease: "power2.out", delay: 1.4 });
+
+            // --- Matrix Rain Logic ---
+            const canvas = document.getElementById('matrix-canvas');
+            const ctx = canvas.getContext('2d');
+            let matrixInterval;
+
+            function startMatrixRain() {
+                $('#matrix-canvas').show();
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                // Characters used in the rain - Katakana + Numbers + Symbols
+                const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+                const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                const nums = '0123456789';
+                const chars = katakana + latin + nums;
+                const characters = chars.split('');
+
+                const fontSize = 16;
+                const columns = Math.ceil(canvas.width / fontSize);
+
+                // Initialize drops (y position for each column)
+                const drops = [];
+                for (let x = 0; x < columns; x++) {
+                    drops[x] = 1;
+                }
+
+                function draw() {
+                    // Semi-transparent background for fading effect
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.fillStyle = '#0F0'; // Green text
+                    ctx.font = fontSize + 'px VT323, monospace'; // Use VT323 font if available
+
+                    // Loop through drops
+                    for (let i = 0; i < drops.length; i++) {
+                        const text = characters[Math.floor(Math.random() * characters.length)];
+                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                        // Send drop back to top randomly after hitting the bottom
+                        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
+
+                        // Increment Y coordinate
+                        drops[i]++;
+                    }
+                }
+
+                // Clear any existing interval before starting a new one
+                if (matrixInterval) clearInterval(matrixInterval);
+                matrixInterval = setInterval(draw, 33); // Draw ~30 times per second
+
+                // Handle window resize
+                window.onresize = () => {
+                    if ($('body').hasClass('matrix')) { // Only resize if matrix is active
+                        canvas.width = window.innerWidth;
+                        canvas.height = window.innerHeight;
+                        // Reinitialize columns and drops if needed, or just let draw handle it
+                        const newColumns = Math.ceil(canvas.width / fontSize);
+                        while (drops.length < newColumns) drops.push(1);
+                        while (drops.length > newColumns) drops.pop();
+                    }
+                };
+            }
+
+            function stopMatrixRain() {
+                if (matrixInterval) {
+                    clearInterval(matrixInterval);
+                    matrixInterval = null;
+                }
+                // Fade out and hide canvas smoothly
+                gsap.to('#matrix-canvas', {
+                    duration: 0.5, opacity: 0, onComplete: () => {
+                        $('#matrix-canvas').hide();
+                        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas content
+                    }
+                });
+                window.onresize = null; // Remove resize listener
+            }
+
+            // --- Theme Switching Logic ---
+            const themes = ['cyberpunk', 'retro-gaming', 'matrix', 'space-odyssey', 'stranger-things'];
+            const backgroundClasses = ['circuit-bg', 'pixel-bg', 'matrix-bg', 'space-bg', 'stranger-bg']; // Add specific background classes
+
+            function applyTheme(themeName, bgClass) {
+                // Remove existing theme and background classes
+                $('body').removeClass(themes.join(' ')).removeClass(backgroundClasses.join(' '));
+
+                // Add new theme and background class
+                $('body').addClass(themeName);
+                if (bgClass && themeName !== 'matrix') { // Apply CSS background unless it's Matrix theme
+                    $('body').addClass(bgClass);
+                }
+
+
+                // Handle Matrix Rain
+                if (themeName === 'matrix') {
+                    $('#matrix-canvas').css('opacity', 1); // Ensure canvas is visible before starting
+                    startMatrixRain();
+                } else {
+                    stopMatrixRain();
+                }
+
+                // Update active button style
+                $('.theme-btn').removeClass('active');
+                $(`#theme-${themeName === 'retro-gaming' ? 'retro' : themeName === 'space-odyssey' ? 'space' : themeName === 'stranger-things' ? 'stranger' : themeName}`).addClass('active');
+
+
+                // Update glitch colors based on theme (Optional, can customize further)
+                const glitchBefore = $('.glitch::before');
+                const glitchAfter = $('.glitch::after');
+                // Reset to default or apply theme specific colors here if needed
+                // Example: if (themeName === 'cyberpunk') { glitchBefore.css('text-shadow', '-2px 0 #ff00c1'); ... }
+                // The CSS handles most of this via body classes now.
+
+                // Save theme preference
+                localStorage.setItem('preferredTheme', JSON.stringify({ theme: themeName, bg: bgClass }));
+            }
+
+            // Theme button clicks
+            $('.theme-btn').on('click', function () {
+                const theme = $(this).data('theme');
+                const bg = $(this).data('bg');
+                applyTheme(theme, bg);
+            });
+
+            // Load saved theme or apply default
+            const savedThemeData = localStorage.getItem('preferredTheme');
+            if (savedThemeData) {
+                try {
+                    const { theme, bg } = JSON.parse(savedThemeData);
+                    // Check if the saved theme is valid before applying
+                    if (themes.includes(theme)) {
+                        applyTheme(theme, bg);
+                    } else {
+                        applyTheme('cyberpunk', 'circuit-bg'); // Default if invalid data
+                    }
+                } catch (e) {
+                    console.error("Error parsing saved theme:", e);
+                    applyTheme('cyberpunk', 'circuit-bg'); // Default on error
+                }
+
+            } else {
+                applyTheme('cyberpunk', 'circuit-bg'); // Apply default theme if nothing saved
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Analog & World Clock</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <!-- Font Awesome (for icons like plus/times) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Smooth transitions for clock hands */
+        .clock-hand {
+            transition: transform 0.3s cubic-bezier(0.4, 2.0, 0.6, 1);
+        }
+
+        .second-hand {
+            transition: transform 0.05s linear;
+        }
+
+        /* Smoother second hand */
+
+        /* Custom animations */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            }
+
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        html.dark @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+            }
+
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+            }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Custom select arrow styling for better cross-browser compatibility */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            /* Make space for the arrow */
+        }
+
+        html.dark select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+        }
+
+        /* Gradient text (optional flourish) */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #60a5fa;
+            border-radius: 4px;
+        }
+
+        html.dark ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+
+        html.dark ::-webkit-scrollbar-thumb:hover {
+            background: #2563eb;
+        }
+
+        /* Ensure modal is centered */
+        .modal {
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        // Define silver colors for metallic look
+                        'silver': {
+                            '100': '#f1f5f9', // slate-100
+                            '200': '#e2e8f0', // slate-200
+                            '300': '#cbd5e1', // slate-300
+                            '400': '#94a3b8', // slate-400
+                            '500': '#64748b', // slate-500
+                            '600': '#475569', // slate-600
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(ellipse at center, var(--tw-gradient-stops))',
+                    },
+                    boxShadow: {
+                        'inset-deep': 'inset 0 4px 10px rgba(0,0,0,0.4)',
+                        'glow-blue': '0 0 15px rgba(59, 130, 246, 0.5)', // blue-500
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+
+<body
+    class="bg-gradient-to-br from-gray-100 to-blue-200 dark:from-gray-900 dark:to-indigo-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col items-center justify-start pt-8 pb-16 px-4 overflow-x-hidden">
+
+    <div class="main-content-wrapper w-full max-w-5xl flex flex-col items-center gap-10">
+        <!-- Header -->
+        <h1
+            class="text-4xl sm:text-5xl font-bold font-orbitron text-gradient bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-blue-400 dark:to-indigo-500 tracking-wider text-center">
+            Precision Timekeeper
+        </h1>
+
+        <!-- Main Analog Clock & Info Container -->
+        <div class="main-clock-section flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 w-full">
+
+            <!-- Analog Clock -->
+            <div
+                class="analog-clock-container relative w-72 h-72 sm:w-80 sm:h-80 lg:w-[400px] lg:h-[400px] flex-shrink-0">
+                <!-- Bezel Layers -->
+                <div
+                    class="absolute inset-0 rounded-full bg-gradient-to-br from-silver-200 via-silver-400 to-silver-600 dark:from-gray-600 dark:via-gray-800 dark:to-black shadow-2xl border-4 border-gray-400 dark:border-gray-700">
+                </div>
+                <div
+                    class="absolute inset-2 sm:inset-3 rounded-full bg-gradient-to-bl from-silver-100 via-silver-300 to-silver-500 dark:from-gray-500 dark:via-gray-700 dark:to-gray-800 shadow-inset-deep">
+                </div>
+
+                <!-- Clock Face -->
+                <div id="clock-face"
+                    class="absolute inset-5 sm:inset-6 rounded-full bg-gradient-radial from-white to-gray-100 dark:from-gray-800 dark:via-black dark:to-gray-900 border-2 border-gray-300 dark:border-gray-600 shadow-lg flex items-center justify-center">
+                    <!-- Dynamic Markings Container -->
+                    <div id="markings-container" class="markings absolute w-full h-full top-0 left-0">
+                        <!-- Marks and Numerals will be added by JS -->
+                    </div>
+
+                    <!-- Center Pivot -->
+                    <div
+                        class="center-pivot absolute w-4 h-4 sm:w-5 sm:h-5 bg-gradient-to-br from-gray-700 to-black dark:from-gray-400 dark:to-gray-600 rounded-full z-20 border-2 border-gray-500 dark:border-gray-300 shadow-md pulse-animation">
+                        <div
+                            class="absolute inset-1 rounded-full bg-gradient-radial from-gray-400 to-gray-600 dark:from-gray-200 dark:to-gray-400">
+                        </div>
+                    </div>
+
+                    <!-- Clock Hands -->
+                    <div id="hour-hand"
+                        class="clock-hand absolute bottom-1/2 left-1/2 transform -translate-x-1/2 w-2 sm:w-[10px] h-[28%] sm:h-[30%] origin-bottom z-10">
+                        <div
+                            class="h-full w-full bg-gradient-to-t from-gray-800 to-black dark:from-gray-400 dark:to-gray-600 rounded-t-full shadow-md">
+                        </div>
+                    </div>
+                    <div id="minute-hand"
+                        class="clock-hand absolute bottom-1/2 left-1/2 transform -translate-x-1/2 w-1.5 sm:w-2 h-[38%] sm:h-[40%] origin-bottom z-10">
+                        <div
+                            class="h-full w-full bg-gradient-to-t from-gray-700 to-gray-900 dark:from-gray-300 dark:to-gray-500 rounded-t-full shadow-md">
+                        </div>
+                    </div>
+                    <div id="second-hand"
+                        class="second-hand clock-hand absolute bottom-1/2 left-1/2 transform -translate-x-1/2 w-1 h-[42%] sm:h-[45%] origin-bottom z-10">
+                        <div class="h-full w-full bg-red-600 dark:bg-red-500 rounded-t-full shadow-sm"></div>
+                        <!-- Counterweight -->
+                        <div
+                            class="absolute -bottom-2 sm:-bottom-3 left-1/2 transform -translate-x-1/2 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-600 dark:bg-red-500 rounded-full border border-gray-700 dark:border-gray-300">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Digital Info Section -->
+            <div class="digital-info flex flex-col items-center lg:items-start text-center lg:text-left gap-4">
+                <div class="font-orbitron text-4xl sm:text-5xl font-bold text-gray-800 dark:text-gray-200 tabular-nums tracking-wider"
+                    id="digital-time">
+                    00:00:00 AM
+                </div>
+                <div class="text-lg sm:text-xl text-gray-600 dark:text-gray-300 font-medium tracking-wide"
+                    id="date-display">
+                    Sunday, 01 January 2024
+                </div>
+                <div class="text-md text-gray-500 dark:text-gray-400" id="local-timezone-name">
+                    (Loading Timezone...)
+                </div>
+            </div>
+
+        </div>
+
+        <!-- World Clock Section Divider -->
+        <hr class="w-3/4 border-t-2 border-gray-300 dark:border-gray-700 my-6">
+
+        <!-- World Clock Section -->
+        <div class="world-clock-section w-full flex flex-col items-center gap-6">
+            <div class="flex justify-between items-center w-full max-w-4xl px-2">
+                <h2 class="text-2xl sm:text-3xl font-semibold font-orbitron text-gray-700 dark:text-gray-300">World
+                    Clocks</h2>
+                <button id="add-timezone-btn"
+                    class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg text-sm shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-900 transition duration-200 flex items-center gap-2">
+                    <i class="fas fa-plus text-xs"></i> Add Timezone
+                </button>
+            </div>
+
+            <!-- Grid for World Clocks -->
+            <div id="world-clocks-grid"
+                class="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <!-- World clock cards will be dynamically added here -->
+                <!-- Example Structure (Generated by JS):
+                 <div class="world-clock-card bg-white/50 dark:bg-black/30 backdrop-blur-md border border-gray-300 dark:border-gray-700 rounded-xl p-4 shadow-lg flex flex-col items-center gap-3 relative" data-timezone="Europe/London">
+                     <button class="remove-clock-btn absolute top-2 right-2 p-1 text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 text-lg leading-none rounded-full focus:outline-none focus:ring-1 focus:ring-red-500" aria-label="Remove London clock">
+                         <i class="fas fa-times fa-fw"></i>
+                     </button>
+                     <h3 class="city-name text-lg font-semibold text-blue-600 dark:text-blue-400">London</h3>
+                     <div class="mini-analog-clock relative w-28 h-28 border border-gray-300 dark:border-gray-600 rounded-full bg-gray-50 dark:bg-gray-800 shadow-inner">
+                         <div class="absolute inset-0" id="mini-marks-london"></div>
+                         <div class="absolute w-1 h-1 bg-gray-700 dark:bg-gray-300 rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20"></div>
+                         <div class="mini-hour-hand clock-hand absolute bottom-1/2 left-1/2 transform -translate-x-1/2 w-1 h-[30%] bg-gray-800 dark:bg-gray-400 rounded-t-full origin-bottom z-10"></div>
+                         <div class="mini-minute-hand clock-hand absolute bottom-1/2 left-1/2 transform -translate-x-1/2 w-0.5 h-[40%] bg-gray-700 dark:bg-gray-300 rounded-t-full origin-bottom z-10"></div>
+                     </div>
+                     <div class="digital-time font-orbitron text-lg text-gray-800 dark:text-gray-200 tabular-nums">00:00:00</div>
+                     <div class="date text-xs text-gray-600 dark:text-gray-400">Mon, 01 Jan 2024</div>
+                     <div class="offset text-xs text-gray-500 dark:text-gray-500">UTC+0</div>
+                 </div>
+                 -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Add Timezone Modal -->
+    <div id="timezone-modal"
+        class="modal fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm p-4 transition-opacity duration-300">
+        <div
+            class="modal-content bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-xl shadow-2xl max-w-md w-full relative border border-gray-300 dark:border-gray-700 transform transition-transform duration-300 scale-95 opacity-0">
+            <button id="close-modal-btn"
+                class="absolute top-3 right-4 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 text-3xl font-bold cursor-pointer leading-none focus:outline-none">×</button>
+            <h2 class="text-xl font-semibold mb-6 text-blue-600 dark:text-blue-400 font-orbitron">Add World Clock</h2>
+            <div class="form-group mb-5">
+                <label for="modal-city-name"
+                    class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">City Name (Optional)</label>
+                <input type="text" id="modal-city-name" placeholder="e.g., Paris (defaults from timezone)"
+                    class="form-input w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+            </div>
+            <div class="form-group mb-6">
+                <label for="modal-timezone-select"
+                    class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Select Timezone*</label>
+                <select id="modal-timezone-select" required
+                    class="form-select w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                    <option value="" disabled selected>Loading timezones...</option>
+                </select>
+            </div>
+            <button id="add-city-confirm-btn"
+                class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition duration-200 shadow-md hover:shadow-lg">Add
+                Clock</button>
+        </div>
+    </div>
+
+    <!-- Link JavaScript -->
+    <script src="script.js"></script>
+</body>
+
+</html>

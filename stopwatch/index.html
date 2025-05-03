@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Clock & Stopwatch</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+
+        /* Smooth transitions for clock hands */
+        .clock-hand {
+            transition: transform 0.3s cubic-bezier(0.4, 2.0, 0.6, 1);
+        }
+        #second-hand, #world-second-hand { transition: transform 0.05s linear; }
+
+        /* Hide number input spinners */
+        input[type='number']::-webkit-outer-spin-button,
+        input[type='number']::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type='number'] { -moz-appearance: textfield; }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes stopwatch-pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+        }
+        .stopwatch-running {
+            animation: stopwatch-pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Custom select styling */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1em;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 15px rgba(255, 255, 255, 0.3)',
+                        'stopwatch': '0 0 10px rgba(0, 0, 0, 0.2)',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-gray-100 to-blue-200 dark:from-gray-900 dark:to-blue-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="clock-wrapper max-w-5xl w-full flex flex-col items-center gap-8">
+        <!-- Header -->
+        <h1 class="text-3xl sm:text-4xl font-bold font-orbitron text-gray-800 dark:text-gray-200 tracking-wide">
+            Precision Time & Stopwatch
+        </h1>
+
+        <!-- Clocks & Stopwatch Container -->
+        <div class="flex flex-col lg:flex-row gap-8 items-center justify-center">
+            <!-- Analog & World Clock Container -->
+            <div class="flex flex-col sm:flex-row gap-8 items-center">
+                <!-- Analog Clock -->
+                <div class="analog-clock-container relative w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96">
+                    <!-- Bezel -->
+                    <div class="absolute inset-0 rounded-full bg-gradient-to-br from-silver-300 to-silver-600 dark:from-gray-700 dark:to-gray-900 shadow-2xl border-4 border-gray-300 dark:border-gray-600"></div>
+                    <div class="absolute inset-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 dark:from-gray-600 dark:to-gray-800 shadow-inner"></div>
+                    <!-- Clock Face -->
+                    <div id="clock-face" class="absolute inset-4 sm:inset-5 rounded-full bg-gradient-radial from-white to-gray-100 dark:from-gray-800 dark:via-gray-900 dark:to-black border-2 border-gray-300 dark:border-gray-500 shadow-lg flex items-center justify-center">
+                        <!-- Center Dot -->
+                        <div class="center-dot absolute w-4 h-4 sm:w-5 sm:h-5 bg-gradient-to-br from-gray-800 to-black dark:from-gray-300 dark:to-gray-500 rounded-full z-20 border-2 border-gray-600 dark:border-gray-400 shadow-md pulse-animation"></div>
+                        <!-- Markings -->
+                        <div class="markings absolute w-full h-full top-0 left-0">
+                            <div class="mark absolute w-full h-full" style="transform: rotate(0deg);">
+                                <div class="bg-gray-800 dark:bg-gray-300 w-1 h-6 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                                <div class="text-gray-700 dark:text-gray-300 text-sm font-semibold absolute left-1/2 -translate-x-1/2 top-4">12</div>
+                            </div>
+                            <div class="mark absolute w-full h-full" style="transform: rotate(30deg);">
+                                <div class="bg-gray-600 dark:bg-gray-400 w-0.5 h-4 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                            </div>
+                            <div class="mark absolute w-full h-full" style="transform: rotate(60deg);">
+                                <div class="bg-gray-600 dark:bg-gray-400 w-0.5 h-4 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                            </div>
+                            <div class="mark absolute w-full h-full" style="transform: rotate(90deg);">
+                                <div class="bg-gray-800 dark:bg-gray-300 w-1 h-6 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                                <div class="text-gray-700 dark:text-gray-300 text-sm font-semibold absolute left-1/2 -translate-x-1/2 top-4">3</div>
+                            </div>
+                            <div class="mark absolute w-full h-full" style="transform: rotate(120deg);">
+                                <div class="bg-gray-600 dark:bg-gray-400 w-0.5 h-4 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                            </div>
+                            <div class="mark absolute w-full h-full" style="transform: rotate(150deg);">
+                                <div class="bg-gray-600 dark:bg-gray-400 w-0.5 h-4 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                            </div>
+                            <div class="mark absolute w-full h-full" style="transform: rotate(180deg);">
+                                <div class="bg-gray-800 dark:bg-gray-300 w-1 h-6 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                                <div class="text-gray-700 dark:text-gray-300 text-sm font-semibold absolute left-1/2 -translate-x-1/2 top-4">6</div>
+                            </div>
+                            <div class="mark absolute w-full h-full" style="transform: rotate(210deg);">
+                                <div class="bg-gray-600 dark:bg-gray-400 w-0.5 h-4 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                            </div>
+                            <div class="mark absolute w-full h-full" style="transform: rotate(240deg);">
+                                <div class="bg-gray-600 dark:bg-gray-400 w-0.5 h-4 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                            </div>
+                            <div class="mark absolute w-full h-full" style="transform: rotate(270deg);">
+                                <div class="bg-gray-800 dark:bg-gray-300 w-1 h-6 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                                <div class="text-gray-700 dark:text-gray-300 text-sm font-semibold absolute left-1/2 -translate-x-1/2 top-4">9</div>
+                            </div>
+                            <div class="mark absolute w-full h-full" style="transform: rotate(300deg);">
+                                <div class="bg-gray-600 dark:bg-gray-400 w-0.5 h-4 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                            </div>
+                            <div class="mark absolute w-full h-full" style="transform: rotate(330deg);">
+                                <div class="bg-gray-600 dark:bg-gray-400 w-0.5 h-4 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                            </div>
+                            <div class="minute-mark absolute w-full h-full" v-for="i in 60" :style="{ transform: `rotate(${i * 6}deg)` }" v-if="i % 5 !== 0">
+                                <div class="bg-gray-500 dark:bg-gray-500 w-0.5 h-2 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                            </div>
+                        </div>
+                        <!-- Hands -->
+                        <div id="hour-hand" class="clock-hand absolute bottom-1/2 left-1/2 -translate-x-1/2 w-2 h-[30%] bg-gradient-to-t from-gray-800 to-black dark:from-gray-400 dark:to-gray-600 rounded-t-full origin-bottom z-10 shadow-md"></div>
+                        <div id="minute-hand" class="clock-hand absolute bottom-1/2 left-1/2 -translate-x-1/2 w-1.5 h-[40%] bg-gradient-to-t from-gray-700 to-gray-900 dark:from-gray-300 dark:to-gray-500 rounded-t-full origin-bottom z-10 shadow-md"></div>
+                        <div id="second-hand" class="clock-hand absolute bottom-1/2 left-1/2 -translate-x-1/2 w-0.5 h-[45%] bg-red-600 dark:bg-red-500 rounded-t-full origin-bottom z-10 shadow-sm">
+                            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 bg-red-600 dark:bg-red-500 rounded-full border border-gray-700 dark:border-gray-300"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- World Clock -->
+                <div class="world-clock-container relative w-48 h-48 sm:w-56 sm:h-56">
+                    <!-- Bezel -->
+                    <div class="absolute inset-0 rounded-full bg-gradient-to-br from-silver-300 to-silver-600 dark:from-gray-700 dark:to-gray-900 shadow-xl border-2 border-gray-300 dark:border-gray-600"></div>
+                    <div class="absolute inset-1 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 dark:from-gray-600 dark:to-gray-800 shadow-inner"></div>
+                    <!-- Clock Face -->
+                    <div id="world-clock-face" class="absolute inset-2 rounded-full bg-gradient-radial from-white to-gray-100 dark:from-gray-800 dark:via-gray-900 dark:to-black border-2 border-gray-300 dark:border-gray-500 shadow-lg flex items-center justify-center">
+                        <!-- Center Dot -->
+                        <div class="center-dot absolute w-3 h-3 bg-gradient-to-br from-gray-800 to-black dark:from-gray-300 dark:to-gray-500 rounded-full z-20 border border-gray-600 dark:border-gray-400 shadow-md"></div>
+                        <!-- Hour Marks -->
+                        <div class="mark absolute w-full h-full" style="transform: rotate(0deg);">
+                            <div class="bg-gray-800 dark:bg-gray-300 w-0.5 h-4 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                        </div>
+                        <div class="mark absolute w-full h-full" style="transform: rotate(90deg);">
+                            <div class="bg-gray-800 dark:bg-gray-300 w-0.5 h-4 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                        </div>
+                        <div class="mark absolute w-full h-full" style="transform: rotate(180deg);">
+                            <div class="bg-gray-800 dark:bg-gray-300 w-0.5 h-4 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                        </div>
+                        <div class="mark absolute w-full h-full" style="transform: rotate(270deg);">
+                            <div class="bg-gray-800 dark:bg-gray-300 w-0.5 h-4 rounded-full absolute left-1/2 -translate-x-1/2"></div>
+                        </div>
+                        <!-- Hands -->
+                        <div id="world-hour-hand" class="clock-hand absolute bottom-1/2 left-1/2 -translate-x-1/2 w-1.5 h-[30%] bg-gradient-to-t from-gray-800 to-black dark:from-gray-400 dark:to-gray-600 rounded-t-full origin-bottom z-10 shadow-md"></div>
+                        <div id="world-minute-hand" class="clock-hand absolute bottom-1/2 left-1/2 -translate-x-1/2 w-1 h-[40%] bg-gradient-to-t from-gray-700 to-gray-900 dark:from-gray-300 dark:to-gray-500 rounded-t-full origin-bottom z-10 shadow-md"></div>
+                        <div id="world-second-hand" class="clock-hand absolute bottom-1/2 left-1/2 -translate-x-1/2 w-0.5 h-[45%] bg-blue-600 dark:bg-blue-500 rounded-t-full origin-bottom z-10 shadow-sm">
+                            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-600 dark:bg-blue-500 rounded-full border border-gray-700 dark:border-gray-300"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stopwatch Container -->
+            <div class="stopwatch-container w-full max-w-xs sm:max-w-sm bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 shadow-stopwatch">
+                <!-- Stopwatch Display -->
+                <div id="stopwatch-display" class="font-orbitron text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-200 text-center mb-4 bg-gray-100 dark:bg-gray-700 rounded-lg py-2 shadow-inner">
+                    00:00:00
+                </div>
+                <!-- Controls -->
+                <div class="flex justify-center gap-2 mb-4">
+                    <button id="start-pause-btn" class="px-4 py-2 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 focus:ring-2 focus:ring-green-500 transition-all shadow-md">
+                        Start
+                    </button>
+                    <button id="lap-reset-btn" class="px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition-all shadow-md" disabled>
+                        Lap
+                    </button>
+                    <button id="reset-btn" class="px-4 py-2 bg-red-500 dark:bg-red-600 text-white rounded-lg hover:bg-red-600 dark:hover:bg-red-700 focus:ring-2 focus:ring-red-500 transition-all shadow-md" disabled>
+                        Reset
+                    </button>
+                </div>
+                <!-- Lap Times -->
+                <div id="lap-times" class="max-h-40 overflow-y-auto bg-gray-100 dark:bg-gray-700 rounded-lg p-2 text-sm text-gray-700 dark:text-gray-300">
+                    <!-- Lap times will be appended here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls & Info -->
+        <div class="controls-info w-full flex flex-col items-center gap-4">
+            <!-- Time Zone Selector -->
+            <div class="w-full max-w-xs">
+                <label for="timezone-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select City/Time Zone</label>
+                <select id="timezone-select" class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="America/New_York">New York (EST)</option>
+                    <option value="Europe/London">London (GMT)</option>
+                    <option value="Asia/Tokyo">Tokyo (JST)</option>
+                    <option value="Australia/Sydney">Sydney (AEDT)</option>
+                    <option value="Asia/Dubai">Dubai (GST)</option>
+                    <option value="America/Los_Angeles">Los Angeles (PST)</option>
+                    <option value="Asia/Kolkata">Mumbai (IST)</option>
+                </select>
+            </div>
+
+            <!-- Digital Displays -->
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-8">
+                <!-- Local Time -->
+                <div class="text-center">
+                    <div class="font-orbitron text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200 tabular-nums">Local Time</div>
+                    <div id="digital-time" class="font-orbitron text-xl sm:text-2xl text-gray-700 dark:text-gray-300">00:00:00 AM</div>
+                    <div id="date-display" class="text-sm sm:text-base text-gray-600 dark:text-gray-400">Sunday, 01 January 2024</div>
+                </div>
+                <!-- World Time -->
+                <div class="text-center">
+                    <div id="world-city" class="font-orbitron text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200">New York</div>
+                    <div id="world-digital-time" class="font-orbitron text-xl sm:text-2xl text-gray-700 dark:text-gray-300">00:00:00 AM</div>
+                    <div id="world-date-display" class="text-sm sm:text-base text-gray-600 dark:text-gray-400">Sunday, 01 January 2024</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Clock Elements ---
+            const hourHand = document.getElementById('hour-hand');
+            const minuteHand = document.getElementById('minute-hand');
+            const secondHand = document.getElementById('second-hand');
+            const digitalTimeEl = document.getElementById('digital-time');
+            const dateDisplayEl = document.getElementById('date-display');
+            const worldHourHand = document.getElementById('world-hour-hand');
+            const worldMinuteHand = document.getElementById('world-minute-hand');
+            const worldSecondHand = document.getElementById('world-second-hand');
+            const worldDigitalTimeEl = document.getElementById('world-digital-time');
+            const worldDateDisplayEl = document.getElementById('world-date-display');
+            const worldCityEl = document.getElementById('world-city');
+            const timezoneSelect = document.getElementById('timezone-select');
+
+            // --- Stopwatch Elements ---
+            const stopwatchDisplay = document.getElementById('stopwatch-display');
+            const startPauseBtn = document.getElementById('start-pause-btn');
+            const lapResetBtn = document.getElementById('lap-reset-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const lapTimesContainer = document.getElementById('lap-times');
+
+            // --- Utility Functions ---
+            function formatTime(num) {
+                return num.toString().padStart(2, '0');
+            }
+
+            // --- Clock Logic ---
+            const cityMap = {
+                'America/New_York': 'New York',
+                'Europe/London': 'London',
+                'Asia/Tokyo': 'Tokyo',
+                'Australia/Sydney': 'Sydney',
+                'Asia/Dubai': 'Dubai',
+                'America/Los_Angeles': 'Los Angeles',
+                'Asia/Kolkata': 'Mumbai'
+            };
+
+            function updateClock() {
+                // Local Time
+                const now = new Date();
+                const seconds = now.getSeconds();
+                const minutes = now.getMinutes();
+                const hours = now.getHours();
+
+                // Analog Clock
+                const secondsDeg = seconds * 6;
+                const minutesDeg = minutes * 6 + seconds * 0.1;
+                const hoursDeg = (hours % 12) * 30 + minutes * 0.5;
+                secondHand.style.transform = `translateX(-50%) rotate(${secondsDeg}deg)`;
+                minuteHand.style.transform = `translateX(-50%) rotate(${minutesDeg}deg)`;
+                hourHand.style.transform = `translateX(-50%) rotate(${hoursDeg}deg)`;
+
+                // Digital Clock
+                let digitalHours = hours % 12;
+                digitalHours = digitalHours ? digitalHours : 12;
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                digitalTimeEl.textContent = `${formatTime(digitalHours)}:${formatTime(minutes)}:${formatTime(seconds)} ${ampm}`;
+
+                // Date Display
+                const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                const dayName = dayNames[now.getDay()];
+                const dayOfMonth = formatTime(now.getDate());
+                const monthName = monthNames[now.getMonth()];
+                const year = now.getFullYear();
+                dateDisplayEl.textContent = `${dayName}, ${dayOfMonth} ${monthName} ${year}`;
+
+                // World Clock
+                const selectedTimezone = timezoneSelect.value;
+                const worldTime = new Date(now.toLocaleString('en-US', { timeZone: selectedTimezone }));
+                const worldSeconds = worldTime.getSeconds();
+                const worldMinutes = worldTime.getMinutes();
+                const worldHours = worldTime.getHours();
+
+                // World Analog Clock
+                const worldSecondsDeg = worldSeconds * 6;
+                const worldMinutesDeg = worldMinutes * 6 + worldSeconds * 0.1;
+                const worldHoursDeg = (worldHours % 12) * 30 + worldMinutes * 0.5;
+                worldSecondHand.style.transform = `translateX(-50%) rotate(${worldSecondsDeg}deg)`;
+                worldMinuteHand.style.transform = `translateX(-50%) rotate(${worldMinutesDeg}deg)`;
+                worldHourHand.style.transform = `translateX(-50%) rotate(${worldHoursDeg}deg)`;
+
+                // World Digital Clock
+                let worldDigitalHours = worldHours % 12;
+                worldDigitalHours = worldDigitalHours ? worldDigitalHours : 12;
+                const worldAmpm = worldHours >= 12 ? 'PM' : 'AM';
+                worldDigitalTimeEl.textContent = `${formatTime(worldDigitalHours)}:${formatTime(worldMinutes)}:${formatTime(worldSeconds)} ${worldAmpm}`;
+
+                // World Date Display
+                const worldDayName = dayNames[worldTime.getDay()];
+                const worldDayOfMonth = formatTime(worldTime.getDate());
+                const worldMonthName = monthNames[worldTime.getMonth()];
+                const worldYear = worldTime.getFullYear();
+                worldDateDisplayEl.textContent = `${worldDayName}, ${worldDayOfMonth} ${worldMonthName} ${worldYear}`;
+
+                // Update City
+                worldCityEl.textContent = cityMap[selectedTimezone] || 'Unknown';
+            }
+
+            timezoneSelect.addEventListener('change', updateClock);
+
+            // --- Stopwatch Logic ---
+            let stopwatchInterval = null;
+            let elapsedTime = 0;
+            let isRunning = false;
+            let lapCount = 0;
+
+            function formatStopwatchTime(ms) {
+                const minutes = Math.floor(ms / 60000);
+                const seconds = Math.floor((ms % 60000) / 1000);
+                const milliseconds = Math.floor((ms % 1000) / 10);
+                return `${formatTime(minutes)}:${formatTime(seconds)}:${formatTime(milliseconds)}`;
+            }
+
+            function updateStopwatch() {
+                elapsedTime += 10;
+                stopwatchDisplay.textContent = formatStopwatchTime(elapsedTime);
+            }
+
+            function startStopwatch() {
+                if (!isRunning) {
+                    isRunning = true;
+                    stopwatchInterval = setInterval(updateStopwatch, 10);
+                    stopwatchDisplay.classList.add('stopwatch-running');
+                    startPauseBtn.textContent = 'Pause';
+                    startPauseBtn.classList.replace('bg-green-500', 'bg-yellow-500');
+                    startPauseBtn.classList.replace('dark:bg-green-600', 'dark:bg-yellow-600');
+                    startPauseBtn.classList.replace('hover:bg-green-600', 'hover:bg-yellow-600');
+                    startPauseBtn.classList.replace('dark:hover:bg-green-700', 'dark:hover:bg-yellow-700');
+                    lapResetBtn.textContent = 'Lap';
+                    lapResetBtn.disabled = false;
+                    resetBtn.disabled = false;
+                }
+            }
+
+            function pauseStopwatch() {
+                if (isRunning) {
+                    isRunning = false;
+                    clearInterval(stopwatchInterval);
+                    stopwatchDisplay.classList.remove('stopwatch-running');
+                    startPauseBtn.textContent = 'Start';
+                    startPauseBtn.classList.replace('bg-yellow-500', 'bg-green-500');
+                    startPauseBtn.classList.replace('dark:bg-yellow-600', 'dark:bg-green-600');
+                    startPauseBtn.classList.replace('hover:bg-yellow-600', 'hover:bg-green-600');
+                    startPauseBtn.classList.replace('dark:hover:bg-yellow-700', 'dark:hover:bg-green-700');
+                    lapResetBtn.textContent = 'Reset';
+                }
+            }
+
+            function resetStopwatch() {
+                clearInterval(stopwatchInterval);
+                isRunning = false;
+                elapsedTime = 0;
+                lapCount = 0;
+                stopwatchDisplay.textContent = '00:00:00';
+                stopwatchDisplay.classList.remove('stopwatch-running');
+                startPauseBtn.textContent = 'Start';
+                startPauseBtn.classList.replace('bg-yellow-500', 'bg-green-500');
+                startPauseBtn.classList.replace('dark:bg-yellow-600', 'dark:bg-green-600');
+                startPauseBtn.classList.replace('hover:bg-yellow-600', 'hover:bg-green-600');
+                startPauseBtn.classList.replace('dark:hover:bg-yellow-700', 'dark:hover:bg-green-700');
+                lapResetBtn.textContent = 'Lap';
+                lapResetBtn.disabled = true;
+                resetBtn.disabled = true;
+                lapTimesContainer.innerHTML = '';
+            }
+
+            function recordLap() {
+                if (isRunning) {
+                    lapCount++;
+                    const lapTime = formatStopwatchTime(elapsedTime);
+                    const lapElement = document.createElement('div');
+                    lapElement.className = 'flex justify-between py-1 border-b border-gray-300 dark:border-gray-600';
+                    lapElement.innerHTML = `<span>Lap ${lapCount}</span><span>${lapTime}</span>`;
+                    lapTimesContainer.prepend(lapElement);
+                } else {
+                    resetStopwatch();
+                }
+            }
+
+            // Event Listeners
+            startPauseBtn.addEventListener('click', () => {
+                if (isRunning) {
+                    pauseStopwatch();
+                } else {
+                    startStopwatch();
+                }
+            });
+
+            lapResetBtn.addEventListener('click', recordLap);
+            resetBtn.addEventListener('click', resetStopwatch);
+
+            // --- Initialize ---
+            updateClock();
+            setInterval(updateClock, 1000);
+        });
+    </script>
+</body>
+</html>

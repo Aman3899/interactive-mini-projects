@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Cursor Effects</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+        body {
+            cursor: none;
+            overflow-x: hidden;
+            background-color: #111827; /* Default dark background */
+            color: #e5e7eb; /* Default text color */
+        }
+
+        .cursor {
+            position: fixed;
+            pointer-events: none;
+            mix-blend-mode: difference;
+            z-index: 9999;
+            opacity: 0; /* Start hidden until initialized */
+            transition: opacity 0.3s ease;
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #fff;
+            border-radius: 50%;
+            transition: transform 0.1s ease; /* Faster for dot */
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            transition: transform 0.2s ease, width 0.3s ease, height 0.3s ease, border-color 0.3s ease, background-color 0.3s ease; /* Smoother outline */
+        }
+
+        /* --- Effect Styles --- */
+
+        /* Trail effect */
+        .cursor-trail {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: opacity 0.5s ease; /* Added transition */
+        }
+
+        /* Spotlight effect */
+        .cursor-spotlight {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9997;
+            transition: background 0.3s ease; /* Color transition */
+        }
+
+        /* Magnetic effect */
+        .magnetic-element {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Ripple effect */
+        .ripple {
+            position: fixed;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-animation 0.7s linear; /* Slightly faster */
+            pointer-events: none;
+            z-index: 9996;
+            border-style: solid;
+            border-width: 2px;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Ghost trails */
+        .ghost-trail {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9995;
+            opacity: 0.8;
+            animation: ghost-fade 1s ease forwards;
+        }
+
+        @keyframes ghost-fade {
+            0% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+        }
+
+        /* Grid effect */
+        .cursor-grid {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 1px;
+            pointer-events: none;
+            z-index: 9994;
+            animation: grid-fade 1s linear forwards;
+        }
+
+        @keyframes grid-fade {
+            0% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        /* Elastic effect */
+        .cursor-elastic {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9993;
+            transition: width 0.2s ease, height 0.2s ease, transform 0.1s linear, border-color 0.3s ease; /* Added transform and color */
+        }
+
+        /* Cursor text */
+        .cursor-text {
+            position: fixed;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 9992;
+            transform: translate(15px, -10px); /* Adjust position */
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            transition: transform 0.1s linear, color 0.3s ease; /* Added transition */
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+
+        /* Glow effect - Placeholder, can be applied to elements */
+        .glow-effect {
+            box-shadow: 0 0 15px var(--glow-color, rgba(120, 120, 255, 0.7));
+        }
+
+        /* Hide custom cursor when over specific controls */
+        .cursor-visible-area {
+            cursor: auto; /* Show default system cursor */
+        }
+
+        /* Theme transition */
+        .theme-transition {
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Interactive elements general hover */
+        .interactive {
+            transition: all 0.3s ease;
+        }
+
+        .interactive:hover {
+            transform: translateY(-2px); /* Basic hover effect */
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(136, 136, 136, 0.5);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(136, 136, 136, 0.8);
+        }
+    </style>
+</head>
+<body class="theme-transition min-h-screen flex flex-col" id="app-body">
+    <!-- Cursor elements -->
+    <div class="cursor cursor-dot" id="cursor-dot"></div>
+    <div class="cursor cursor-outline" id="cursor-outline"></div>
+
+    <div class="container mx-auto px-4 py-8 flex-grow">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-3 font-['Orbitron'] tracking-wider text-indigo-500" id="app-title">CURSOR FLUX</h1>
+            <p class="text-lg opacity-75 font-['Rajdhani'] mb-6 text-indigo-300" id="app-subtitle">Advanced Custom Cursor Effects</p>
+
+            <div class="cursor-visible-area inline-block">
+                <div class="flex flex-col sm:flex-row justify-center items-center mb-8 gap-4">
+                    <div class="relative">
+                        <select id="cursor-selector" class="interactive bg-gray-800 text-indigo-300 py-3 px-6 rounded-lg font-['Rajdhani'] font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 border border-gray-700 w-full sm:w-auto">
+                            <option value="default">Default Effect</option>
+                            <option value="trail">Particle Trail</option>
+                            <option value="spotlight">Spotlight Effect</option>
+                            <option value="magnetic">Magnetic Buttons</option>
+                            <option value="ripple">Click Ripple</option>
+                            <option value="ghost">Ghost Trails</option>
+                            <option value="grid">Grid Pattern</option>
+                            <option value="elastic">Elastic Cursor</option>
+                            <option value="text">Text Follow</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-indigo-300">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="flex justify-center gap-4 sm:gap-6">
+                         <div class="flex items-center">
+                            <input type="color" id="cursor-color" value="#ffffff" class="interactive mr-2 h-8 w-8 rounded bg-transparent border border-gray-700 p-0 cursor-pointer">
+                            <label for="cursor-color" class="font-['Rajdhani'] text-indigo-300">Color</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="range" id="cursor-size" min="0.5" max="2" step="0.1" value="1" class="interactive mr-2 cursor-pointer">
+                            <label for="cursor-size" class="font-['Rajdhani'] text-indigo-300">Size</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </header>
+
+        <main class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-gray-800 bg-opacity-50 p-8 rounded-xl text-indigo-200 font-['Rajdhani']">
+                    <h2 class="text-2xl font-['Orbitron'] mb-4 text-indigo-400">About Cursor Effects</h2>
+                    <p class="mb-4">Custom cursor effects can enhance user experience and add a unique touch to your website.</p>
+                    <p>Experiment with different effects by selecting from the dropdown above. Try clicking and hovering over different elements to see interactive behaviors.</p>
+                </div>
+
+                <div class="bg-gray-800 bg-opacity-50 p-8 rounded-xl text-indigo-200">
+                    <h2 class="text-2xl font-['Orbitron'] mb-4 text-indigo-400">Interaction Zone</h2>
+                    <div class="space-y-4">
+                        <button class="magnetic-element interactive w-full py-3 px-6 bg-indigo-600 text-white rounded-lg font-['Rajdhani'] font-medium hover:bg-indigo-700">Hover Over Me</button>
+                        <button class="magnetic-element interactive w-full py-3 px-6 bg-purple-600 text-white rounded-lg font-['Rajdhani'] font-medium hover:bg-purple-700">Click Me</button>
+                        <a href="#" class="magnetic-element interactive block w-full text-center py-3 px-6 bg-blue-600 text-white rounded-lg font-['Rajdhani'] font-medium hover:bg-blue-700">Experience Link</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-indigo-900 bg-opacity-20 p-8 rounded-xl mb-12">
+                <h2 class="text-2xl font-['Orbitron'] mb-6 text-center text-indigo-400">Playground Area</h2>
+                <div class="h-64 border border-dashed border-indigo-700 rounded-lg flex items-center justify-center bg-gray-800 bg-opacity-20">
+                    <p class="font-['Rajdhani'] text-indigo-300 text-lg text-center p-4">Move your cursor around this area to see the effect.<br>Click inside to test click-based effects.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
+                <div class="bg-gray-800 bg-opacity-50 p-6 rounded-xl text-center interactive">
+                    <div class="magnetic-element w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-magic text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-['Orbitron'] text-indigo-400 mb-2">Magnetic Effect</h3>
+                    <p class="font-['Rajdhani'] text-indigo-200 text-sm">Elements attract the cursor when nearby</p>
+                </div>
+
+                <div class="bg-gray-800 bg-opacity-50 p-6 rounded-xl text-center interactive">
+                    <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-teal-600 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-wave-square text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-['Orbitron'] text-indigo-400 mb-2">Trail Effects</h3>
+                    <p class="font-['Rajdhani'] text-indigo-200 text-sm">Leave behind visual trails as you move</p>
+                </div>
+
+                <div class="bg-gray-800 bg-opacity-50 p-6 rounded-xl text-center interactive">
+                    <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-lightbulb text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-['Orbitron'] text-indigo-400 mb-2">Spotlight</h3>
+                    <p class="font-['Rajdhani'] text-indigo-200 text-sm">Illuminates the area around your cursor</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="py-4 text-center text-sm opacity-50 font-['Rajdhani'] text-indigo-300">
+        <p>CURSOR FLUX © 2025 • Hover, Click, and Explore!</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const cursorDot = document.getElementById('cursor-dot');
+            const cursorOutline = document.getElementById('cursor-outline');
+            const cursorSelector = document.getElementById('cursor-selector');
+            const cursorColorInput = document.getElementById('cursor-color');
+            const cursorSizeInput = document.getElementById('cursor-size');
+            const appBody = document.getElementById('app-body');
+
+            // --- State Variables ---
+            let cursorVisible = true;
+            let cursorEnlarged = false;
+            let trails = []; // Holds interval IDs for trails
+            let trailCleanupTimeouts = []; // Holds timeouts for individual trail particle cleanup
+            let ghostCleanupTimeouts = []; // Holds timeouts for ghost trail cleanup
+            let gridCleanupTimeouts = []; // Holds timeouts for grid dot cleanup
+            let mouseX = 0;
+            let mouseY = 0;
+            let outlineX = 0;
+            let outlineY = 0;
+            let currentEffect = 'default';
+            let elasticCursor = null;
+            let cursorTextElement = null;
+            let spotlight = null;
+            let magneticElements = []; // Keep track for easy cleanup if needed
+            let rippleCleanupTimeouts = []; // Track ripple elements for cleanup
+            let lastGhostTime = 0; // Throttle ghost trail creation
+            let lastGridTime = 0; // Throttle grid dot creation
+            let animationFrameId = null; // Store the request ID
+
+            const cursorTexts = [
+                "Explore", "Discover", "Interact", "Click", "Hover",
+                "Navigate", "Select", "Play", "Flux", "Magic"
+            ];
+            let currentTextIndex = 0;
+
+            // --- Core Cursor Logic ---
+
+            // Initialize cursor position and start animation loop
+            function initCursor() {
+                document.addEventListener('mousemove', updateMousePosition);
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId); // Prevent duplicate loops
+                }
+                animateCursor(); // Start the animation loop
+            }
+
+            // Update mouse coordinates
+            function updateMousePosition(e) {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                if (!cursorVisible) {
+                    cursorVisible = true;
+                    toggleCursorVisibility();
+                }
+            }
+
+            // Animation loop for smooth cursor movement and effects
+            function animateCursor() {
+                const outlineEasing = 0.1; // Slower easing for smoother outline trail
+
+                // Smooth movement calculation for outline
+                outlineX += (mouseX - outlineX) * outlineEasing;
+                outlineY += (mouseY - outlineY) * outlineEasing;
+
+                // Apply position - Dot follows instantly, Outline lags smoothly
+                const currentSize = parseFloat(cursorSizeInput.value) || 1;
+                const dotSize = 8 * currentSize;
+                const outlineSize = 40 * currentSize;
+
+                // Apply transforms based on size and position
+                cursorDot.style.transform = `translate(${mouseX - dotSize / 2}px, ${mouseY - dotSize / 2}px) scale(${cursorEnlarged ? 0.5 : 1})`; // Shrink dot on hover
+                cursorOutline.style.transform = `translate(${outlineX - outlineSize / 2}px, ${outlineY - outlineSize / 2}px) scale(${cursorEnlarged ? 1.3 : 1})`; // Enlarge outline on hover
+
+                // Animate effect-specific elements
+                if (currentEffect === 'elastic' && elasticCursor) {
+                    const elasticSize = 30 * currentSize;
+                    // Elastic follows mouse directly for responsiveness, size changes on click
+                    elasticCursor.style.transform = `translate(${mouseX - elasticSize / 2}px, ${mouseY - elasticSize / 2}px)`;
+                }
+
+                if (currentEffect === 'text' && cursorTextElement) {
+                    // Text follows mouse directly
+                    cursorTextElement.style.transform = `translate(${mouseX + 15}px, ${mouseY - 10}px)`;
+                }
+
+                if (currentEffect === 'spotlight' && spotlight) {
+                    // Spotlight center follows mouse directly
+                    spotlight.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+                }
+
+                animationFrameId = requestAnimationFrame(animateCursor); // Continue the loop
+            }
+
+            // Show/hide custom cursor elements
+            function toggleCursorVisibility() {
+                const opacity = cursorVisible ? '1' : '0';
+                cursorDot.style.opacity = opacity;
+                cursorOutline.style.opacity = opacity;
+                // Also hide/show effect-specific elements if they exist
+                if (elasticCursor) elasticCursor.style.opacity = opacity;
+                if (cursorTextElement) cursorTextElement.style.opacity = opacity;
+                if (spotlight) spotlight.style.opacity = opacity;
+            }
+
+            // Toggle cursor size/style on hover over interactive elements
+            function handleMouseEnterInteractive() {
+                cursorEnlarged = true;
+                cursorOutline.style.borderColor = 'rgba(255, 255, 255, 1)'; // Make outline solid
+                cursorOutline.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'; // Add slight fill
+            }
+
+            function handleMouseLeaveInteractive() {
+                cursorEnlarged = false;
+                setCursorColor(cursorColorInput.value); // Reset to selected color/opacity
+                cursorOutline.style.backgroundColor = 'transparent'; // Remove fill
+            }
+
+
+            // --- Effect Setup and Cleanup ---
+
+            // Apply the selected cursor effect
+            function applyCursorEffect(effect) {
+                cleanupEffects(); // Clean up any previous effect first
+                currentEffect = effect;
+
+                switch (effect) {
+                    case 'default':
+                        // Default style is handled by base cursor + hover effects
+                        break;
+                    case 'trail':
+                        setupTrailEffect();
+                        break;
+                    case 'spotlight':
+                        setupSpotlightEffect();
+                        break;
+                    case 'magnetic':
+                        setupMagneticEffect(); // Note: Magnetic is also tied to element classes
+                        break;
+                    case 'ripple':
+                        setupRippleEffect();
+                        break;
+                    case 'ghost':
+                        setupGhostTrailEffect();
+                        break;
+                    case 'grid':
+                        setupGridEffect();
+                        break;
+                    case 'elastic':
+                        setupElasticEffect();
+                        break;
+                    case 'text':
+                        setupTextEffect();
+                        break;
+                }
+
+                localStorage.setItem('preferredCursorEffect', effect);
+                // Re-apply current color and size to new effect elements if needed
+                setCursorColor(cursorColorInput.value);
+                setCursorSize(cursorSizeInput.value);
+            }
+
+            // Clean up all active effects and their listeners/elements
+            function cleanupEffects() {
+                // Stop trail intervals & clear timeouts
+                trails.forEach(clearInterval);
+                trails = [];
+                trailCleanupTimeouts.forEach(clearTimeout);
+                trailCleanupTimeouts = [];
+                document.querySelectorAll('.cursor-trail').forEach(el => el.remove());
+
+
+                // Remove magnetic listeners (important!)
+                magneticElements.forEach(el => {
+                    el.removeEventListener('mousemove', handleMagneticMove);
+                    el.removeEventListener('mouseleave', handleMagneticLeave);
+                    el.style.transform = ''; // Reset transform
+                });
+                magneticElements = []; // Clear the tracked elements
+
+                // Remove ripple listener & clear timeouts
+                document.removeEventListener('click', createRipple);
+                rippleCleanupTimeouts.forEach(clearTimeout);
+                rippleCleanupTimeouts = [];
+                document.querySelectorAll('.ripple').forEach(el => el.remove());
+
+
+                // Remove ghost listener & clear timeouts
+                document.removeEventListener('mousemove', throttledCreateGhostTrail);
+                ghostCleanupTimeouts.forEach(clearTimeout);
+                ghostCleanupTimeouts = [];
+                 document.querySelectorAll('.ghost-trail').forEach(el => el.remove());
+
+                // Remove grid listener & clear timeouts
+                document.removeEventListener('mousemove', throttledCreateGridDot);
+                gridCleanupTimeouts.forEach(clearTimeout);
+                gridCleanupTimeouts = [];
+                document.querySelectorAll('.cursor-grid').forEach(el => el.remove());
+
+
+                // Remove elastic cursor & listeners
+                if (elasticCursor) {
+                    document.removeEventListener('mousedown', handleElasticMouseDown);
+                    document.removeEventListener('mouseup', handleElasticMouseUp);
+                    elasticCursor.remove();
+                    elasticCursor = null;
+                }
+
+                // Remove text cursor & listeners
+                if (cursorTextElement) {
+                    document.removeEventListener('click', updateCursorText);
+                    cursorTextElement.remove();
+                    cursorTextElement = null;
+                }
+
+                // Remove spotlight
+                if (spotlight) {
+                    spotlight.remove();
+                    spotlight = null;
+                }
+            }
+
+            // Setup Particle Trail effect
+            function setupTrailEffect() {
+                const trailInterval = setInterval(() => createTrailParticle(mouseX, mouseY), 50); // Create particle every 50ms
+                trails.push(trailInterval); // Store interval ID for cleanup
+            }
+
+            function createTrailParticle(x, y) {
+                const trail = document.createElement('div');
+                trail.className = 'cursor-trail';
+                trail.style.left = `${x - 3}px`; // Center the particle
+                trail.style.top = `${y - 3}px`;
+                trail.style.backgroundColor = cursorColorInput.value;
+                trail.style.opacity = '0.7';
+                document.body.appendChild(trail);
+
+                // Fade out and remove the particle
+                const timeoutId = setTimeout(() => {
+                    trail.style.opacity = '0';
+                    const removeTimeout = setTimeout(() => {
+                        if (document.body.contains(trail)) {
+                            trail.remove();
+                        }
+                         // Clean up the timeout ID itself
+                        trailCleanupTimeouts = trailCleanupTimeouts.filter(id => id !== removeTimeout);
+                    }, 500); // Match CSS transition duration
+                     trailCleanupTimeouts.push(removeTimeout);
+                }, 100); // Start fading after 100ms
+                trailCleanupTimeouts.push(timeoutId);
+            }
+
+
+            // Setup Spotlight effect
+            function setupSpotlightEffect() {
+                spotlight = document.createElement('div');
+                spotlight.className = 'cursor-spotlight';
+                document.body.appendChild(spotlight);
+                // Initial color set in applyCursorEffect -> setCursorColor
+            }
+
+            // Setup Magnetic effect listeners
+            function setupMagneticEffect() {
+                const elements = document.querySelectorAll('.magnetic-element');
+                 magneticElements = Array.from(elements); // Store for cleanup
+                elements.forEach(el => {
+                    el.addEventListener('mousemove', handleMagneticMove);
+                    el.addEventListener('mouseleave', handleMagneticLeave);
+                });
+            }
+
+            function handleMagneticMove(e) {
+                const el = e.currentTarget;
+                const rect = el.getBoundingClientRect();
+                // Calculate element center
+                const elX = rect.left + rect.width / 2;
+                const elY = rect.top + rect.height / 2;
+
+                // Calculate vector from mouse to element center
+                const deltaX = elX - mouseX;
+                const deltaY = elY - mouseY;
+
+                // Calculate distance
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+                const maxDistance = 80; // Max distance for magnetic effect
+
+                if (distance < maxDistance) {
+                    // Calculate pull strength - stronger when closer
+                    const pullFactor = (maxDistance - distance) / maxDistance;
+                    const pullStrength = 15; // Max pixels to pull
+
+                    // Apply transform to pull the element towards the cursor
+                    // Limit pull strength to avoid jerky movement
+                    const moveX = Math.max(-pullStrength, Math.min(pullStrength, -deltaX * pullFactor * 0.5));
+                    const moveY = Math.max(-pullStrength, Math.min(pullStrength, -deltaY * pullFactor * 0.5));
+
+                    el.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                    handleMouseEnterInteractive(); // Trigger enlarged cursor style
+                } else {
+                    // If mouse moved away but still over element (rare case), reset
+                     el.style.transform = 'translate(0px, 0px)';
+                     handleMouseLeaveInteractive();
+                }
+            }
+
+            function handleMagneticLeave(e) {
+                const el = e.currentTarget;
+                el.style.transform = ''; // Reset transform smoothly via CSS transition
+                handleMouseLeaveInteractive(); // Reset cursor style
+            }
+
+            // Setup Click Ripple effect
+            function setupRippleEffect() {
+                document.addEventListener('click', createRipple);
+            }
+
+            function createRipple(e) {
+                const ripple = document.createElement('div');
+                ripple.className = 'ripple';
+                // Position ripple at click coordinates
+                ripple.style.left = `${e.clientX}px`;
+                ripple.style.top = `${e.clientY}px`;
+                 // Center the ripple expansion origin
+                ripple.style.transformOrigin = 'center';
+                ripple.style.transform = 'translate(-50%, -50%) scale(0)'; // Start scaled down and centered
+                ripple.style.borderColor = cursorColorInput.value;
+                document.body.appendChild(ripple);
+
+                // Remove ripple after animation
+                const timeoutId = setTimeout(() => {
+                    if (document.body.contains(ripple)) {
+                        ripple.remove();
+                    }
+                    rippleCleanupTimeouts = rippleCleanupTimeouts.filter(id => id !== timeoutId);
+                }, 700); // Match animation duration
+                rippleCleanupTimeouts.push(timeoutId);
+            }
+
+             // Setup Ghost Trail effect
+            function setupGhostTrailEffect() {
+                document.addEventListener('mousemove', throttledCreateGhostTrail);
+            }
+
+             // Throttled version to prevent too many elements
+            const throttledCreateGhostTrail = throttle(createGhostTrail, 30); // Max one every 30ms
+
+            function createGhostTrail(e) {
+                const ghost = document.createElement('div');
+                ghost.className = 'ghost-trail';
+                ghost.style.left = `${e.clientX - 10}px`; // Center the ghost
+                ghost.style.top = `${e.clientY - 10}px`;
+                ghost.style.backgroundColor = cursorColorInput.value;
+                document.body.appendChild(ghost);
+
+                const timeoutId = setTimeout(() => {
+                    if (document.body.contains(ghost)) {
+                         ghost.remove();
+                    }
+                    ghostCleanupTimeouts = ghostCleanupTimeouts.filter(id => id !== timeoutId);
+                }, 1000); // Match animation duration
+                ghostCleanupTimeouts.push(timeoutId);
+            }
+
+
+            // Setup Grid Pattern effect
+            function setupGridEffect() {
+                document.addEventListener('mousemove', throttledCreateGridDot);
+            }
+
+            // Throttled version for performance
+            const throttledCreateGridDot = throttle(createGridDot, 50); // Max one every 50ms
+
+            function createGridDot(e) {
+                const gridSize = 20; // Spacing of the grid
+                // Check if cursor is near a grid point
+                if (Math.abs(e.clientX % gridSize) < 5 && Math.abs(e.clientY % gridSize) < 5) {
+                    // Snap to the nearest grid point
+                    const gridX = Math.round(e.clientX / gridSize) * gridSize;
+                    const gridY = Math.round(e.clientY / gridSize) * gridSize;
+
+                    // Avoid creating duplicates at the exact same spot rapidly
+                    const existingDot = document.querySelector(`.cursor-grid[style*="left: ${gridX - 3}px;"][style*="top: ${gridY - 3}px;"]`);
+                    if (existingDot) return;
+
+                    const dot = document.createElement('div');
+                    dot.className = 'cursor-grid';
+                    dot.style.left = `${gridX - 3}px`; // Center the dot
+                    dot.style.top = `${gridY - 3}px`;
+                    dot.style.backgroundColor = cursorColorInput.value;
+                    document.body.appendChild(dot);
+
+                     const timeoutId = setTimeout(() => {
+                        if (document.body.contains(dot)) {
+                            dot.remove();
+                        }
+                        gridCleanupTimeouts = gridCleanupTimeouts.filter(id => id !== timeoutId);
+                    }, 1000); // Match animation duration
+                    gridCleanupTimeouts.push(timeoutId);
+                }
+            }
+
+
+            // Setup Elastic Cursor effect
+            function setupElasticEffect() {
+                elasticCursor = document.createElement('div');
+                elasticCursor.className = 'cursor-elastic';
+                document.body.appendChild(elasticCursor);
+                // Add listeners for click animation
+                document.addEventListener('mousedown', handleElasticMouseDown);
+                document.addEventListener('mouseup', handleElasticMouseUp);
+                // Initial color/size set later
+            }
+
+            function handleElasticMouseDown() {
+                if (currentEffect === 'elastic' && elasticCursor) {
+                    const currentSize = parseFloat(cursorSizeInput.value) || 1;
+                    elasticCursor.style.width = `${20 * currentSize}px`;
+                    elasticCursor.style.height = `${20 * currentSize}px`;
+                }
+            }
+
+            function handleElasticMouseUp() {
+                if (currentEffect === 'elastic' && elasticCursor) {
+                     const currentSize = parseFloat(cursorSizeInput.value) || 1;
+                    elasticCursor.style.width = `${30 * currentSize}px`;
+                    elasticCursor.style.height = `${30 * currentSize}px`;
+                }
+            }
+
+            // Setup Text Follow effect
+            function setupTextEffect() {
+                cursorTextElement = document.createElement('div');
+                cursorTextElement.className = 'cursor-text';
+                updateCursorText(); // Set initial text
+                document.body.appendChild(cursorTextElement);
+                // Add listener to change text on click
+                document.addEventListener('click', updateCursorText);
+                 // Initial color set later
+            }
+
+            function updateCursorText() {
+                 if (currentEffect === 'text' && cursorTextElement) {
+                    cursorTextElement.textContent = cursorTexts[currentTextIndex];
+                    currentTextIndex = (currentTextIndex + 1) % cursorTexts.length;
+                }
+            }
+
+
+            // --- Configuration ---
+
+            // Set cursor color for all relevant elements
+            function setCursorColor(color) {
+                cursorDot.style.backgroundColor = color;
+                // Set outline color, preserving alpha for default state
+                cursorOutline.style.borderColor = color + (cursorEnlarged ? '' : 'CC'); // CC = 80% alpha hex
+
+                // Update active effect elements
+                if (elasticCursor) elasticCursor.style.borderColor = color;
+                if (cursorTextElement) cursorTextElement.style.color = color;
+                if (spotlight) {
+                     // Use RGBA for gradient transparency control
+                    const hexToRgb = hex => hex.match(/\w\w/g).map(x => parseInt(x, 16));
+                    const [r, g, b] = hexToRgb(color.substring(1)); // Remove #
+                    spotlight.style.background = `radial-gradient(circle, rgba(${r},${g},${b},0.2) 0%, rgba(${r},${g},${b},0) 70%)`;
+                }
+
+                localStorage.setItem('preferredCursorColor', color);
+            }
+
+            // Set cursor size for base cursor and relevant effects
+            function setCursorSize(sizeValue) {
+                 const size = parseFloat(sizeValue) || 1;
+                 const dotSize = 8 * size;
+                 const outlineSize = 40 * size;
+                 const elasticSize = 30 * size; // Base size for elastic
+
+                cursorDot.style.width = `${dotSize}px`;
+                cursorDot.style.height = `${dotSize}px`;
+
+                cursorOutline.style.width = `${outlineSize}px`;
+                cursorOutline.style.height = `${outlineSize}px`;
+
+                 // Update elastic cursor size if active
+                if (elasticCursor) {
+                    // Use the appropriate size based on mouse state (up/down)
+                    const isMouseDown = elasticCursor.style.width === `${20 * size}px`; // Check if shrunk
+                    elasticCursor.style.width = `${(isMouseDown ? 20 : 30) * size}px`;
+                    elasticCursor.style.height = `${(isMouseDown ? 20 : 30) * size}px`;
+                }
+                 // Re-call animateCursor once to instantly update positions based on new size centers
+                 animateCursor();
+                 cancelAnimationFrame(animationFrameId); // Stop the previous loop
+                 animateCursor(); // Start a new one to reflect size change instantly
+
+                 localStorage.setItem('preferredCursorSize', size);
+            }
+
+            // --- Event Listeners Setup ---
+            function setupEventListeners() {
+                // Effect selector
+                cursorSelector.addEventListener('change', (e) => {
+                    applyCursorEffect(e.target.value);
+                });
+
+                // Color picker
+                cursorColorInput.addEventListener('input', (e) => {
+                    setCursorColor(e.target.value);
+                });
+
+                // Size slider
+                cursorSizeInput.addEventListener('input', (e) => {
+                    setCursorSize(e.target.value);
+                });
+
+                // Window focus/blur (hide cursor when window not focused)
+                 window.addEventListener('blur', () => {
+                    cursorVisible = false;
+                    toggleCursorVisibility();
+                });
+                 window.addEventListener('focus', () => {
+                    cursorVisible = true;
+                    toggleCursorVisibility();
+                 });
+
+                // Mouse leaving/entering window
+                document.addEventListener('mouseleave', () => {
+                    cursorVisible = false;
+                    toggleCursorVisibility();
+                });
+                document.addEventListener('mouseenter', (e) => {
+                    // Update position immediately on re-enter
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    outlineX = mouseX; // Snap outline instantly on re-enter
+                    outlineY = mouseY;
+                    cursorVisible = true;
+                    toggleCursorVisibility();
+                });
+
+                // Hide custom cursor over specific UI areas (like dropdowns)
+                const cursorVisibleAreas = document.querySelectorAll('.cursor-visible-area');
+                cursorVisibleAreas.forEach(area => {
+                    area.addEventListener('mouseenter', () => {
+                        cursorDot.style.opacity = '0';
+                        cursorOutline.style.opacity = '0';
+                        if (elasticCursor) elasticCursor.style.opacity = '0';
+                        if (cursorTextElement) cursorTextElement.style.opacity = '0';
+                        if (spotlight) spotlight.style.opacity = '0';
+                    });
+                    area.addEventListener('mouseleave', () => {
+                        // Restore visibility based on window focus state
+                        toggleCursorVisibility();
+                    });
+                });
+
+                 // Add hover listeners to general interactive elements
+                 const interactiveElements = document.querySelectorAll('a, button, input[type="button"], input[type="submit"], .interactive');
+                 interactiveElements.forEach(el => {
+                    // Exclude magnetic elements handled separately unless magnetic effect is off
+                    if (!el.classList.contains('magnetic-element') || currentEffect !== 'magnetic') {
+                         el.addEventListener('mouseenter', handleMouseEnterInteractive);
+                         el.addEventListener('mouseleave', handleMouseLeaveInteractive);
+                    }
+                 });
+            }
+
+            // --- Utility Functions ---
+            function throttle(func, limit) {
+                let inThrottle;
+                let lastFunc;
+                let lastRan;
+                return function() {
+                    const context = this;
+                    const args = arguments;
+                    if (!inThrottle) {
+                        func.apply(context, args);
+                        lastRan = Date.now();
+                        inThrottle = true;
+                        setTimeout(function() {
+                            inThrottle = false;
+                            if (lastFunc) {
+                                lastFunc();
+                                lastFunc = null;
+                            }
+                        }, limit);
+                    } else {
+                         lastFunc = function() {
+                            if ((Date.now() - lastRan) >= limit) {
+                                func.apply(context, args);
+                                lastRan = Date.now();
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // --- Initialization ---
+            function initialize() {
+                // Load preferences
+                const preferredEffect = localStorage.getItem('preferredCursorEffect') || 'default';
+                const preferredColor = localStorage.getItem('preferredCursorColor') || '#ffffff';
+                const preferredSize = localStorage.getItem('preferredCursorSize') || '1';
+
+                // Set UI controls to loaded preferences
+                cursorSelector.value = preferredEffect;
+                cursorColorInput.value = preferredColor;
+                cursorSizeInput.value = preferredSize;
+
+                // Apply loaded settings
+                setCursorColor(preferredColor);
+                setCursorSize(preferredSize);
+                applyCursorEffect(preferredEffect); // Apply effect *after* setting color/size
+
+                // Setup base event listeners
+                setupEventListeners();
+
+                // Start the cursor animation
+                initCursor();
+
+                // Make cursor visible initially after setup
+                cursorVisible = true;
+                toggleCursorVisibility();
+            }
+
+            initialize(); // Run initialization
+        });
+    </script>
+
+</body>
+</html>

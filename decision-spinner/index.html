@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-molten-core">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Spinner Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@400;600;800&family=Roboto+Mono:wght@500&family=Aldrich&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Exo 2', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-exo {
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .font-roboto-mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .font-aldrich {
+            font-family: 'Aldrich', sans-serif;
+        }
+
+        /* Theme Definitions */
+        :root,
+        .theme-default-light {
+            --bg-gradient-start: #e5e7eb;
+            --bg-gradient-end: #d1d5db;
+            --bg-image: none;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-border: rgba(156, 163, 175, 0.6);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --card-shadow-glow: none;
+            --text-primary: #1f2937;
+            --text-secondary: #3b82f6;
+            --text-accent: #1d4ed8;
+            --text-muted: #6b7280;
+            --button-bg: linear-gradient(145deg, #3b82f6, #2563eb);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #60a5fa, #3b82f6);
+            --button-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            --input-bg: #ffffff;
+            --input-border: #d1d5db;
+            --input-text: #1f2937;
+            --input-focus-ring: var(--text-secondary);
+            --spinner-pointer-color: var(--text-accent);
+            --spinner-wheel-border: var(--card-border);
+            --spinner-color-1: #3b82f6;
+            --spinner-color-2: #10b981;
+            --spinner-color-3: #f59e0b;
+            --spinner-color-4: #ef4444;
+            --spinner-color-5: #8b5cf6;
+            --spinner-color-6: #ec4899;
+            --font-heading: 'Orbitron', sans-serif;
+            --font-body: 'Exo 2', sans-serif;
+            --transition-speed: 0.5s;
+        }
+
+        .theme-molten-core {
+            --bg-gradient-start: #3c0a00;
+            --bg-gradient-end: #000000;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><path d="M 0 60 Q 30 20, 60 60 T 120 60" stroke="%23f8717130" stroke-width="2" fill="none"/><path d="M 0 80 Q 30 120, 60 80 T 120 80" stroke="%23f59e0b20" stroke-width="1.5" fill="none"/></svg>');
+            background-size: 80px 80px;
+            --card8068: rgba(28, 25, 23, 0.95);
+            --card-border: rgba(251, 146, 60, 0.8);
+            --card-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+            --card-shadow-glow: 0 0 40px rgba(249, 115, 22, 0.5);
+            --text-primary: #fed7aa;
+            --text-secondary: #fb923c;
+            --text-accent: #f97316;
+            --text-muted: #fecaca;
+            --button-bg: linear-gradient(145deg, #f97316, #c2410c);
+            --button-text: #fff7ed;
+            --button-hover-bg: linear-gradient(145deg, #fb923c, #f97316);
+            --button-shadow: 0 10px 30px rgba(251, 146, 60, 0.6);
+            --input-bg: rgba(41, 37, 36, 0.95);
+            --input-border: var(--text-secondary);
+            --input-text: #fed7aa;
+            --input-focus-ring: var(--text-accent);
+            --spinner-pointer-color: #dc2626;
+            --spinner-wheel-border: var(--text-secondary);
+            --spinner-color-1: #f97316;
+            --spinner-color-2: #ea580c;
+            --spinner-color-3: #dc2626;
+            --spinner-color-4: #fbbf24;
+            --spinner-color-5: #facc15;
+            --spinner-color-6: #eab308;
+            --font-heading: 'Orbitron', sans-serif;
+            font-weight: 900;
+            --font-body: 'Exo 2', sans-serif;
+            font-weight: 600;
+            --transition-speed: 0.5s;
+        }
+
+        .theme-cyber-circuit {
+            --bg-gradient-start: #080c1f;
+            --bg-gradient-end: #151a2f;
+            --bg-image: radial-gradient(circle at 2px 2px, rgba(45, 212, 191, 0.7) 1px, transparent 0), radial-gradient(circle at 20px 20px, rgba(99, 102, 241, 0.5) 1px, transparent 0);
+            background-size: 40px 40px;
+            --card-bg: rgba(20, 26, 48, 0.95);
+            --card-border: rgba(45, 212, 191, 0.7);
+            --card-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+            --card-shadow-glow: 0 0 30px rgba(45, 212, 191, 0.4);
+            --text-primary: #e0f2fe;
+            --text-secondary: #2dd4bf;
+            --text-accent: #6366f1;
+            --text-muted: #94a3b8;
+            --button-bg: linear-gradient(145deg, #2dd4bf, #14b8a6);
+            --button-text: #0a0f21;
+            --button-hover-bg: linear-gradient(145deg, #5eead4, #2dd4bf);
+            --button-shadow: 0 8px 25px rgba(45, 212, 191, 0.5);
+            --input-bg: rgba8, 13, 28, 0.95);
+            --input-border: var(--text-accent);
+            --input-text: #e0f2fe;
+            --input-focus-ring: var(--text-secondary);
+            --spinner-pointer-color: var(--text-accent);
+            --spinner-wheel-border: var(--text-secondary);
+            --spinner-color-1: #2dd4bf;
+            --spinner-color-2: #6366f1;
+            --spinner-color-3: #a78bfa;
+            --spinner-color-4: #f472b6;
+            --spinner-color-5: #38bdf8;
+            --spinner-color-6: #a3e635;
+            --font-heading: 'Orbitron', sans-serif;
+            --font-body: 'Exo 2', sans-serif;
+            --transition-speed: 0.5s;
+        }
+
+        .theme-bio-hazard {
+            --bg-gradient-start: #132912;
+            --bg-gradient-end: #000000;
+            --bg-image: linear-gradient(rgba(132, 204, 22, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(132, 204, 22, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            --card-bg: rgba(15, 30, 15, 0.95);
+            --card-border: rgba(132, 204, 22, 0.8);
+            --card-shadow: 0 20px 60px rgba(0, 15, 0, 0.9);
+            --card-shadow-glow: 0 0 40px rgba(132, 204, 22, 0.5);
+            --text-primary: #d9f99d;
+            --text-secondary: #a3e635;
+            --text-accent: #84cc16;
+            --text-muted: #bef264;
+            --button-bg: linear-gradient(145deg, #a3e635, #84cc16);
+            --button-text: #1a2e05;
+            --button-hover-bg: linear-gradient(145deg, #bef264, #a3e635);
+            --button-shadow: 0 10px 30px rgba(132, 204, 22, 0.6);
+            --input-bg: rgba(20, 50, 20, 0.95);
+            --input-border: var(--text-secondary);
+            --input-text: #d9f99d;
+            --input-focus-ring: var(--text-accent);
+            --spinner-pointer-color: var(--text-accent);
+            --spinner-wheel-border: #a3e635;
+            --spinner-color-1: #a3e635;
+            --spinner-color-2: #bef264;
+            --spinner-color-3: #84cc16;
+            --spinner-color-4: #4d7c0f;
+            --spinner-color-5: #facc15;
+            --spinner-color-6: #fbbf24;
+            --font-heading: 'Aldrich', sans-serif;
+            --font-body: 'Exo 2', sans-serif;
+            font-weight: 600;
+            --transition-speed: 0.5s;
+        }
+
+        /* Base Styles */
+        body {
+            background-color: var(--bg-gradient-start);
+            background-image: var(--bg-image), linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .component-card {
+            background-color: var(--card-bg);
+            border: 3px solid var(--card-border);
+            box-shadow: var(--card-shadow), var(--card-shadow-glow), inset 0 0 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px);
+            transition: all var(--transition-speed) ease-in-out;
+            border-radius: 2rem;
+            padding: 3rem;
+        }
+
+        .component-card h2 {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            border-bottom: 4px solid var(--card-border);
+            padding-bottom: 1rem;
+            margin-bottom: 2.5rem;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+            color: var(--text-primary);
+            text-align: center;
+            font-size: 3rem;
+        }
+
+        .themed-button {
+            background-image: var(--button-bg);
+            color: var(--button-text);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            box-shadow: var(--button-shadow), 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all var(--transition-speed) ease-in-out, transform 0.2s ease;
+            border-radius: 1rem;
+            padding: 1rem 2rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            border: 2px solid color-mix(in srgb, var(--button-text) 25%, transparent);
+        }
+
+        .themed-button:hover {
+            background-image: var(--button-hover-bg);
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3), var(--button-shadow);
+        }
+
+        .themed-button:active {
+            transform: translateY(-2px) scale(0.95);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), var(--button-shadow);
+        }
+
+        .themed-input,
+        textarea.themed-input {
+            background-color: var(--input-bg);
+            border: 3px solid var(--input-border);
+            color: var(--input-text);
+            transition: all var(--transition-speed) ease, box-shadow 0.3s ease;
+            border-radius: 1rem;
+            padding: 1.2rem;
+            font-family: var(--font-body);
+            font-size: 1.2rem;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .themed-input:focus,
+        textarea.themed-input:focus {
+            outline: none;
+            border-color: var(--input-focus-ring);
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.2), 0 0 0 5px color-mix(in srgb, var(--input-focus-ring) 50%, transparent);
+        }
+
+        .theme-selector-container {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            z-index: 50;
+        }
+
+        .themed-select {
+            background-color: var(--input-bg);
+            border: 2px solid var(--input-border);
+            color: var(--input-text);
+            font-family: var(--font-heading);
+            font-weight: 600;
+            padding: 0.6rem 3rem 0.6rem 1.2rem;
+            border-radius: 0.75rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 1rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Spinner Styles */
+        .spinner-display {
+            min-height: 400px;
+        }
+
+        .spinner-pointer {
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-top-width: 50px;
+            border-top-style: solid;
+            border-top-color: var(--spinner-pointer-color);
+            z-index: 20;
+            filter: drop-shadow(0 -6px 6px rgba(0, 0, 0, 0.6));
+            transition: border-top-color var(--transition-speed) ease;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .spinner-wheel {
+            border-width: 12px;
+            border-style: solid;
+            border-color: var(--spinner-wheel-border);
+            transition: transform 7s cubic-bezier(0.25, 0, 0.1, 1);
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5), 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 20px var(--card-shadow-glow);
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .spinner-segment-label {
+            position: absolute;
+            color: var(--text-primary);
+            font-family: var(--font-heading);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 100px;
+            transform-origin: center;
+            pointer-events: none;
+        }
+
+        #spinner-result {
+            pointer-events: none;
+        }
+
+        .spinner-result-text {
+            color: var(--text-primary);
+            text-shadow: 0 0 15px var(--card-bg), 0 0 25px var(--card-bg), 0 3px 6px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transition: opacity 0.8s ease 0.4s;
+            font-size: 2rem;
+            font-weight: 900;
+            font-family: var(--font-heading);
+            line-height: 1.3;
+            max-width: 80%;
+        }
+
+        .spinner-result-text.visible {
+            opacity: 1;
+        }
+
+        #spin-btn .animate-spin {
+            display: inline-block;
+            width: 1.8em;
+            height: 1.8em;
+            animation: spin 1s linear infinite;
+        }
+
+        #spin-btn:disabled .animate-spin {
+            display: inline-block;
+        }
+
+        #spin-btn:not(:disabled) .animate-spin {
+            display: none;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .glow-effect {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                text-shadow: 0 0 10px var(--text-accent);
+            }
+
+            50% {
+                text-shadow: 0 0 20px var(--text-accent), 0 0 30px var(--text-secondary);
+            }
+        }
+    </style>
+</head>
+
+<body class="transition-colors duration-500">
+    <div class="theme-selector-container">
+        <select id="theme-selector" class="themed-select">
+            <option value="molten-core">Molten Core</option>
+            <option value="cyber-circuit">Cyber Circuit</option>
+            <option value="bio-hazard">Bio Hazard</option>
+            <option value="default-light">Default Light</option>
+        </select>
+    </div>
+    <main class="main-container">
+        <section class="component-card" data-component-id="decision-spinner">
+            <h2 class="glow-effect">Decision Engine</h2>
+            <div class="preview-area my-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="input-options">
+                    <label for="spinner-options" class="block mb-5 text-2xl font-semibold"
+                        style="color: var(--text-muted);">Input Parameters:</label>
+                    <textarea id="spinner-options" rows="8" class="themed-input w-full" placeholder="Parameter Alpha...
+Parameter Beta...
+Parameter Gamma...
+Parameter Delta...
+Parameter Epsilon..."></textarea>
+                    <button id="spin-btn" class="themed-button w-full py-4 px-6 mt-6 text-xl">
+                        <i class="fas fa-sync-alt mr-3 animate-spin hidden" id="spin-icon"></i> ENGAGE SPINNER
+                    </button>
+                </div>
+                <div
+                    class="spinner-display flex flex-col items-center justify-center relative aspect-square max-w-[450px] mx-auto">
+                    <div class="spinner-pointer"></div>
+                    <div id="spinner-wheel" class="spinner-wheel">
+                        <div id="spinner-labels"></div>
+                    </div>
+                    <div id="spinner-result" class="absolute inset-0 flex items-center justify-center text-center p-8">
+                        <span class="spinner-result-text break-words"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        const themeSelector = document.getElementById('theme-selector');
+        const htmlElement = document.documentElement;
+
+        function applyTheme(themeName) {
+            const classList = htmlElement.classList;
+            for (let i = classList.length - 1; i >= 0; i--) {
+                if (classList[i].startsWith('theme-')) classList.remove(classList[i]);
+            }
+            htmlElement.classList.add(`theme-${themeName}`);
+            localStorage.setItem('decisionSpinnerTheme', themeName);
+            if (themeSelector.value !== themeName) themeSelector.value = themeName;
+        }
+
+        themeSelector?.addEventListener('change', (e) => applyTheme(e.target.value));
+
+        (function initDecisionSpinner() {
+            const optionsTextarea = document.getElementById('spinner-options');
+            const spinBtn = document.getElementById('spin-btn');
+            const spinnerWheel = document.getElementById('spinner-wheel');
+            const spinnerLabels = document.getElementById('spinner-labels');
+            const spinnerResultText = document.querySelector('#spinner-result .spinner-result-text');
+            const spinIcon = document.getElementById('spin-icon');
+
+            if (!optionsTextarea || !spinBtn || !spinnerWheel || !spinnerLabels || !spinnerResultText || !spinIcon) {
+                console.error("Spinner elements not found!");
+                return;
+            }
+
+            let currentRotation = 0;
+            let isSpinning = false;
+
+            function generateConicGradient(numOptions) {
+                if (numOptions < 1) return 'transparent';
+                const colors = [
+                    'var(--spinner-color-1, #f97316)', 'var(--spinner-color-2, #ea580c)',
+                    'var(--spinner-color-3, #dc2626)', 'var(--spinner-color-4, #fbbf24)',
+                    'var(--spinner-color-5, #facc15)', 'var(--spinner-color-6, #eab308)'
+                ];
+                if (numOptions === 1) return colors[0];
+
+                let gradient = '';
+                const segmentAngle = 360 / numOptions;
+                for (let i = 0; i < numOptions; i++) {
+                    const startAngle = i * segmentAngle;
+                    const endAngle = (i + 1) * segmentAngle;
+                    const color = colors[i % colors.length];
+                    gradient += `${color} ${startAngle}deg ${endAngle}deg, `;
+                }
+                return `conic-gradient(${gradient.slice(0, -2)})`;
+            }
+
+            function addSegmentLabels(options) {
+                spinnerLabels.innerHTML = '';
+                if (options.length < 1) return;
+
+                const segmentAngle = 360 / options.length;
+                const radius = 150; // Adjust based on wheel size
+                options.forEach((option, i) => {
+                    const angle = (i * segmentAngle + segmentAngle / 2) * (Math.PI / 180);
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius;
+                    const label = document.createElement('div');
+                    label.className = 'spinner-segment-label';
+                    label.textContent = option.length > 20 ? option.substring(0, 17) + '...' : option;
+                    label.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${angle * 180 / Math.PI + 90}deg)`;
+                    spinnerLabels.appendChild(label);
+                });
+            }
+
+            function spinWheel() {
+                if (isSpinning) return;
+
+                const options = optionsTextarea.value.split('\n')
+                    .map(opt => opt.trim())
+                    .filter(opt => opt.length > 0);
+
+                if (options.length < 1) {
+                    alert("Please input at least one parameter.");
+                    return;
+                }
+
+                if (options.length === 1) {
+                    spinnerResultText.textContent = options[0];
+                    spinnerResultText.classList.add('visible');
+                    spinnerWheel.style.background = generateConicGradient(1);
+                    addSegmentLabels(options);
+                    return;
+                }
+
+                isSpinning = true;
+                spinBtn.disabled = true;
+                spinIcon.classList.remove('hidden');
+                spinnerResultText.classList.remove('visible');
+                spinnerResultText.textContent = '';
+
+                spinnerWheel.style.background = generateConicGradient(options.length);
+                addSegmentLabels(options);
+
+                const segmentAngle = 360 / options.length;
+                const randomIndex = Math.floor(Math.random() * options.length);
+                const selectedOption = options[randomIndex];
+
+                const segmentMidpointAngle = (segmentAngle * randomIndex) + (segmentAngle / 2);
+                const targetRotationWithin360 = 360 - segmentMidpointAngle;
+                const randomFullSpins = (Math.floor(Math.random() * 10) + 8) * 360;
+                const finalRotation = currentRotation + randomFullSpins + targetRotationWithin360;
+
+                spinnerWheel.style.transform = `rotate(${finalRotation}deg)`;
+                currentRotation = finalRotation % 360;
+
+                const spinDuration = 7000;
+                const resultDelay = spinDuration - 500;
+
+                setTimeout(() => {
+                    spinnerResultText.textContent = selectedOption;
+                    spinnerResultText.classList.add('visible');
+                    isSpinning = false;
+                    spinBtn.disabled = false;
+                    spinIcon.classList.add('hidden');
+                }, resultDelay);
+
+                spinnerWheel.addEventListener('transitionend', () => {
+                    if (isSpinning) {
+                        isSpinning = false;
+                        spinBtn.disabled = false;
+                        spinIcon.classList.add('hidden');
+                    }
+                }, { once: true });
+            }
+
+            spinBtn.addEventListener('click', spinWheel);
+
+            const initialOptions = optionsTextarea.placeholder.split('\n')
+                .map(opt => opt.trim())
+                .filter(opt => opt.length > 0);
+            spinnerWheel.style.background = generateConicGradient(initialOptions.length);
+            addSegmentLabels(initialOptions);
+        })();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('decisionSpinnerTheme') || 'molten-core';
+            applyTheme(savedTheme);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Garden Scroll Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&display=swap');
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background-color: #f7f4f0;
+            overflow-x: hidden;
+        }
+
+        .zen-section {
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scroll-indicator {
+            animation: bounce 2s infinite;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 4s infinite ease-out;
+        }
+
+        .floating {
+            animation: floating 6s infinite ease-in-out;
+        }
+
+        .slow-rotate {
+            animation: rotate 30s infinite linear;
+        }
+
+        .path-animation {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+        }
+
+        .leaf {
+            position: absolute;
+            opacity: 0;
+            transform: rotate(0deg);
+        }
+
+        .sand-pattern {
+            background-color: #f3eee4;
+            background-image: radial-gradient(#e5e0d5 1px, transparent 1px);
+            background-size: 10px 10px;
+        }
+
+        /* Animations */
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(2deg);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .audio-controls:hover {
+            opacity: 1;
+        }
+
+        /* Progress indicator */
+        .progress-container {
+            position: fixed;
+            width: 4px;
+            height: 100vh;
+            top: 0;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 0%;
+            width: 100%;
+            background-color: #9a8c7e;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: height 0.1s ease;
+        }
+
+        .progress-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #9a8c7e;
+            position: absolute;
+            left: -4px;
+            transform: translateY(-50%);
+            transition: top 0.1s ease;
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Progress Indicator -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-indicator" id="progressIndicator"></div>
+    </div>
+
+    <!-- Audio Controls -->
+    <div class="audio-controls bg-white bg-opacity-80 rounded-full p-3 shadow-md flex items-center space-x-2">
+        <button id="audioToggle" class="focus:outline-none text-gray-600 hover:text-gray-900">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.414l6.707-6.707M5.586 8.464l6.707 6.707" />
+            </svg>
+        </button>
+        <div class="text-xs text-gray-600">Nature Sounds</div>
+    </div>
+
+    <!-- Welcome Screen -->
+    <section class="zen-section flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100">
+        <div class="text-center px-4 relative z-10">
+            <h1 class="text-5xl md:text-7xl font-light text-gray-700 mb-6 opacity-0" id="welcomeTitle">Zen Garden</h1>
+            <p class="text-xl md:text-2xl text-gray-500 max-w-lg mx-auto mb-12 opacity-0" id="welcomeText">
+                A journey of tranquility and mindfulness through scrolling
+            </p>
+            <div class="scroll-indicator opacity-0" id="scrollIndicator">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+                <p class="text-sm text-gray-400 mt-2">Scroll gently</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Water Section -->
+    <section class="zen-section bg-blue-50 flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 opacity-30" id="rippleContainer">
+            <!-- Ripples will be added via JavaScript -->
+        </div>
+        <div class="relative z-10 text-center px-4">
+            <h2 class="text-4xl font-light text-blue-800 mb-6 opacity-0" data-anim="fadeIn">Water</h2>
+            <p class="text-xl text-blue-600 max-w-md mx-auto opacity-0" data-anim="fadeIn">
+                Like water, be fluid and adaptable, finding your way around obstacles with gentle persistence
+            </p>
+        </div>
+    </section>
+
+    <!-- Stone Section -->
+    <section class="zen-section bg-gray-200 flex items-center justify-center overflow-hidden">
+        <div class="sand-pattern absolute inset-0 opacity-60"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="grid grid-cols-3 gap-16 opacity-0" id="stones">
+                <div class="bg-gray-500 rounded-full w-16 h-16 shadow-lg"></div>
+                <div class="bg-gray-600 rounded-full w-24 h-12 shadow-lg"></div>
+                <div class="bg-gray-400 rounded-full w-20 h-20 shadow-lg"></div>
+                <div class="bg-gray-700 rounded-full w-12 h-12 shadow-lg"></div>
+                <div class="bg-gray-800 rounded-full w-28 h-16 shadow-lg"></div>
+                <div class="bg-gray-300 rounded-full w-16 h-16 shadow-lg"></div>
+            </div>
+        </div>
+        <div class="relative z-10 text-center px-4">
+            <h2 class="text-4xl font-light text-gray-700 mb-6 opacity-0" data-anim="fadeIn">Stone</h2>
+            <p class="text-xl text-gray-600 max-w-md mx-auto opacity-0" data-anim="fadeIn">
+                Embrace stability and patience, standing unwavering like stone amidst life's storms
+            </p>
+        </div>
+    </section>
+
+    <!-- Bamboo Section -->
+    <section class="zen-section bg-green-50 flex items-center justify-center">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="flex justify-around h-full opacity-0" id="bamboo">
+                <div class="w-4 bg-gradient-to-t from-green-800 to-green-700 rounded-full"></div>
+                <div class="w-3 bg-gradient-to-t from-green-800 to-green-700 rounded-full mt-20"></div>
+                <div class="w-5 bg-gradient-to-t from-green-800 to-green-700 rounded-full mt-10"></div>
+                <div class="w-3 bg-gradient-to-t from-green-800 to-green-700 rounded-full mt-32"></div>
+                <div class="w-4 bg-gradient-to-t from-green-800 to-green-700 rounded-full mt-16"></div>
+            </div>
+        </div>
+        <div class="relative z-10 text-center px-4">
+            <h2 class="text-4xl font-light text-green-800 mb-6 opacity-0" data-anim="fadeIn">Bamboo</h2>
+            <p class="text-xl text-green-700 max-w-md mx-auto opacity-0" data-anim="fadeIn">
+                Find strength in flexibility. Like bamboo, bend without breaking, growing stronger through adversity
+            </p>
+        </div>
+    </section>
+
+    <!-- Bridge Section -->
+    <section class="zen-section bg-amber-50 flex items-center justify-center">
+        <div class="absolute w-full top-1/2 transform -translate-y-1/2">
+            <svg width="100%" height="200" viewBox="0 0 800 200" fill="none" xmlns="http://www.w3.org/2000/svg"
+                class="opacity-0" id="bridge">
+                <path d="M50,150 Q400,50 750,150" stroke="#8B4513" stroke-width="8" fill="none"
+                    class="path-animation" />
+                <path d="M50,170 Q400,70 750,170" stroke="#8B4513" stroke-width="8" fill="none"
+                    class="path-animation" />
+                <line x1="100" y1="150" x2="100" y2="100" stroke="#8B4513" stroke-width="4" class="path-animation" />
+                <line x1="200" y1="130" x2="200" y2="80" stroke="#8B4513" stroke-width="4" class="path-animation" />
+                <line x1="300" y1="110" x2="300" y2="60" stroke="#8B4513" stroke-width="4" class="path-animation" />
+                <line x1="400" y1="100" x2="400" y2="50" stroke="#8B4513" stroke-width="4" class="path-animation" />
+                <line x1="500" y1="110" x2="500" y2="60" stroke="#8B4513" stroke-width="4" class="path-animation" />
+                <line x1="600" y1="130" x2="600" y2="80" stroke="#8B4513" stroke-width="4" class="path-animation" />
+                <line x1="700" y1="150" x2="700" y2="100" stroke="#8B4513" stroke-width="4" class="path-animation" />
+            </svg>
+        </div>
+        <div class="relative z-10 text-center px-4">
+            <h2 class="text-4xl font-light text-amber-800 mb-6 opacity-0" data-anim="fadeIn">Bridge</h2>
+            <p class="text-xl text-amber-700 max-w-md mx-auto opacity-0" data-anim="fadeIn">
+                Connect different aspects of yourself, crossing over challenges and finding harmony in the journey
+            </p>
+        </div>
+    </section>
+
+    <!-- Maple Section -->
+    <section class="zen-section bg-red-50 flex items-center justify-center overflow-hidden">
+        <div id="leaves" class="absolute inset-0"></div>
+        <div class="relative z-10 text-center px-4">
+            <h2 class="text-4xl font-light text-red-800 mb-6 opacity-0" data-anim="fadeIn">Maple</h2>
+            <p class="text-xl text-red-700 max-w-md mx-auto opacity-0" data-anim="fadeIn">
+                Embrace change with grace. Like falling leaves, let go of what no longer serves you
+            </p>
+        </div>
+    </section>
+
+    <!-- Final Section - Enso Circle -->
+    <section class="zen-section bg-gray-50 flex items-center justify-center">
+        <div class="relative">
+            <svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg"
+                class="opacity-0" id="enso">
+                <path d="M150,50 
+                         C200,50 250,100 250,150 
+                         C250,200 200,250 150,250 
+                         C100,250 50,200 50,150 
+                         C50,100 100,50 150,50 Z" stroke="#333" stroke-width="8" stroke-linecap="round" fill="none"
+                    class="path-animation" stroke-dasharray="800" stroke-dashoffset="800" />
+            </svg>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2">
+            <p class="text-lg text-gray-600 opacity-0" id="finalText">The circle of mindfulness is complete, yet always
+                beginning</p>
+        </div>
+    </section>
+
+    <script>
+        // Wait for the page to load
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize GSAP ScrollTrigger
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Welcome screen animations
+            gsap.to("#welcomeTitle", {
+                opacity: 1,
+                y: 0,
+                duration: 1.5,
+                ease: "power3.out"
+            });
+
+            gsap.to("#welcomeText", {
+                opacity: 1,
+                y: 0,
+                duration: 1.5,
+                delay: 0.5,
+                ease: "power3.out"
+            });
+
+            gsap.to("#scrollIndicator", {
+                opacity: 1,
+                duration: 1,
+                delay: 1.5,
+                ease: "power3.out"
+            });
+
+            // Generic fade-in animations for sections
+            gsap.utils.toArray('[data-anim="fadeIn"]').forEach(element => {
+                gsap.from(element, {
+                    scrollTrigger: {
+                        trigger: element,
+                        start: "top 80%",
+                        toggleActions: "play none none none"
+                    },
+                    opacity: 0,
+                    y: 30,
+                    duration: 1.5,
+                    ease: "power3.out"
+                });
+            });
+
+            // Water section - ripples
+            const rippleContainer = document.getElementById('rippleContainer');
+
+            function createRipple() {
+                if (!document.querySelector('.zen-section:nth-child(2)').matches(':hover')) return;
+
+                const ripple = document.createElement('div');
+                ripple.classList.add('ripple');
+
+                const size = Math.random() * 100 + 50;
+                ripple.style.width = `${size}px`;
+                ripple.style.height = `${size}px`;
+
+                const posX = Math.random() * window.innerWidth;
+                const posY = Math.random() * window.innerHeight;
+                ripple.style.left = `${posX}px`;
+                ripple.style.top = `${posY}px`;
+
+                rippleContainer.appendChild(ripple);
+
+                // Remove the ripple after animation completes
+                setTimeout(() => {
+                    ripple.remove();
+                }, 4000);
+            }
+
+            // Create initial ripples
+            for (let i = 0; i < 5; i++) {
+                setTimeout(createRipple, i * 1000);
+            }
+
+            // Continue creating ripples
+            setInterval(createRipple, 2000);
+
+            // Stone section
+            gsap.to("#stones", {
+                scrollTrigger: {
+                    trigger: "#stones",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                opacity: 1,
+                stagger: 0.2,
+                duration: 1.5,
+                ease: "power3.out"
+            });
+
+            // Bamboo section
+            gsap.to("#bamboo", {
+                scrollTrigger: {
+                    trigger: "#bamboo",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                opacity: 1,
+                duration: 1.5,
+                ease: "power3.out"
+            });
+
+            gsap.from("#bamboo div", {
+                scrollTrigger: {
+                    trigger: "#bamboo",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                height: 0,
+                duration: 2,
+                stagger: 0.2,
+                ease: "power3.out"
+            });
+
+            // Bridge section
+            gsap.to("#bridge", {
+                scrollTrigger: {
+                    trigger: "#bridge",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                opacity: 1,
+                duration: 1.5,
+                ease: "power3.out"
+            });
+
+            gsap.to("#bridge .path-animation", {
+                scrollTrigger: {
+                    trigger: "#bridge",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                strokeDashoffset: 0,
+                duration: 3,
+                ease: "power3.out"
+            });
+
+            // Maple section - falling leaves
+            const leavesContainer = document.getElementById('leaves');
+            const leafColors = ['#e57373', '#ef5350', '#f44336', '#d32f2f', '#b71c1c'];
+
+            function createLeaf() {
+                const leaf = document.createElement('div');
+                leaf.classList.add('leaf');
+
+                const size = Math.random() * 20 + 10;
+                leaf.style.width = `${size}px`;
+                leaf.style.height = `${size}px`;
+
+                const posX = Math.random() * window.innerWidth;
+                leaf.style.left = `${posX}px`;
+                leaf.style.top = '0px';
+
+                const colorIndex = Math.floor(Math.random() * leafColors.length);
+                leaf.style.backgroundColor = leafColors[colorIndex];
+                leaf.style.borderRadius = '50% 0 50% 50%';
+
+                leavesContainer.appendChild(leaf);
+
+                gsap.to(leaf, {
+                    y: window.innerHeight + 100,
+                    x: `+=${Math.random() * 200 - 100}`,
+                    rotation: Math.random() * 720 - 360,
+                    opacity: [0, 0.8, 0],
+                    duration: Math.random() * 10 + 10,
+                    ease: "power1.in",
+                    onComplete: () => leaf.remove()
+                });
+            }
+
+            ScrollTrigger.create({
+                trigger: "#leaves",
+                start: "top bottom",
+                end: "bottom top",
+                onEnter: () => {
+                    // Create initial leaves
+                    for (let i = 0; i < 20; i++) {
+                        setTimeout(createLeaf, i * 300);
+                    }
+
+                    // Continue creating leaves
+                    leafInterval = setInterval(createLeaf, 500);
+                },
+                onLeave: () => clearInterval(leafInterval),
+                onEnterBack: () => {
+                    leafInterval = setInterval(createLeaf, 500);
+                },
+                onLeaveBack: () => clearInterval(leafInterval)
+            });
+
+            // Enso circle animation
+            gsap.to("#enso", {
+                scrollTrigger: {
+                    trigger: "#enso",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                opacity: 1,
+                duration: 1,
+                ease: "power3.out"
+            });
+
+            gsap.to("#enso .path-animation", {
+                scrollTrigger: {
+                    trigger: "#enso",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                strokeDashoffset: 0,
+                duration: 3,
+                ease: "power3.inOut"
+            });
+
+            gsap.to("#finalText", {
+                scrollTrigger: {
+                    trigger: "#finalText",
+                    start: "top 90%",
+                    toggleActions: "play none none reverse"
+                },
+                opacity: 1,
+                y: -20,
+                duration: 1.5,
+                delay: 2,
+                ease: "power3.out"
+            });
+
+            // Progress indicator
+            const progressBar = document.getElementById('progressBar');
+            const progressIndicator = document.getElementById('progressIndicator');
+
+            window.addEventListener('scroll', () => {
+                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrollPercent = (scrollTop / scrollHeight) * 100;
+
+                progressBar.style.height = `${scrollPercent}%`;
+                progressIndicator.style.top = `${scrollPercent}%`;
+            });
+
+            // Audio toggle
+            const audioToggle = document.getElementById('audioToggle');
+            let audioPlaying = false;
+            let audio;
+
+            audioToggle.addEventListener('click', () => {
+                if (!audio) {
+                    audio = new Audio();
+                    // This would be the URL to your nature sounds
+                    // For now, it's commented out since we can't include external audio
+                    // audio.src = 'path-to-your-nature-sounds.mp3';
+                    audio.loop = true;
+                }
+
+                if (audioPlaying) {
+                    audio.pause();
+                    audioToggle.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.414l6.707-6.707M5.586 8.464l6.707 6.707" />
+                        </svg>
+                    `;
+                } else {
+                    audio.play();
+                    audioToggle.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9.172 15.172a4 4 0 010-5.656L12 6.343l6.364 6.364" />
+                        </svg>
+                    `;
+                }
+
+                audioPlaying = !audioPlaying;
+            });
+
+            // Slow down scrolling for a more meditative experience
+            const html = document.documentElement;
+            let isScrolling = false;
+            let scrollEndTimer;
+
+            window.addEventListener('wheel', function (e) {
+                if (!isScrolling) {
+                    isScrolling = true;
+
+                    const delta = e.deltaY * 0.3; // Reduce scroll speed
+                    window.scrollBy(0, delta);
+
+                    e.preventDefault();
+
+                    clearTimeout(scrollEndTimer);
+                    scrollEndTimer = setTimeout(function () {
+                        isScrolling = false;
+                    }, 100);
+                }
+            }, { passive: false });
+        });
+    </script>
+</body>
+
+</html>

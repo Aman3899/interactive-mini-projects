@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All-in-One Utility Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600;700&family=Press+Start+2P&family=Roboto+Mono:wght@400;700&family=MedievalSharp&family=Special+Elite&family=Cinzel:wght@400;700&family=Audiowide&display=swap" rel="stylesheet">
+    <style>
+        /* Base transitions */
+        body, .utility-card, button, input, select, .quote-display, .password-display {
+            transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, transform 0.2s ease;
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-track-bg, #f1f1f1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb-bg, #888);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover-bg, #555);
+        }
+
+        /* Day/Night styles */
+        body.is-day {
+            --bg-color-current: var(--bg-color-day, var(--bg-color, #ffffff));
+            --text-color-current: var(--text-color-day, var(--text-color, #1f2937));
+            --card-bg-current: var(--card-bg-day, var(--card-bg, #f9fafb));
+            --primary-color-current: var(--primary-color-day, var(--primary-color, #3b82f6));
+            --secondary-color-current: var(--secondary-color-day, var(--secondary-color, #10b981));
+            --accent-color-current: var(--accent-color-day, var(--accent-color, #f59e0b));
+        }
+
+        body.is-night {
+            --bg-color-current: var(--bg-color-night, var(--bg-color, #111827));
+            --text-color-current: var(--text-color-night, var(--text-color, #f3f4f6));
+            --card-bg-current: var(--card-bg-night, var(--card-bg, #1f2937));
+            --primary-color-current: var(--primary-color-night, var(--primary-color, #60a5fa));
+            --secondary-color-current: var(--secondary-color-night, var(--secondary-color, #34d399));
+            --accent-color-current: var(--accent-color-night, var(--accent-color, #fcd34d));
+        }
+
+        /* Apply themed variables */
+        body {
+            background-color: var(--bg-color-current);
+            color: var(--text-color-current);
+            font-family: var(--font-family, 'Poppins', sans-serif);
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        .utility-card {
+            background-color: var(--card-bg-current);
+            border: 1px solid var(--border-color, transparent);
+            box-shadow: var(--card-shadow, 0 4px 12px rgba(0, 0, 0, 0.1));
+        }
+
+        .themed-button {
+            background-color: var(--primary-color-current);
+            color: var(--button-text-color, #ffffff);
+            transition: all 0.3s ease;
+        }
+
+        .themed-button:hover {
+            filter: brightness(1.15);
+            transform: translateY(-2px);
+        }
+
+        .themed-button:active {
+            transform: translateY(0);
+            filter: brightness(0.9);
+        }
+
+        .themed-button-secondary {
+            background-color: var(--secondary-color-current);
+            color: var(--button-text-color, #ffffff);
+        }
+
+        .themed-button-secondary:hover {
+            filter: brightness(1.15);
+            transform: translateY(-2px);
+        }
+
+        .themed-button-secondary:active {
+            transform: translateY(0);
+            filter: brightness(0.9);
+        }
+
+        input, select, textarea {
+            background-color: var(--input-bg-color, #ffffff);
+            color: var(--input-text-color, #1f2937);
+            border: 1px solid var(--input-border-color, #d1d5db);
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color-current);
+            box-shadow: 0 0 0 3px rgba(var(--primary-color-current-rgb), 0.2);
+        }
+
+        h1, h2, h3 {
+            color: var(--heading-color, var(--primary-color-current));
+            font-family: var(--heading-font, var(--font-family, 'Poppins', sans-serif));
+        }
+
+        .quote-display {
+            border-left: 4px solid var(--accent-color-current);
+            background-color: var(--quote-bg, var(--card-bg-current));
+        }
+
+        .password-display {
+            background-color: var(--input-bg-color, #e5e7eb);
+            color: var(--input-text-color, #1f2937);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .clock-display {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-color-current);
+            text-shadow: var(--clock-text-shadow, 0 0 5px rgba(255, 255, 255, 0.5));
+        }
+
+        .bmi-category {
+            font-weight: bold;
+        }
+
+        .bmi-Underweight { color: var(--bmi-underweight-color, #3b82f6); }
+        .bmi-Normal { color: var(--bmi-normal-color, #10b981); }
+        .bmi-Overweight { color: var(--bmi-overweight-color, #f59e0b); }
+        .bmi-Obese { color: var(--bmi-obese-color, #ef4444); }
+
+        /* Animations */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; box-shadow: 0 0 5px var(--primary-color-current); }
+            50% { opacity: 0.95; box-shadow: 0 0 20px var(--primary-color-current); }
+        }
+
+        .animate-pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        /* Tooltip styles */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-color-current);
+            color: var(--button-text-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            z-index: 10;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Password strength bar */
+        .strength-bar {
+            height: 6px;
+            border-radius: 3px;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 transition-colors duration-500">
+    <!-- Header and Theme Selector -->
+    <header class="mb-8 flex flex-col sm:flex-row justify-between items-center">
+        <h1 class="text-3xl md:text-4xl font-bold mb-4 sm:mb-0">Utility Hub</h1>
+        <div class="flex items-center space-x-4">
+            <span class="text-sm">Theme:</span>
+            <select id="theme-selector" class="p-2 rounded border text-sm focus:outline-none transition duration-300" aria-label="Select Theme">
+                <!-- Options added by JS -->
+            </select>
+        </div>
+    </header>
+
+    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- World Clock & Day/Night Info -->
+        <section id="time-section" class="utility-card rounded-lg p-6 lg:col-span-2">
+            <h2 class="text-2xl font-semibold mb-4">Time & Location</h2>
+            <div class="mb-4">
+                <p class="text-lg">Local Time (<span id="local-timezone">Detecting...</span>): <span id="local-time" class="font-mono font-bold text-xl clock-display">--:--:--</span></p>
+                <p>Status: <span id="day-night-status" class="font-semibold">--</span></p>
+            </div>
+            <h3 class="text-xl font-medium mb-3">World Clocks:</h3>
+            <div id="world-clocks" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <!-- Clocks added by JS -->
+            </div>
+        </section>
+
+        <!-- Random Quote Generator -->
+        <section id="quote-generator" class="utility-card rounded-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4">Random Quote</h2>
+            <div id="quote-display" class="quote-display p-4 rounded mb-4 min-h-[100px] flex flex-col justify-center animate-pulse-glow">
+                <p id="quote-text" class="italic text-lg">"Loading quote..."</p>
+                <p id="quote-author" class="text-right mt-2 font-medium">~ Author</p>
+            </div>
+            <div class="flex gap-2">
+                <button id="new-quote-btn" class="themed-button flex-grow py-2 px-4 rounded font-semibold tooltip" data-tooltip="Generate a new quote">Get New Quote</button>
+                <button id="share-quote-btn" class="themed-button-secondary p-2 rounded tooltip" data-tooltip="Share on X">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- Age Calculator -->
+        <section id="age-calculator" class="utility-card rounded-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4">Age Calculator</h2>
+            <div class="mb-4">
+                <label for="dob-input" class="block text-sm font-medium mb-1">Enter Date of Birth:</label>
+                <input type="date" id="dob-input" class="w-full p-2 border rounded transition duration-300" aria-describedby="age-result">
+            </div>
+            <button id="calculate-age-btn" class="themed-button w-full py-2 px-4 rounded font-semibold tooltip" data-tooltip="Calculate your age">Calculate Age</button>
+            <div id="age-result" class="text-center text-lg font-semibold mt-4 min-h-[28px]"></div>
+        </section>
+
+        <!-- BMI Calculator -->
+        <section id="bmi-calculator" class="utility-card rounded-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4">BMI Calculator</h2>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="height-input" class="block text-sm font-medium mb-1">Height (cm):</label>
+                    <input type="number" id="height-input" placeholder="e.g., 175" class="w-full p-2 border rounded transition duration-300" aria-describedby="bmi-result">
+                </div>
+                <div>
+                    <label for="weight-input" class="block text-sm font-medium mb-1">Weight (kg):</label>
+                    <input type="number" id="weight-input" placeholder="e.g., 70" class="w-full p-2 border rounded transition duration-300" aria-describedby="bmi-result">
+                </div>
+            </div>
+            <button id="calculate-bmi-btn" class="themed-button w-full py-2 px-4 rounded font-semibold tooltip" data-tooltip="Calculate your BMI">Calculate BMI</button>
+            <div id="bmi-result" class="text-center text-lg font-semibold mt-4 min-h-[28px]"></div>
+        </section>
+
+        <!-- Random Password Generator -->
+        <section id="password-generator" class="utility-card rounded-lg p-6 lg:col-span-2">
+            <h2 class="text-2xl font-semibold mb-4">Password Generator</h2>
+            <div class="flex flex-col sm:flex-row sm:items-end gap-4 mb-4">
+                <div class="flex-grow">
+                    <label for="password-length" class="block text-sm font-medium mb-1">Length:</label>
+                    <input type="number" id="password-length" value="16" min="8" max="128" class="w-full p-2 border rounded transition duration-300" aria-describedby="password-output">
+                </div>
+                <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+                    <label class="flex items-center"><input type="checkbox" id="pw-uppercase" class="mr-2" checked> Uppercase</label>
+                    <label class="flex items-center"><input type="checkbox" id="pw-lowercase" class="mr-2" checked> Lowercase</label>
+                    <label class="flex items-center"><input type="checkbox" id="pw-numbers" class="mr-2" checked> Numbers</label>
+                    <label class="flex items-center"><input type="checkbox" id="pw-symbols" class="mr-2" checked> Symbols</label>
+                </div>
+            </div>
+            <button id="generate-password-btn" class="themed-button w-full py-2 px-4 rounded font-semibold tooltip" data-tooltip="Generate a secure password">Generate Password</button>
+            <div class="mt-4">
+                <label for="password-output" class="block text-sm font-medium mb-1">Generated Password:</label>
+                <div class="flex items-center gap-2">
+                    <input id="password-output" class="password-display flex-grow p-2 rounded border font-mono" readonly placeholder="Your generated password...">
+                    <button id="copy-password-btn" class="themed-button-secondary p-2 rounded tooltip" data-tooltip="Copy to Clipboard">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="strength-bar" class="strength-bar mt-2" style="width: 0;"></div>
+                <p id="strength-text" class="text-sm mt-1"></p>
+            </div>
+            <p id="copy-status" class="text-sm text-center mt-2 h-4"></p>
+        </section>
+
+        <!-- Unit Converter -->
+        <section id="unit-converter" class="utility-card rounded-lg p-6 lg:col-span-3">
+            <h2 class="text-2xl font-semibold mb-4">Unit Converter</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 items-end">
+                <div class="sm:col-span-1">
+                    <label for="converter 				-converter-type" class="block text-sm font-medium mb-1">Type:</label>
+                    <select id="converter-type" class="w-full p-2 border rounded transition duration-300" aria-label="Select conversion type">
+                        <option value="length">Length</option>
+                        <option value="weight">Weight</option>
+                        <option value="temperature">Temperature</option>
+                        <option value="area">Area</option>
+                        <option value="volume">Volume</option>
+                    </select>
+                </div>
+                <div class="sm:col-span-2 flex gap-2">
+                    <div class="flex-grow">
+                        <label for="unit-input" class="block text-sm font-medium mb-1">Value:</label>
+                        <input type="number" id="unit-input" placeholder="Enter value" class="w-full p-2 border rounded transition duration-300" aria-describedby="unit-output">
+                    </div>
+                    <div>
+                        <label for="unit-from" class="block text-sm font-medium mb-1">From:</label>
+                        <select id="unit-from" class="w-full p-2 border rounded transition duration-300" aria-label="Select unit to convert from">
+                            <!-- Options added by JS -->
+                        </select>
+                    </div>
+                </div>
+                <div class="sm:col-span-2 flex gap-2">
+                    <div>
+                        <label for="unit-to" class="block text-sm font-medium mb-1">To:</label>
+                    <select id="unit-to" class="w-full p-2 border rounded transition duration-300" aria-label="Select unit to convert to">
+                        <!-- Options added by JS -->
+                    </select>
+                </div>
+                <div class="flex-grow">
+                    <label class="block text-sm font-medium mb-1">Result:</label>
+                    <input id="unit-output" class="w-full p-2 border rounded bg-gray-100 readonly" readonly aria-live="polite">
+                </div>
+            </div>
+        </div>
+        <div id="conversion-history" class="mt-4 text-sm">
+            <h3 class="font-medium mb-2">Recent Conversions:</h3>
+            <ul id="history-list" class="list-disc pl-5"></ul>
+        </div>
+    </section>
+</main>
+
+<footer class="text-center mt-12 text-sm opacity-70">
+    Utility Hub - A Collection of Useful Tools | &copy; 2025
+</footer>
+
+<script>
+    // --- THEME DEFINITIONS ---
+    const themes = {
+        'default-light': {
+            name: 'Default Light',
+            '--bg-color-day': '#f3f4f6', '--bg-color-night': '#1f2937',
+            '--text-color-day': '#1f2937', '--text-color-night': '#f3f4f6',
+            '--card-bg-day': '#ffffff', '--card-bg-night': '#374151',
+            '--primary-color-day': '#3b82f6', '--primary-color-night': '#60a5fa',
+            '--secondary-color-day': '#10b981', '--secondary-color-night': '#34d399',
+            '--accent-color-day': '#f59e0b', '--accent-color-night': '#fcd34d',
+            '--border-color': '#e5e7eb',
+            '--input-bg-color': '#ffffff', '--input-text-color': '#1f2937', '--input-border-color': '#d1d5db',
+            '--font-family': "'Poppins', sans-serif", '--heading-font': "'Poppins', sans-serif",
+            '--button-text-color': '#ffffff',
+            '--scrollbar-track-bg': '#f1f1f1', '--scrollbar-thumb-bg': '#888', '--scrollbar-thumb-hover-bg': '#555',
+            '--quote-bg': 'rgba(255, 255, 255, 0.5)',
+            '--bmi-underweight-color': '#3b82f6', '--bmi-normal-color': '#10b981', '--bmi-overweight-color': '#f59e0b', '--bmi-obese-color': '#ef4444',
+            '--primary-color-current-rgb': '59, 130, 246'
+        },
+        'default-dark': {
+            name: 'Default Dark',
+            '--bg-color': '#111827', '--text-color': '#d1d5db',
+            '--card-bg': '#1f2937',
+            '--primary-color': '#60a5fa', '--secondary-color': '#34d399', '--accent-color': '#fcd34d',
+            '--border-color': '#374151',
+            '--input-bg-color': '#374151', '--input-text-color': '#f3f4f6', '--input-border-color': '#4b5563',
+            '--font-family': "'Poppins', sans-serif", '--heading-font': "'Poppins', sans-serif",
+            '--button-text-color': '#111827',
+            '--scrollbar-track-bg': '#374151', '--scrollbar-thumb-bg': '#6b7280', '--scrollbar-thumb-hover-bg': '#9ca3af',
+            '--quote-bg': 'rgba(55, 65, 81, 0.7)',
+            '--bmi-underweight-color': '#60a5fa', '--bmi-normal-color': '#34d399', '--bmi-overweight-color': '#fcd34d', '--bmi-obese-color': '#f87171',
+            '--primary-color-current-rgb': '96, 165, 250'
+        },
+        'cyberpunk-neon': {
+            name: 'Cyberpunk Neon',
+            '--bg-color': '#0d0221', '--bg-image': 'linear-gradient(45deg, #0d0221, #241744, #0d0221)',
+            '--text-color': '#e0e1dd',
+            '--card-bg': 'rgba(26, 2, 48, 0.8)',
+            '--primary-color': '#f900f3', '--secondary-color': '#00f7f7', '--accent-color': '#f3ff2f',
+            '--border-color': 'rgba(0, 247, 247, 0.5)',
+            '--input-bg-color': '#1a0230', '--input-text-color': '#e0e1dd', '--input-border-color': '#f900f3',
+            '--font-family': "'Audiowide', cursive", '--heading-font': "'Audiowide', cursive",
+            '--button-text-color': '#0d0221',
+            '--clock-text-shadow': '0 0 8px var(--accent-color)',
+            '--scrollbar-track-bg': '#1a0230', '--scrollbar-thumb-bg': '#f900f3', '--scrollbar-thumb-hover-bg': '#ff69b4',
+            '--quote-bg': 'rgba(26, 2, 48, 0.9)',
+            '--bmi-underweight-color': '#00f7f7', '--bmi-normal-color': '#34d399', '--bmi-overweight-color': '#f3ff2f', '--bmi-obese-color': '#f900f3',
+            '--primary-color-current-rgb': '249, 0, 243'
+        },
+        'witcher-wild': {
+            name: 'Witcher Wild Hunt',
+            '--bg-color': '#2e2a24', '--bg-image': 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Cg fill=\'%234d463d\' fill-opacity=\'0.2\'%3E%3Cpath d=\'M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z\'/%3E%3C/g%3E%3C/svg%3E")',
+            '--text-color': '#d8c8a8',
+            '--card-bg': 'rgba(60, 54, 46, 0.85)',
+            '--primary-color': '#c89c4c', '--secondary-color': '#8a7f70', '--accent-color': '#e4a53a',
+            '--border-color': '#7a6d5a',
+            '--input-bg-color': '#4d463d', '--input-text-color': '#d8c8a8', '--input-border-color': '#8a7f70',
+            '--font-family': "'MedievalSharp', cursive", '--heading-font': "'Cinzel', serif",
+            '--button-text-color': '#2e2a24',
+            '--scrollbar-track-bg': '#4d463d', '--scrollbar-thumb-bg': '#8a7f70', '--scrollbar-thumb-hover-bg': '#c89c4c',
+            '--quote-bg': 'rgba(60, 54, 46, 0.9)',
+            '--bmi-underweight-color': '#8a7f70', '--bmi-normal-color': '#a5c4a0', '--bmi-overweight-color': '#e4a53a', '--bmi-obese-color': '#b96d40',
+            '--primary-color-current-rgb': '200, 156, 76'
+        },
+        'matrix-digital': {
+            name: 'Matrix Digital',
+            '--bg-color': '#000000', '--bg-image': 'linear-gradient(to bottom, #000000, #001400)',
+            '--text-color': '#00ff41',
+            '--card-bg': 'rgba(0, 20, 0, 0.8)',
+            '--primary-color': '#00ff41', '--secondary-color': '#008f11', '--accent-color': '#00ff41',
+            '--border-color': '#008f11',
+            '--input-bg-color': '#001000', '--input-text-color': '#00ff41', '--input-border-color': '#008f11',
+            '--font-family': "'Roboto Mono', monospace", '--heading-font': "'Roboto Mono', monospace",
+            '--button-text-color': '#000000',
+            '--clock-text-shadow': '0 0 10px #00ff41',
+            '--scrollbar-track-bg': '#001000', '--scrollbar-thumb-bg': '#008f11', '--scrollbar-thumb-hover-bg': '#00ff41',
+            '--quote-bg': 'rgba(0, 20, 0, 0.9)',
+            '--bmi-underweight-color': '#00ff41', '--bmi-normal-color': '#34d399', '--bmi-overweight-color': '#a3e635', '--bmi-obese-color': '#ffff00',
+            '--primary-color-current-rgb': '0, 255, 65'
+        },
+        'stranger-80s': {
+            name: 'Stranger 80s',
+            '--bg-color': '#0d0c11', '--bg-image': 'linear-gradient(135deg, #0d0c11 0%, #2a223a 50%, #0d0c11 100%)',
+            '--text-color': '#e5e5e5',
+            '--card-bg': 'rgba(20, 18, 28, 0.85)',
+            '--primary-color': '#ff4068', '--secondary-color': '#00bfff', '--accent-color': '#ffcc00',
+            '--border-color': 'rgba(255, 64, 104, 0.5)',
+            '--input-bg-color': '#1c1a25', '--input-text-color': '#e5e5e5', '--input-border-color': '#ff4068',
+            '--font-family': "'Special Elite', cursive", '--heading-font': "'Press Start 2P', cursive",
+            '--button-text-color': '#0d0c11',
+            '--clock-text-shadow': '0 0 6px var(--accent-color)',
+            '--scrollbar-track-bg': '#1c1a25', '--scrollbar-thumb-bg': '#ff4068', '--scrollbar-thumb-hover-bg': '#ff708f',
+            '--quote-bg': 'rgba(20, 18, 28, 0.9)',
+            '--bmi-underweight-color': '#00bfff', '--bmi-normal-color': '#34d399', '--bmi-overweight-color': '#ffcc00', '--bmi-obese-color': '#ff4068',
+            '--primary-color-current-rgb': '255, 64, 104'
+        },
+        'star-wars': {
+            name: 'Star Wars',
+            '--bg-color': '#000000', '--bg-image': 'radial-gradient(circle, #1c2526, #000000)',
+            '--text-color': '#e6e6e6',
+            '--card-bg': 'rgba(28, 37, 38, 0.9)',
+            '--primary-color': '#ffda00', '--secondary-color': '#00b7eb', '--accent-color': '#ff0000',
+            '--border-color': '#4a4a4a',
+            '--input-bg-color': '#1c2526', '--input-text-color': '#e6e6e6', '--input-border-color': '#ffda00',
+            '--font-family': "'Orbitron', sans-serif", '--heading-font': "'Orbitron', sans-serif",
+            '--button-text-color': '#000000',
+            '--clock-text-shadow': '0 0 8px var(--accent-color)',
+            '--scrollbar-track-bg': '#1c2526', '--scrollbar-thumb-bg': '#ffda00', '--scrollbar-thumb-hover-bg': '#ffe066',
+            '--quote-bg': 'rgba(28, 37, 38, 0.9)',
+            '--bmi-underweight-color': '#00b7eb', '--bmi-normal-color': '#34d399', '--bmi-overweight-color': '#ffda00', '--bmi-obese-color': '#ff0000',
+            '--primary-color-current-rgb': '255, 218, 0'
+        },
+        'ghibli-spirited': {
+            name: 'Ghibli Spirited',
+            '--bg-color': '#f5e9e2', '--bg-image': 'linear-gradient(to bottom, #f5e9e2, #e8d8c3)',
+            '--text-color': '#3b2f2f',
+            '--card-bg': 'rgba(255, 245, 230, 0.9)',
+            '--primary-color': '#8b5e3c', '--secondary-color': '#4a7043', '--accent-color': '#d4a017',
+            '--border-color': '#d9c2a6',
+            '--input-bg-color': '#fff5e6', '--input-text-color': '#3b2f2f', '--input-border-color': '#8b5e3c',
+            '--font-family': "'Poppins', sans-serif", '--heading-font': "'Cinzel', serif",
+            '--button-text-color': '#ffffff',
+            '--clock-text-shadow': '0 0 4px var(--accent-color)',
+            '--scrollbar-track-bg': '#fff5e6', '--scrollbar-thumb-bg': '#8b5e3c', '--scrollbar-thumb-hover-bg': '#a67c52',
+            '--quote-bg': 'rgba(255, 245, 230, 0.9)',
+            '--bmi-underweight-color': '#4a7043', '--bmi-normal-color': '#34d399', '--bmi-overweight-color': '#d4a017', '--bmi-obese-color': '#c0392b',
+            '--primary-color-current-rgb': '139, 94, 60'
+        }
+    };
+
+    // --- GLOBAL ELEMENTS ---
+    const body = document.body;
+    const themeSelector = document.getElementById('theme-selector');
+    const root = document.documentElement;
+
+    // --- THEME SWITCHER LOGIC ---
+    function applyTheme(themeName) {
+        const theme = themes[themeName] || themes['default-light'];
+        if (!theme) return;
+
+        for (const [key, value] of Object.entries(theme)) {
+            if (key !== 'name') {
+                root.style.setProperty(key, value);
+            }
+        }
+        updateDayNightStatus();
+        localStorage.setItem('selectedTheme', themeName);
+        themeSelector.value = themeName;
+    }
+
+    function populateThemeSelector() {
+        Object.entries(themes).forEach(([key, theme]) => {
+            if (theme.name) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = theme.name;
+                themeSelector.appendChild(option);
+            }
+        });
+    }
+
+    themeSelector.addEventListener('change', (e) => {
+        applyTheme(e.target.value);
+    });
+
+    const savedTheme = localStorage.getItem('selectedTheme');
+    populateThemeSelector();
+    applyTheme(savedTheme || 'default-dark');
+
+    // --- DAY/NIGHT BACKGROUND LOGIC ---
+    const dayNightStatusEl = document.getElementById('day-night-status');
+    function updateDayNightStatus() {
+        const hour = new Date().getHours();
+        if (hour >= 6 && hour < 18) {
+            body.classList.remove('is-night');
+            body.classList.add('is-day');
+            if (dayNightStatusEl) dayNightStatusEl.textContent = 'Daytime';
+        } else {
+            body.classList.remove('is-day');
+            body.classList.add('is-night');
+            if (dayNightStatusEl) dayNightStatusEl.textContent = 'Nighttime';
+        }
+    }
+    setInterval(updateDayNightStatus, 5 * 60 * 1000);
+
+    // --- WORLD CLOCK LOGIC ---
+    const localTimeEl = document.getElementById('local-time');
+    const localTimezoneEl = document.getElementById('local-timezone');
+    const worldClocksContainer = document.getElementById('world-clocks');
+    const timezones = [
+        { name: 'New York', tz: 'America/New_York' },
+        { name: 'London', tz: 'Europe/London' },
+        { name: 'Tokyo', tz: 'Asia/Tokyo' },
+        { name: 'Sydney', tz: 'Australia/Sydney' },
+        { name: 'Los Angeles', tz: 'America/Los_Angeles' },
+        { name: 'Paris', tz: 'Europe/Paris' }
+    ];
+
+    function updateClocks() {
+        const now = new Date();
+        try {
+            const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            if (localTimezoneEl) localTimezoneEl.textContent = localTz.replace(/_/g, ' ');
+            if (localTimeEl) localTimeEl.textContent = now.toLocaleTimeString('en-US', { hour12: true });
+        } catch (e) {
+            console.error("Error getting local timezone:", e);
+            if (localTimezoneEl) localTimezoneEl.textContent = 'Unknown';
+            if (localTimeEl) localTimeEl.textContent = now.toLocaleTimeString('en-US');
+        }
+
+        if (worldClocksContainer) {
+            worldClocksContainer.innerHTML = '';
+            timezones.forEach(zone => {
+                try {
+                    const timeString = now.toLocaleTimeString('en-US', { timeZone: zone.tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+                    const clockDiv = document.createElement('div');
+                    clockDiv.className = 'border-l-4 pl-3 flex justify-between items-center';
+                    clockDiv.innerHTML = `<span class="font-medium">${zone.name}:</span> <span class="font-mono clock-display">${timeString}</span>`;
+                    worldClocksContainer.appendChild(clockDiv);
+                } catch (e) {
+                    console.error(`Error formatting time for timezone ${zone.tz}:`, e);
+                }
+            });
+        }
+    }
+    setInterval(updateClocks, 1000);
+
+    // --- AGE CALCULATOR LOGIC ---
+    const dobInput = document.getElementById('dob-input');
+    const calculateAgeBtn = document.getElementById('calculate-age-btn');
+    const ageResultEl = document.getElementById('age-result');
+
+    function calculateAge() {
+        if (!dobInput || !ageResultEl) return;
+        const dobString = dobInput.value;
+        if (!dobString) {
+            ageResultEl.textContent = 'Please select a date.';
+            ageResultEl.style.color = 'var(--bmi-obese-color)';
+            return;
+        }
+
+        const dob = new Date(dobString);
+        const today = new Date();
+
+        if (dob > today) {
+            ageResultEl.textContent = 'Date of birth cannot be in the future.';
+            ageResultEl.style.color = 'var(--bmi-obese-color)';
+            return;
+        }
+
+        let years = today.getFullYear() - dob.getFullYear();
+        let months = today.getMonth() - dob.getMonth();
+        let days = today.getDate() - dob.getDate();
+
+        if (days < 0) {
+            months--;
+            const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+            days += prevMonth.getDate();
+        }
+
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+
+        ageResultEl.style.color = 'var(--text-color-current)';
+        ageResultEl.textContent = `Your age is ${years} years, ${months} months, and ${days} days.`;
+    }
+
+    if (calculateAgeBtn) {
+        calculateAgeBtn.addEventListener('click', calculateAge);
+        dobInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculateAge();
+        });
+    }
+
+    // --- BMI CALCULATOR LOGIC ---
+    const heightInput = document.getElementById('height-input');
+    const weightInput = document.getElementById('weight-input');
+    const calculateBmiBtn = document.getElementById('calculate-bmi-btn');
+    const bmiResultEl = document.getElementById('bmi-result');
+
+    function calculateBmi() {
+        if (!heightInput || !weightInput || !bmiResultEl) return;
+        const heightCm = parseFloat(heightInput.value);
+        const weightKg = parseFloat(weightInput.value);
+
+        if (isNaN(heightCm) || isNaN(weightKg) || heightCm <= 0 || weightKg <= 0) {
+            bmiResultEl.textContent = 'Please enter valid height and weight.';
+            bmiResultEl.className = 'text-center text-lg font-semibold min-h-[28px]';
+            bmiResultEl.style.color = 'var(--bmi-obese-color)';
+            return;
+        }
+
+        const heightM = heightCm / 100;
+        const bmi = weightKg / (heightM * heightM);
+        const bmiRounded = bmi.toFixed(1);
+
+        let category = '';
+        let categoryClass = '';
+
+        if (bmi < 18.5) {
+            category = 'Underweight';
+            categoryClass = 'bmi-Underweight';
+        } else if (bmi < 24.9) {
+            category = 'Normal weight';
+            categoryClass = 'bmi-Normal';
+        } else if (bmi < 29.9) {
+            category = 'Overweight';
+            categoryClass = 'bmi-Overweight';
+        } else {
+            category = 'Obese';
+            categoryClass = 'bmi-Obese';
+        }
+
+        bmiResultEl.className = `text-center text-lg font-semibold min-h-[28px] bmi-category ${categoryClass}`;
+        bmiResultEl.innerHTML = `BMI: ${bmiRounded} (<span class="${categoryClass}">${category}</span>)`;
+    }
+
+    if (calculateBmiBtn) {
+        calculateBmiBtn.addEventListener('click', calculateBmi);
+        [heightInput, weightInput].forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') calculateBmi();
+            });
+        });
+    }
+
+    // --- RANDOM QUOTE GENERATOR LOGIC ---
+    const quoteTextEl = document.getElementById('quote-text');
+    const quoteAuthorEl = document.getElementById('quote-author');
+    const newQuoteBtn = document.getElementById('new-quote-btn');
+    const shareQuoteBtn = document.getElementById('share-quote-btn');
+
+    const quotes = [
+        { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+        { text: "Strive not to be a success, but rather to be of value.", author: "Albert Einstein" },
+        { text: "The mind is everything. What you think you become.", author: "Buddha" },
+        { text: "Your time is limited, don't waste it living someone else's life.", author: "Steve Jobs" },
+        { text: "The best way to predict the future is to create it.", author: "Peter Drucker" },
+        { text: "Life is 10% what happens to us and 90% how we react to it.", author: "Charles R. Swindoll" },
+        { text: "It does not do to dwell on dreams and forget to live.", author: "J.K. Rowling" },
+        { text: "Do, or do not. There is no try.", author: "Yoda" },
+        { text: "All we have to decide is what to do with the time that is given us.", author: "Gandalf" },
+        { text: "The needs of the many outweigh the needs of the few, or the one.", author: "Spock" },
+        { text: "Why do we fall? So we can learn to pick ourselves up.", author: "Alfred Pennyworth" }
+    ];
+
+    function getRandomQuote() {
+        if (!quoteTextEl || !quoteAuthorEl) return;
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        const quote = quotes[randomIndex];
+        quoteTextEl.textContent = `"${quote.text}"`;
+        quoteAuthorEl.textContent = `~ ${quote.author}`;
+    }
+
+    function shareQuote() {
+        if (!quoteTextEl || !quoteAuthorEl) return;
+        const quote = quoteTextEl.textContent.replace(/^"|"$/g, '');
+        const author = quoteAuthorEl.textContent.replace(/^~\s*/, '');
+        const shareText = `"${quote}" — ${author}`;
+        const shareUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+        window.open(shareUrl, '_blank');
+    }
+
+    if (newQuoteBtn) {
+        newQuoteBtn.addEventListener('click', getRandomQuote);
+    }
+    if (shareQuoteBtn) {
+        shareQuoteBtn.addEventListener('click', shareQuote);
+    }
+
+    // --- RANDOM PASSWORD GENERATOR LOGIC ---
+    const passwordLengthInput = document.getElementById('password-length');
+    const pwUppercaseCheck = document.getElementById('pw-uppercase');
+    const pwLowercaseCheck = document.getElementById('pw-lowercase');
+    const pwNumbersCheck = document.getElementById('pw-numbers');
+    const pwSymbolsCheck = document.getElementById('pw-symbols');
+    const generatePasswordBtn = document.getElementById('generate-password-btn');
+    const passwordOutputEl = document.getElementById('password-output');
+    const copyPasswordBtn = document.getElementById('copy-password-btn');
+    const copyStatusEl = document.getElementById('copy-status');
+    const strengthBar = document.getElementById('strength-bar');
+    const strengthText = document.getElementById('strength-text');
+
+    const charSets = {
+        uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        lowercase: 'abcdefghijklmnopqrstuvwxyz',
+        numbers: '0123456789',
+        symbols: '!@#$%^&*()_+-=[]{};:,./<>?'
+    };
+
+    function evaluatePasswordStrength(password) {
+        let strength = 0;
+        if (password.length >= 12) strength += 25;
+        if (/[A-Z]/.test(password)) strength += 25;
+        if (/[a-z]/.test(password)) strength += 25;
+        if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) strength += 25;
+
+        if (strength <= 25) {
+            strengthBar.style.width = '25%';
+            strengthBar.style.backgroundColor = 'var(--bmi-obese-color)';
+            strengthText.textContent = 'Weak';
+        } else if (strength <= 50) {
+            strengthBar.style.width = '50%';
+            strengthBar.style.backgroundColor = 'var(--bmi-overweight-color)';
+            strengthText.textContent = 'Fair';
+        } else if (strength <= 75) {
+            strengthBar.style.width = '75%';
+            strengthBar.style.backgroundColor = 'var(--bmi-normal-color)';
+            strengthText.textContent = 'Good';
+        } else {
+            strengthBar.style.width = '100%';
+            strengthBar.style.backgroundColor = 'var(--secondary-color-current)';
+            strengthText.textContent = 'Strong';
+        }
+    }
+
+    function generatePassword() {
+        if (!passwordLengthInput || !passwordOutputEl || !pwUppercaseCheck || !pwLowercaseCheck || !pwNumbersCheck || !pwSymbolsCheck) return;
+
+        const length = parseInt(passwordLengthInput.value);
+        let characterPool = '';
+        let password = '';
+
+        if (pwUppercaseCheck.checked) characterPool += charSets.uppercase;
+        if (pwLowercaseCheck.checked) characterPool += charSets.lowercase;
+        if (pwNumbersCheck.checked) characterPool += charSets.numbers;
+        if (pwSymbolsCheck.checked) characterPool += charSets.symbols;
+
+        if (characterPool === '') {
+            passwordOutputEl.value = 'Select at least one character type!';
+            strengthBar.style.width = '0';
+            strengthText.textContent = '';
+            return;
+        }
+        if (length < 8 || length > 128) {
+            passwordOutputEl.value = 'Length must be between 8 and 128!';
+            strengthBar.style.width = '0';
+            strengthText.textContent = '';
+            return;
+        }
+
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characterPool.length);
+            password += characterPool[randomIndex];
+        }
+
+        passwordOutputEl.value = password;
+        evaluatePasswordStrength(password);
+        if (copyStatusEl) copyStatusEl.textContent = '';
+    }
+
+    function copyPassword() {
+        if (!passwordOutputEl || !copyStatusEl) return;
+        const passwordToCopy = passwordOutputEl.value;
+        if (passwordToCopy && passwordToCopy.length > 0 && !passwordToCopy.startsWith('Select') && !passwordToCopy.startsWith('Length')) {
+            navigator.clipboard.writeText(passwordToCopy).then(() => {
+                copyStatusEl.textContent = 'Copied!';
+                copyStatusEl.style.color = 'var(--secondary-color-current)';
+                setTimeout(() => { copyStatusEl.textContent = ''; }, 2000);
+            }).catch(err => {
+                copyStatusEl.textContent = 'Failed to copy!';
+                copyStatusEl.style.color = 'var(--bmi-obese-color)';
+            });
+        } else {
+            copyStatusEl.textContent = 'Nothing to copy!';
+            copyStatusEl.style.color = 'var(--bmi-overweight-color)';
+            setTimeout(() => { copyStatusEl.textContent = ''; }, 2000);
+        }
+    }
+
+    if (generatePasswordBtn) {
+        generatePasswordBtn.addEventListener('click', generatePassword);
+        passwordLengthInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') generatePassword();
+        });
+    }
+    if (copyPasswordBtn) {
+        copyPasswordBtn.addEventListener('click', copyPassword);
+    }
+
+    // --- UNIT CONVERTER LOGIC ---
+    const converterTypeSelect = document.getElementById('converter-type');
+    const unitInput = document.getElementById('unit-input');
+    const unitFromSelect = document.getElementById('unit-from');
+    const unitToSelect = document.getElementById('unit-to');
+    const unitOutput = document.getElementById('unit-output');
+    const historyList = document.getElementById('history-list');
+
+    const units = {
+        length: { name: 'Length', base: 'm', list: { m: 1, km: 1000, cm: 0.01, mm: 0.001, mi: 1609.34, yd: 0.9144, ft: 0.3048, in: 0.0254 } },
+        weight: { name: 'Weight', base: 'kg', list: { kg: 1, g: 0.001, mg: 0.000001, lb: 0.453592, oz: 0.0283495, t: 1000 } },
+        temperature: { name: 'Temperature', list: { C: 'Celsius', F: 'Fahrenheit', K: 'Kelvin' } },
+        area: { name: 'Area', base: 'sqm', list: { sqm: 1, sqkm: 1e6, sqmi: 2.59e6, sqyd: 0.836127, sqft: 0.092903, acre: 4046.86, hectare: 10000 } },
+        volume: { name: 'Volume', base: 'l', list: { l: 1, ml: 0.001, cubm: 1000, gall: 3.78541, qt: 0.946353, pt: 0.473176, cup: 0.24, floz: 0.0295735 } }
+    };
+
+    let conversionHistory = [];
+
+    function populateUnitOptions() {
+        if (!converterTypeSelect || !unitFromSelect || !unitToSelect) return;
+        const selectedType = converterTypeSelect.value;
+        const unitData = units[selectedType];
+        unitFromSelect.innerHTML = '';
+        unitToSelect.innerHTML = '';
+
+        for (const unitKey in unitData.list) {
+            const optionFrom = document.createElement('option');
+            optionFrom.value = unitKey;
+            optionFrom.textContent = unitKey;
+            unitFromSelect.appendChild(optionFrom);
+
+            const optionTo = document.createElement('option');
+            optionTo.value = unitKey;
+            optionTo.textContent = unitKey;
+            unitToSelect.appendChild(optionTo);
+        }
+
+        if (Object.keys(unitData.list).length > 1) {
+            unitFromSelect.selectedIndex = 0;
+            unitToSelect.selectedIndex = 1;
+        } else {
+            unitFromSelect.selectedIndex = 0;
+            unitToSelect.selectedIndex = 0;
+        }
+        convertUnits();
+    }
+
+    function convertUnits() {
+        if (!converterTypeSelect || !unitInput || !unitFromSelect || !unitToSelect || !unitOutput) return;
+
+        const selectedType = converterTypeSelect.value;
+        const fromUnit = unitFromSelect.value;
+        const toUnit = unitToSelect.value;
+        const inputValue = parseFloat(unitInput.value);
+
+        if (isNaN(inputValue)) {
+            unitOutput.value = '';
+            return;
+        }
+
+        const unitData = units[selectedType];
+        let result;
+
+        if (selectedType === 'temperature') {
+            if (fromUnit === toUnit) {
+                result = inputValue;
+            } else if (fromUnit === 'C') {
+                result = (toUnit === 'F') ? (inputValue * 9 / 5) + 32 : inputValue + 273.15;
+            } else if (fromUnit === 'F') {
+                result = (toUnit === 'C') ? (inputValue - 32) * 5 / 9 : (inputValue - 32) * 5 / 9 + 273.15;
+            } else {
+                result = (toUnit === 'C') ? inputValue - 273.15 : (inputValue - 273.15) * 9 / 5 + 32;
+            }
+        } else {
+            const fromFactor = unitData.list[fromUnit];
+            const toFactor = unitData.list[toUnit];
+            const valueInBase = inputValue * fromFactor;
+            result = valueInBase / toFactor;
+        }
+
+        unitOutput.value = parseFloat(result.toFixed(6));
+
+        // Update conversion history
+        const conversion = `${inputValue} ${fromUnit} = ${unitOutput.value} ${toUnit} (${unitData.name})`;
+        conversionHistory.unshift(conversion);
+        if (conversionHistory.length > 5) conversionHistory.pop();
+        updateHistory();
+    }
+
+    function updateHistory() {
+        if (!historyList) return;
+        historyList.innerHTML = '';
+        conversionHistory.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            historyList.appendChild(li);
+        });
+    }
+
+    if (converterTypeSelect) {
+        converterTypeSelect.addEventListener('change', populateUnitOptions);
+    }
+    if (unitInput) {
+        unitInput.addEventListener('input', convertUnits);
+    }
+    if (unitFromSelect) {
+        unitFromSelect.addEventListener('change', convertUnits);
+    }
+    if (unitToSelect) {
+        unitToSelect.addEventListener('change', convertUnits);
+    }
+
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+        updateDayNightStatus();
+        updateClocks();
+        getRandomQuote();
+        generatePassword();
+        populateUnitOptions();
+    });
+</script>
+</body>
+</html>

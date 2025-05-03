@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-cyberpunk"> {/* Default Theme */}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Profile Synthesizer</title>
+    {/* Tailwind CSS CDN */}
+    <script src="https://cdn.tailwindcss.com"></script>
+    {/* Font Awesome for icons */}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {/* Google Fonts */}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;0,800;1,400&family=Roboto+Mono:wght@400;500&family=Aldrich&family=Quantico:wght@400;700&family=Press+Start+2P&family=Cinzel+Decorative:wght@700&family=Turret+Road:wght@500;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Base Styles & Font Definitions */
+        body {
+            font-family: 'Exo 2', sans-serif; font-weight: 400;
+            overflow-x: hidden;
+            transition: background 0.5s ease;
+            line-height: 1.6;
+        }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .font-exo { font-family: 'Exo 2', sans-serif; }
+        .font-roboto-mono { font-family: 'Roboto Mono', monospace; }
+        .font-aldrich { font-family: 'Aldrich', sans-serif; }
+        .font-quantico { font-family: 'Quantico', sans-serif; }
+        .font-press-start { font-family: 'Press Start 2P', cursive; }
+        .font-cinzel { font-family: 'Cinzel Decorative', cursive; }
+        .font-turret { font-family: 'Turret Road', cursive; }
+        .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
+
+        /* --- CSS Variables for Themes --- */
+        :root, .theme-default-light { /* Basic Light Fallback */
+            --bg-primary: #f3f4f6; --bg-secondary: #e5e7eb; --bg-gradient-start: var(--bg-secondary); --bg-gradient-end: var(--bg-primary); --bg-image: none;
+            --card-bg: rgba(255, 255, 255, 0.98); --card-border: #d1d5db;
+            --card-shadow: rgba(0, 0, 0, 0.08); --card-shadow-glow: transparent;
+            --text-primary: #1f2937; --text-secondary: #374151; --text-accent: #3b82f6; --text-muted: #6b7280;
+            --link-color: #2563eb; --link-hover-color: #1d4ed8;
+            --button-bg: linear-gradient(145deg, #3b82f6, #2563eb); --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #60a5fa, #3b82f6); --button-shadow: rgba(59, 130, 246, 0.25);
+            --input-bg: #ffffff; --input-border: #9ca3af; --input-text: #1f2937; --input-focus-ring: var(--text-accent);
+            --stat-icon-color: var(--text-accent); --stat-value-color: var(--text-primary);
+            --repo-bg: #f9fafb; --repo-border: #e5e7eb; --repo-lang-color: #4b5563; --repo-star-color: #f59e0b; --lang-bar-bg: #e5e7eb;
+            --loader-color: var(--text-accent); --error-color: #ef4444;
+            --font-heading: 'Rajdhani', sans-serif; --font-body: 'Exo 2', sans-serif;
+        }
+
+        .theme-cyberpunk {
+            --bg-primary: #0a0f21; --bg-secondary: #1a2038; --bg-gradient-start: var(--bg-primary); --bg-gradient-end: var(--bg-secondary); --bg-image: radial-gradient(circle at 1px 1px, rgba(0, 247, 247, 0.2) 1px, transparent 0), radial-gradient(circle at 25px 25px, rgba(249, 0, 243, 0.15) 1px, transparent 0); background-size: 50px 50px;
+            --card-bg: rgba(26, 32, 56, 0.92); --card-border: #00f7f7;
+            --card-shadow: rgba(0, 0, 0, 0.7); --card-shadow-glow: rgba(0, 247, 247, 0.2);
+            --text-primary: #e0f2fe; --text-secondary: #00f7f7; --text-accent: #f900f3; --text-muted: #94a3b8;
+            --link-color: #5eead4; --link-hover-color: #a7f3d0;
+            --button-bg: linear-gradient(145deg, var(--text-secondary), #14b8a6); --button-text: #0a0f21;
+            --button-hover-bg: linear-gradient(145deg, #5eead4, var(--text-secondary)); --button-shadow: rgba(0, 247, 247, 0.35);
+            --input-bg: rgba(10, 15, 33, 0.9); --input-border: var(--text-accent); --input-text: #e0f2fe; --input-focus-ring: var(--text-secondary);
+            --stat-icon-color: var(--text-accent); --stat-value-color: var(--text-primary);
+            --repo-bg: rgba(30, 41, 59, 0.85); --repo-border: rgba(0, 247, 247, 0.3); --repo-lang-color: #94a3b8; --repo-star-color: #f3ff2f; --lang-bar-bg: rgba(0, 247, 247, 0.15);
+            --loader-color: var(--text-secondary); --error-color: #f472b6;
+            --font-heading: 'Orbitron', sans-serif; --font-body: 'Exo 2', sans-serif;
+        }
+
+        .theme-fantasy-dark {
+            --bg-primary: #1f1d1a; --bg-secondary: #0c0a09; --bg-gradient-start: var(--bg-primary); --bg-gradient-end: var(--bg-secondary); --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><rect width="60" height="60" fill="none" stroke="%23c89c4c1a" stroke-width="1"/><path d="M 15 15 L 45 45 M 15 45 L 45 15" stroke="%23a1620720" stroke-width="0.5"/><circle cx="30" cy="30" r="5" fill="%23c89c4c05"/></svg>'); background-size: 60px 60px;
+            --card-bg: rgba(46, 42, 36, 0.95); --card-border: #c89c4c; /* Gold */
+            --card-shadow: rgba(10, 5, 0, 0.6); --card-shadow-glow: rgba(200, 156, 76, 0.2);
+            --text-primary: #f5f5f4; --text-secondary: #c89c4c; --text-accent: #e4a53a; --text-muted: #d6d3d1;
+            --link-color: #e4a53a; --link-hover-color: #fde047;
+            --button-bg: linear-gradient(145deg, #a16207, #78350f); --button-text: #fffbeb;
+            --button-hover-bg: linear-gradient(145deg, #c89c4c, #a16207); --button-shadow: rgba(200, 156, 76, 0.3);
+            --input-bg: rgba(60, 54, 46, 0.9); --input-border: var(--text-secondary); --input-text: #e0dacd; --input-focus-ring: var(--text-accent);
+            --stat-icon-color: var(--text-accent); --stat-value-color: #fffbeb;
+            --repo-bg: rgba(69, 63, 54, 0.9); --repo-border: rgba(200, 156, 76, 0.3); --repo-lang-color: #b0a090; --repo-star-color: #fde047; --lang-bar-bg: rgba(200, 156, 76, 0.1);
+            --loader-color: var(--text-secondary); --error-color: #fca5a5;
+            --font-heading: 'Cinzel Decorative', cursive; --font-body: 'Exo 2', sans-serif; font-weight: 300;
+        }
+
+        .theme-retro-arcade {
+            --bg-primary: #000000; --bg-secondary: #121212; --bg-gradient-start: var(--bg-primary); --bg-gradient-end: var(--bg-secondary); --bg-image: linear-gradient(rgba(255, 64, 129, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(64, 224, 208, 0.1) 1px, transparent 1px); background-size: 40px 40px;
+            --card-bg: rgba(10, 10, 10, 0.94); --card-border: #ff4081; /* Pink */
+            --card-shadow: rgba(0, 0, 0, 0.8); --card-shadow-glow: rgba(255, 64, 129, 0.25);
+            --text-primary: #ffffff; --text-secondary: #40e0d0; --text-accent: #ff4081; --text-muted: #e0e0e0;
+            --link-color: #40e0d0; --link-hover-color: #7fffd4;
+            --button-bg: linear-gradient(145deg, var(--text-accent), #f50057); --button-text: #000000;
+            --button-hover-bg: linear-gradient(145deg, #ff80ab, var(--text-accent)); --button-shadow: rgba(255, 64, 129, 0.4);
+            --input-bg: #1f1f1f; --input-border: var(--text-secondary); --input-text: #ffffff; --input-focus-ring: var(--text-accent);
+            --stat-icon-color: var(--text-secondary); --stat-value-color: #ffffff;
+            --repo-bg: #212121; --repo-border: rgba(64, 224, 208, 0.4); --repo-lang-color: #bdbdbd; --repo-star-color: #ffff00; --lang-bar-bg: rgba(64, 224, 208, 0.1);
+            --loader-color: var(--text-secondary); --error-color: #ffeb3b; /* Yellow */
+            --font-heading: 'Press Start 2P', cursive; --font-body: 'Press Start 2P', cursive;
+        }
+        /* Apply pixelated rendering specifically for Retro Arcade */
+        .theme-retro-arcade body { font-size: 12px; /* Base size for pixel fonts */ }
+        .theme-retro-arcade .input-card, .theme-retro-arcade .profile-card, .theme-retro-arcade img:not(.org-logo) { image-rendering: pixelated; }
+        .theme-retro-arcade ::placeholder { font-family: var(--font-body); font-size: 12px;}
+        .theme-retro-arcade input, .theme-retro-arcade button { font-size: 12px !important; padding-top: 0.9rem; padding-bottom: 0.9rem;} /* Adjust padding for font */
+        .theme-retro-arcade .stat-label { font-size: 8px !important; }
+        .theme-retro-arcade .repo-desc, .theme-retro-arcade .repo-meta span { font-size: 10px !important; }
+        .theme-retro-arcade .main-heading { font-size: 2rem !important; }
+
+
+        .theme-doom {
+            --bg-primary: #2a0f0f; --bg-secondary: #1c0a0a; --bg-gradient-start: var(--bg-primary); --bg-gradient-end: var(--bg-secondary); --bg-image: radial-gradient(ellipse at center, rgba(127, 29, 29, 0.2) 0%, transparent 70%), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><rect width="50" height="50" fill="%237f1d1d05"/><line x1="0" y1="0" x2="50" y2="50" stroke="%23450a0a80" stroke-width="1"/><line x1="50" y1="0" x2="0" y2="50" stroke="%23450a0a80" stroke-width="1"/></svg>'); background-size: auto, 50px 50px;
+            --card-bg: rgba(20, 5, 5, 0.95); --card-border: #7f1d1d;
+            --card-shadow: rgba(0, 0, 0, 0.9); --card-shadow-glow: rgba(185, 28, 28, 0.3);
+            --text-primary: #fecaca; --text-secondary: #ef4444; --text-accent: #b91c1c; --text-muted: #fca5a5;
+            --link-color: #f87171; --link-hover-color: #fda4af;
+            --button-bg: linear-gradient(145deg, #7f1d1d, #450a0a); --button-text: #fee2e2; text-shadow: 1px 1px 2px #000;
+            --button-hover-bg: linear-gradient(145deg, #b91c1c, #991b1b); --button-shadow: rgba(185, 28, 28, 0.4);
+            --input-bg: rgba(30, 10, 10, 0.9); --input-border: var(--text-accent); --input-text: #fecaca; --input-focus-ring: var(--text-secondary);
+            --stat-icon-color: #fbbf24; --stat-value-color: #fef08a;
+            --repo-bg: rgba(42, 15, 15, 0.9); --repo-border: rgba(127, 29, 29, 0.5); --repo-lang-color: #a1a1aa; --repo-star-color: #fbbf24; --lang-bar-bg: rgba(185, 28, 28, 0.15);
+            --loader-color: var(--text-secondary); --error-color: #facc15;
+            --font-heading: 'Orbitron', sans-serif; font-weight: 900; --font-body: 'Exo 2', sans-serif; font-weight: 600;
+        }
+
+         .theme-zelda {
+            --bg-primary: #166534; --bg-secondary: #14532d; --bg-gradient-start: var(--bg-primary); --bg-gradient-end: var(--bg-secondary); --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 100 100"><path d="M 50 0 L 100 50 L 50 100 L 0 50 Z" fill="%23fde04715"/><path d="M 50 10 L 90 50 L 50 90 L 10 50 Z" fill="%23fffbea20" /></svg>'), linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 80px 80px, 20px 20px, 20px 20px;
+            --card-bg: rgba(21, 128, 61, 0.94); --card-border: #fde047; /* Gold */
+            --card-shadow: rgba(5, 40, 15, 0.6); --card-shadow-glow: rgba(253, 224, 71, 0.25);
+            --text-primary: #f0fdf4; --text-secondary: #fde047; --text-accent: #ca8a04; --text-muted: #d1fae5;
+            --link-color: #facc15; --link-hover-color: #fde68a;
+            --button-bg: linear-gradient(145deg, #ca8a04, #a16207); --button-text: #fefce8;
+            --button-hover-bg: linear-gradient(145deg, #eab308, #ca8a04); --button-shadow: rgba(202, 138, 4, 0.4);
+            --input-bg: rgba(20, 83, 45, 0.9); --input-border: var(--text-secondary); --input-text: #f0fdf4; --input-focus-ring: var(--text-accent);
+            --stat-icon-color: #ef4444; --stat-value-color: #fef08a; /* Hearts & Rupees */
+            --repo-bg: rgba(22, 101, 52, 0.9); --repo-border: rgba(253, 224, 71, 0.4); --repo-lang-color: #a7f3d0; --repo-star-color: #fde047; --lang-bar-bg: rgba(253, 224, 71, 0.1);
+            --loader-color: var(--text-secondary); --error-color: #fb7185;
+            --font-heading: 'Cinzel Decorative', cursive; font-weight: 700; --font-body: 'Exo 2', sans-serif; font-weight: 300;
+        }
+
+        .theme-cryo-chamber {
+             --bg-primary: #083344; --bg-secondary: #164e63; --bg-gradient-start: var(--bg-primary); --bg-gradient-end: var(--bg-secondary); --bg-image: radial-gradient(circle at center, rgba(165, 243, 252, 0.05) 0%, transparent 60%), linear-gradient(0deg, rgba(207, 250, 254, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(207, 250, 254, 0.03) 1px, transparent 1px); background-size: 100% 100%, 20px 20px, 20px 20px;
+            --card-bg: rgba(6, 78, 99, 0.93); --card-border: #67e8f9; /* Cyan */
+            --card-shadow: rgba(0, 20, 30, 0.7); --card-shadow-glow: rgba(103, 232, 249, 0.2);
+            --text-primary: #ecfeff; --text-secondary: #67e8f9; --text-accent: #22d3ee; --text-muted: #a5f3fc;
+            --link-color: #a5f3fc; --link-hover-color: #cffafe;
+            --button-bg: linear-gradient(145deg, #0891b2, #0e7490); --button-text: #ecfeff;
+            --button-hover-bg: linear-gradient(145deg, #22d3ee, #0891b2); --button-shadow: rgba(34, 211, 238, 0.3);
+            --input-bg: rgba(12, 74, 90, 0.9); --input-border: var(--text-accent); --input-text: #ecfeff; --input-focus-ring: var(--text-secondary);
+            --stat-icon-color: var(--text-accent); --stat-value-color: #ffffff;
+            --repo-bg: rgba(8, 126, 149, 0.88); --repo-border: rgba(103, 232, 249, 0.3); --repo-lang-color: #99f6e4; --repo-star-color: #a5f3fc; --lang-bar-bg: rgba(103, 232, 249, 0.1);
+            --loader-color: var(--text-secondary); --error-color: #7dd3fc;
+            --font-heading: 'Turret Road', cursive; font-weight: 800; --font-body: 'Exo 2', sans-serif; font-weight: 400;
+        }
+
+         .theme-solar-flare {
+             --bg-primary: #4a044e; --bg-secondary: #701a75; --bg-gradient-start: var(--bg-primary); --bg-gradient-end: var(--bg-secondary); --bg-image: radial-gradient(ellipse at 80% 20%, rgba(253, 186, 116, 0.3) 0%, transparent 70%), radial-gradient(ellipse at 10% 90%, rgba(250, 204, 21, 0.25) 0%, transparent 60%);
+            --card-bg: rgba(112, 26, 117, 0.94); --card-border: #facc15; /* Yellow */
+            --card-shadow: rgba(50, 5, 50, 0.7); --card-shadow-glow: rgba(250, 204, 21, 0.25);
+            --text-primary: #fefce8; --text-secondary: #facc15; --text-accent: #fbbf24; --text-muted: #fef9c3;
+            --link-color: #fde047; --link-hover-color: #fef08a;
+            --button-bg: linear-gradient(145deg, #eab308, #d97706); --button-text: #1e1b4b;
+            --button-hover-bg: linear-gradient(145deg, #facc15, #eab308); --button-shadow: rgba(250, 204, 21, 0.4);
+            --input-bg: rgba(88, 28, 135, 0.9); --input-border: var(--text-accent); --input-text: #fefce8; --input-focus-ring: var(--text-secondary);
+            --stat-icon-color: #fb923c; --stat-value-color: #fefce8;
+            --repo-bg: rgba(134, 25, 143, 0.9); --repo-border: rgba(250, 204, 21, 0.3); --repo-lang-color: #fbcfe8; --repo-star-color: #facc15; --lang-bar-bg: rgba(250, 204, 21, 0.1);
+            --loader-color: var(--text-secondary); --error-color: #fb7185;
+            --font-heading: 'Rajdhani', sans-serif; font-weight: 700; --font-body: 'Exo 2', sans-serif; font-weight: 400;
+        }
+
+
+        /* --- Apply Variables & Base Styles --- */
+        body { background-color: var(--bg-gradient-start); background-image: var(--bg-image), linear-gradient(to bottom, var(--bg-gradient-start), var(--bg-gradient-end)); }
+        .main-heading { color: var(--text-primary); font-family: var(--font-heading); }
+        .sub-text { color: var(--text-muted); }
+
+        .input-card, .profile-card {
+            background-color: var(--card-bg); border: 3px solid var(--card-border);
+            box-shadow: 0 10px 35px var(--card-shadow), 0 0 30px var(--card-shadow-glow), inset 0 0 15px color-mix(in srgb, black 15%, var(--card-bg));
+            backdrop-filter: blur(10px); border-radius: 1.5rem; /* Slightly larger radius */ padding: 2rem 2.5rem; margin-bottom: 2rem;
+            transition: all 0.5s ease;
+        }
+
+        .themed-input {
+            background-color: var(--input-bg); border: 2px solid var(--input-border); color: var(--input-text);
+            border-radius: 0.75rem; padding: 0.9rem 1.2rem; font-size: 1.1rem; font-family: var(--font-body);
+            transition: all 0.3s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .themed-input::placeholder { color: color-mix(in srgb, var(--input-text) 60%, transparent); font-style: italic; font-weight: 300;}
+        .themed-input:focus {
+            outline: none; border-color: var(--input-focus-ring);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 0 0 4px color-mix(in srgb, var(--input-focus-ring) 40%, transparent);
+        }
+        .themed-button {
+            background-image: var(--button-bg); color: var(--button-text); font-family: var(--font-heading);
+            font-weight: 700; box-shadow: 0 6px 18px var(--button-shadow), 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.2s ease; border-radius: 0.75rem; padding: 0.9rem 1.8rem; /* Increased padding */
+            letter-spacing: 0.1em; text-transform: uppercase; border: none; cursor: pointer;
+        }
+        .themed-button:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 10px 25px color-mix(in srgb, var(--button-shadow) 120%, black 20%), 0 4px 8px rgba(0,0,0,0.3); }
+        .themed-button:active { transform: translateY(-1px) scale(0.98); }
+        .themed-button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
+        .theme-selector-container { position: fixed; top: 1rem; right: 1rem; z-index: 50; }
+        .themed-select {
+            background-color: var(--input-bg); border: 1px solid var(--input-border); color: var(--input-text);
+            font-family: var(--font-heading); font-size: 0.85rem; padding: 0.5rem 2.2rem 0.5rem 1rem;
+            border-radius: 0.5rem; appearance: none; cursor: pointer;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.7rem center; background-repeat: no-repeat; background-size: 1em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .themed-select:focus { outline: 2px solid var(--input-focus-ring); }
+
+
+        /* Profile Display Styles */
+        #profile-display { min-height: 350px; position: relative; } /* Ensure space for loader */
+        .profile-section-divider { border-color: var(--card-border); opacity: 0.6; margin-top: 2rem; margin-bottom: 2rem; }
+
+        .profile-header { display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: center; }
+        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; border: 5px solid var(--card-border); object-fit: cover; box-shadow: 0 6px 18px rgba(0,0,0,0.25); justify-self: center; align-self: start; }
+        .profile-name { font-family: var(--font-heading); font-weight: 800; font-size: clamp(1.8rem, 5vw, 2.5rem); color: var(--text-primary); line-height: 1.2; margin-bottom: 0.1rem;}
+        .profile-username { color: var(--text-muted); font-family: 'Roboto Mono', monospace; font-size: 1rem; }
+        .profile-bio { color: var(--text-secondary); font-size: 1rem; margin-top: 0.75rem; font-style: italic; font-weight: 300; }
+        .profile-contact-info { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: 0.9rem; }
+        .profile-contact-info span { display: inline-flex; align-items: center; color: var(--text-muted); }
+        .profile-contact-info i { margin-right: 0.5rem; width: 1em; text-align: center; color: var(--stat-icon-color); }
+        .profile-link { color: var(--link-color); transition: color 0.3s ease; font-weight: 500; }
+        .profile-link:hover { color: var(--link-hover-color); text-decoration: underline; }
+        .org-logo { width: 32px; height: 32px; border-radius: 6px; margin-right: 0.5rem; vertical-align: middle; background-color: #fff; padding: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);}
+
+        .profile-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1.5rem; text-align: center; }
+        .stat-item i { color: var(--stat-icon-color); transition: color 0.5s ease; font-size: 1.8rem; margin-bottom: 0.3rem; display: block; }
+        .stat-value { font-family: var(--font-heading); font-weight: 700; font-size: 1.8rem; color: var(--stat-value-color); transition: color 0.5s ease; display: block; line-height: 1.2; }
+        .stat-label { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+
+        .section-title { font-family: var(--font-heading); font-weight: 700; color: var(--text-secondary); font-size: 1.5rem; margin-bottom: 1rem; }
+        .lang-list { list-style: none; padding: 0; margin: 0; }
+        .lang-item { display: flex; align-items: center; margin-bottom: 0.75rem; font-size: 0.9rem; }
+        .lang-name { color: var(--text-primary); font-weight: 600; width: 120px; flex-shrink: 0; }
+        .lang-bar-container { flex-grow: 1; height: 10px; background-color: var(--lang-bar-bg); border-radius: 5px; overflow: hidden; margin: 0 0.75rem; }
+        .lang-bar { height: 100%; background-color: var(--stat-icon-color); border-radius: 5px; transition: width 0.5s ease-out; }
+        .lang-percent { color: var(--text-muted); font-size: 0.85rem; font-family: 'Roboto Mono'; }
+
+        .contribution-graph img { display: block; width: 100%; max-width: 720px; margin: 1.5rem auto 0; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); background-color: var(--repo-bg); padding: 0.5rem; border: 1px solid var(--repo-border); }
+
+        /* Repo List Styles */
+        .repo-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+        .repo-item {
+            background-color: var(--repo-bg); border: 2px solid var(--repo-border); border-radius: 1rem;
+            padding: 1.25rem; transition: all 0.3s ease; display: flex; flex-direction: column;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .repo-item:hover { transform: translateY(-4px) scale(1.02); border-color: var(--link-color); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .repo-name { font-family: var(--font-heading); font-weight: 700; font-size: 1.15rem; color: var(--link-color); line-height: 1.3; margin-bottom: 0.25rem; word-break: break-all; }
+        .repo-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: auto; /* Pushes meta to bottom */ padding-bottom: 0.75rem; flex-grow: 1;}
+        .repo-meta { margin-top: 0.75rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid color-mix(in srgb, var(--repo-border) 50%, transparent); padding-top: 0.75rem;}
+        .repo-meta span { display: inline-flex; align-items: center; }
+        .repo-meta i { margin-right: 0.4rem; width: 1em; text-align: center; }
+        .repo-lang { color: var(--repo-lang-color); font-weight: 600; }
+        .repo-stars { color: var(--repo-star-color); }
+
+        /* Loader & Error Styles */
+        .loader {
+            border: 6px solid color-mix(in srgb, var(--loader-color) 20%, transparent); /* Lighter border */
+            border-top-color: var(--loader-color); /* Spinner color */
+            border-radius: 50%; width: 60px; height: 60px;
+            animation: spin 1s linear infinite;
+            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 10;
+        }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        .error-message { color: var(--error-color); font-weight: 600; text-align: center; font-size: 1.1rem; border: 2px dashed var(--error-color); padding: 1.5rem; border-radius: 0.75rem; background-color: color-mix(in srgb, var(--error-color) 10%, transparent); }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    {/* Theme Selector */}
+    <div class="theme-selector-container">
+         <select id="theme-selector" class="themed-select" title="Select Theme">
+             <option value="cyberpunk">Cyberpunk</option>
+             <option value="fantasy-dark">Dark Fantasy</option>
+             <option value="retro-arcade">Retro Arcade</option>
+             <option value="doom">Doom</option>
+             <option value="zelda">Zelda</option>
+             <option value="cryo-chamber">Cryo Chamber</option>
+             <option value="solar-flare">Solar Flare</option>
+             {/* Add more distinct themes or remove placeholders */}
+             <option value="default-light">Default Light</option>
+        </select>
+    </div>
+
+    <main class="w-full max-w-5xl"> {/* Increased max-width */}
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="main-heading text-4xl md:text-5xl lg:text-6xl font-black mb-3 tracking-tight">GitHub Profile Synthesizer</h1>
+            <p class="sub-text text-lg md:text-xl">Visualize GitHub profiles with enhanced data.</p>
+        </header>
+
+        {/* Input Section */}
+        <section class="input-card">
+            <form id="github-form" class="flex flex-col sm:flex-row gap-4 items-stretch"> {/* items-stretch */}
+                <label for="github-username" class="sr-only">GitHub Username</label>
+                <input type="text" id="github-username" placeholder="Enter GitHub Username..." required
+                       class="themed-input flex-grow text-center sm:text-left">
+                <button type="submit" id="fetch-btn" class="themed-button w-full sm:w-auto flex-shrink-0">
+                    <i class="fas fa-sync-alt mr-2 hidden" id="fetch-icon"></i> Synthesize
+                </button>
+            </form>
+        </section>
+
+        {/* Display Section */}
+        <section id="profile-display" class="profile-card hidden">
+            {/* Loader */}
+            <div id="loading-indicator" class="loader hidden"></div>
+            {/* Error Message */}
+            <div id="error-message" class="error-message hidden"></div>
+            {/* Profile Content */}
+            <div id="profile-content" class="hidden">
+                {/* Profile Header */}
+                <div class="profile-header mb-8">
+                    <img id="profile-avatar" src="" alt="GitHub Avatar" class="profile-avatar">
+                    <div>
+                        <h2 id="profile-name" class="profile-name"></h2>
+                        <p class="profile-username mb-2">
+                            <a id="profile-username-link" href="#" target="_blank" rel="noopener noreferrer" class="profile-link">
+                                @<span id="profile-username-text"></span>
+                            </a>
+                        </p>
+                         <p id="profile-bio" class="profile-bio"></p>
+                         <div class="profile-contact-info">
+                             <span id="profile-location-container" class="hidden"><i class="fas fa-map-marker-alt"></i><span id="profile-location"></span></span>
+                             <span id="profile-blog-container" class="hidden"><i class="fas fa-link"></i><a id="profile-blog-link" href="#" target="_blank" rel="noopener noreferrer" class="profile-link"><span id="profile-blog-text"></span></a></span>
+                         </div>
+                         <div id="profile-orgs" class="mt-3">
+                             {/* Org logos injected here */}
+                         </div>
+                    </div>
+                </div>
+
+                {/* Profile Stats */}
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <div id="profile-followers" class="stat-value"></div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-user-plus"></i>
+                        <div id="profile-following" class="stat-value"></div>
+                        <div class="stat-label">Following</div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-book-bookmark"></i>
+                        <div id="profile-repos" class="stat-value"></div>
+                        <div class="stat-label">Public Repos</div>
+                    </div>
+                </div>
+
+                <hr class="profile-section-divider" />
+
+                 {/* Language Stats */}
+                 <div id="language-section" class="mb-8 hidden">
+                     <h3 class="section-title">Top Languages</h3>
+                     <ul id="language-list" class="lang-list">
+                         {/* Language items injected here */}
+                     </ul>
+                 </div>
+
+                 {/* Contribution Graph */}
+                  <div id="contribution-section" class="mb-8 hidden">
+                      <h3 class="section-title">Contribution Activity</h3>
+                      <div class="contribution-graph">
+                          <img id="contribution-graph-img" src="" alt="GitHub Contribution Graph" />
+                          <p class="text-xs text-center mt-2" style="color: var(--text-muted);">Contribution graph generated by <a href="https://ghchart.rshah.org/" target="_blank" rel="noopener noreferrer" class="profile-link">ghchart.rshah.org</a></p>
+                      </div>
+                  </div>
+
+                <hr class="profile-section-divider" />
+
+                 {/* Repository List */}
+                 <div id="repo-section" class="hidden">
+                    <h3 class="section-title">Top Repositories (by Stars)</h3>
+                    <ul id="repo-list" class="repo-list">
+                        {/* Repo items will be injected here */}
+                    </ul>
+                 </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- DOM Elements ---
+        const themeSelector = document.getElementById('theme-selector');
+        const htmlElement = document.documentElement;
+        const githubForm = document.getElementById('github-form');
+        const usernameInput = document.getElementById('github-username');
+        const fetchBtn = document.getElementById('fetch-btn');
+        const fetchIcon = document.getElementById('fetch-icon');
+        const profileDisplay = document.getElementById('profile-display');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const errorMessage = document.getElementById('error-message');
+        const profileContent = document.getElementById('profile-content');
+        // Profile data elements
+        const profileAvatar = document.getElementById('profile-avatar');
+        const profileName = document.getElementById('profile-name');
+        const profileUsernameLink = document.getElementById('profile-username-link');
+        const profileUsernameText = document.getElementById('profile-username-text');
+        const profileBio = document.getElementById('profile-bio');
+        const profileLocationContainer = document.getElementById('profile-location-container');
+        const profileLocation = document.getElementById('profile-location');
+        const profileBlogContainer = document.getElementById('profile-blog-container');
+        const profileBlogLink = document.getElementById('profile-blog-link');
+        const profileBlogText = document.getElementById('profile-blog-text');
+        const profileOrgs = document.getElementById('profile-orgs');
+        // Stats
+        const profileFollowers = document.getElementById('profile-followers');
+        const profileFollowing = document.getElementById('profile-following');
+        const profileRepos = document.getElementById('profile-repos');
+        // Languages
+        const languageSection = document.getElementById('language-section');
+        const languageList = document.getElementById('language-list');
+        // Contributions
+        const contributionSection = document.getElementById('contribution-section');
+        const contributionGraphImg = document.getElementById('contribution-graph-img');
+        // Repos
+        const repoSection = document.getElementById('repo-section');
+        const repoList = document.getElementById('repo-list');
+
+        const GITHUB_API_BASE = 'https://api.github.com';
+
+        // --- Theme Switcher ---
+        function applyTheme(themeName) {
+             const classList = htmlElement.classList;
+             // Robust removal of previous theme classes
+             const themeClasses = Array.from(classList).filter(cls => cls.startsWith('theme-'));
+             classList.remove(...themeClasses);
+
+             htmlElement.classList.add(`theme-${themeName}`);
+             localStorage.setItem('githubProfileTheme', themeName);
+             if (themeSelector.value !== themeName) themeSelector.value = themeName;
+             // Update contribution graph theme color if service supports it
+             updateContributionGraphTheme(themeName);
+             console.log(`Theme applied: ${themeName}`);
+        }
+        themeSelector?.addEventListener('change', (e) => applyTheme(e.target.value));
+
+        function updateContributionGraphTheme(themeName) {
+            // Basic mapping - ghchart supports limited color schemes by name
+            // Add more mappings as needed or use a default
+            let graphColor = 'default'; // Default color scheme
+             if (themeName === 'cyberpunk' || themeName === 'doom' || themeName === 'retro-arcade' || themeName === 'fantasy-dark') {
+                 graphColor = 'dark';
+             } else if (themeName === 'solar-flare') {
+                 graphColor = 'halloween'; // Example mapping
+             } else if (themeName === 'cryo-chamber'){
+                 graphColor = 'winter';
+             } else if (themeName === 'zelda'){
+                 graphColor = 'summer'; // Example mapping
+             }
+             // Re-set the src only if the username part is already set
+             const currentSrc = contributionGraphImg.getAttribute('src');
+             if (currentSrc && currentSrc.includes('ghchart.rshah.org')) {
+                 const username = currentSrc.split('/').pop(); // Get username from existing src
+                 contributionGraphImg.src = `https://ghchart.rshah.org/${graphColor}/${username}`;
+             }
+        }
+
+
+        // --- API Fetching and Display ---
+        async function fetchGitHubData(username) {
+            if (!username) return;
+            showLoadingState(true);
+
+            const userApiUrl = `${GITHUB_API_BASE}/users/${username}`;
+            const reposApiUrl = `${GITHUB_API_BASE}/users/${username}/repos?per_page=100`; // Fetch more for lang stats
+            const orgsApiUrl = `${GITHUB_API_BASE}/users/${username}/orgs`;
+
+            try {
+                // Fetch all data concurrently
+                const [userResponse, reposResponse, orgsResponse] = await Promise.all([
+                    fetch(userApiUrl),
+                    fetch(reposApiUrl),
+                    fetch(orgsApiUrl)
+                    // Note: Add fetch for external contribution count API here if desired
+                ]);
+
+                // --- Process User Data ---
+                if (!userResponse.ok) {
+                    throw new Error(`User not found (Status: ${userResponse.status})`);
+                }
+                const userData = await userResponse.json();
+
+                // --- Process Repo Data (and Calculate Languages) ---
+                let repoData = [];
+                let topLanguages = {};
+                if (reposResponse.ok) {
+                    repoData = await reposResponse.json();
+                    topLanguages = calculateTopLanguages(repoData);
+                } else {
+                    console.warn(`Failed to fetch repositories (Status: ${reposResponse.status})`);
+                }
+
+                // --- Process Orgs Data ---
+                let orgsData = [];
+                if (orgsResponse.ok) {
+                    orgsData = await orgsResponse.json();
+                } else {
+                    console.warn(`Failed to fetch organizations (Status: ${orgsResponse.status})`);
+                }
+
+                // --- Display Profile ---
+                displayProfile(userData, repoData, orgsData, topLanguages);
+
+            } catch (error) {
+                console.error("Error fetching GitHub data:", error);
+                displayError(error.message || "Failed to fetch data. Check username or network.");
+            } finally {
+                showLoadingState(false);
+            }
+        }
+
+        function showLoadingState(isLoading) {
+             if (isLoading) {
+                 loadingIndicator.classList.remove('hidden');
+                 errorMessage.classList.add('hidden');
+                 profileContent.classList.add('hidden');
+                 profileDisplay.classList.remove('hidden');
+                 fetchBtn.disabled = true;
+                 fetchIcon.classList.remove('hidden');
+                 fetchIcon.classList.add('fa-spin');
+             } else {
+                 loadingIndicator.classList.add('hidden');
+                 fetchBtn.disabled = false;
+                 fetchIcon.classList.add('hidden');
+                 fetchIcon.classList.remove('fa-spin');
+             }
+         }
+
+        function calculateTopLanguages(repos) {
+            if (!repos || repos.length === 0) return {};
+
+            const langCounts = repos.reduce((acc, repo) => {
+                if (repo.language) {
+                    acc[repo.language] = (acc[repo.language] || 0) + 1;
+                }
+                return acc;
+            }, {});
+
+            const totalCount = Object.values(langCounts).reduce((sum, count) => sum + count, 0);
+            if (totalCount === 0) return {};
+
+            return Object.entries(langCounts)
+                .map(([name, count]) => ({
+                    name,
+                    count,
+                    percentage: totalCount > 0 ? ((count / totalCount) * 100).toFixed(1) : 0
+                }))
+                .sort((a, b) => b.count - a.count) // Sort by count descending
+                .slice(0, 6); // Get top 6
+        }
+
+         function displayProfile(userData, repoData, orgsData, topLanguages) {
+            errorMessage.classList.add('hidden');
+
+            // --- Populate User Info ---
+            profileAvatar.src = userData.avatar_url || '';
+            profileAvatar.alt = `${userData.login || 'User'} Avatar`;
+            profileName.textContent = userData.name || userData.login || 'N/A';
+            profileUsernameText.textContent = userData.login || 'N/A';
+            profileUsernameLink.href = userData.html_url || '#';
+            profileBio.textContent = userData.bio || 'No bio available.';
+
+            // Location
+             if (userData.location) {
+                 profileLocation.textContent = userData.location;
+                 profileLocationContainer.classList.remove('hidden');
+             } else {
+                 profileLocationContainer.classList.add('hidden');
+             }
+             // Blog/Website
+             if (userData.blog) {
+                 // Clean up display URL
+                 let blogUrl = userData.blog;
+                 if (!blogUrl.startsWith('http://') && !blogUrl.startsWith('https://')) {
+                     blogUrl = 'https://' + blogUrl; // Assume https if protocol missing
+                 }
+                 const displayBlogUrl = userData.blog.replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, '');
+                 profileBlogLink.href = blogUrl;
+                 profileBlogText.textContent = displayBlogUrl || 'Website';
+                 profileBlogContainer.classList.remove('hidden');
+             } else {
+                 profileBlogContainer.classList.add('hidden');
+             }
+
+             // Organizations
+            profileOrgs.innerHTML = ''; // Clear previous
+             if (orgsData && orgsData.length > 0) {
+                 orgsData.slice(0, 8).forEach(org => { // Show max 8 orgs
+                     const orgLink = document.createElement('a');
+                     orgLink.href = `https://github.com/${org.login}`;
+                     orgLink.target = '_blank';
+                     orgLink.rel = 'noopener noreferrer';
+                     orgLink.title = org.login;
+                     const orgImg = document.createElement('img');
+                     orgImg.src = org.avatar_url;
+                     orgImg.alt = `${org.login} logo`;
+                     orgImg.className = 'org-logo inline-block';
+                     orgLink.appendChild(orgImg);
+                     profileOrgs.appendChild(orgLink);
+                 });
+             }
+
+
+            // --- Populate Stats ---
+            profileFollowers.textContent = userData.followers !== undefined ? userData.followers.toLocaleString() : '-';
+            profileFollowing.textContent = userData.following !== undefined ? userData.following.toLocaleString() : '-';
+            profileRepos.textContent = userData.public_repos !== undefined ? userData.public_repos.toLocaleString() : '-';
+            // Add contribution count here if fetched
+
+            // --- Populate Top Languages ---
+            languageList.innerHTML = ''; // Clear previous
+            if (topLanguages && topLanguages.length > 0) {
+                languageSection.classList.remove('hidden');
+                topLanguages.forEach(lang => {
+                    const li = document.createElement('li');
+                    li.className = 'lang-item';
+                    li.innerHTML = `
+                        <span class="lang-name">${lang.name}</span>
+                        <div class="lang-bar-container">
+                            <div class="lang-bar" style="width: ${lang.percentage}%; background-color: var(--stat-icon-color);"></div>
+                        </div>
+                        <span class="lang-percent">${lang.percentage}%</span>
+                    `;
+                    // You might want to use a color mapping for language bars based on var(--text-accent), var(--text-secondary) etc. or predefined colors
+                    languageList.appendChild(li);
+                });
+            } else {
+                languageSection.classList.add('hidden');
+            }
+
+            // --- Populate Contribution Graph ---
+             if (userData.login) {
+                 contributionSection.classList.remove('hidden');
+                 contributionGraphImg.src = `https://ghchart.rshah.org/${userData.login}`; // Default color, theme change will update
+                 contributionGraphImg.alt = `${userData.login}'s Contribution Graph`;
+                 updateContributionGraphTheme(localStorage.getItem('githubProfileTheme') || 'cyberpunk'); // Apply current theme color
+             } else {
+                 contributionSection.classList.add('hidden');
+             }
+
+
+            // --- Populate Top Repositories (Sorted by Stars) ---
+            repoList.innerHTML = ''; // Clear previous repos
+             const sortedRepos = repoData.sort((a, b) => b.stargazers_count - a.stargazers_count).slice(0, 6); // Get top 6 starred
+
+            if (sortedRepos && sortedRepos.length > 0) {
+                 repoSection.classList.remove('hidden');
+                sortedRepos.forEach(repo => {
+                    const li = document.createElement('li');
+                    li.className = 'repo-item';
+                    li.innerHTML = `
+                        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="repo-name profile-link">${repo.name}</a>
+                        <p class="repo-desc">${repo.description || 'No description.'}</p>
+                        <div class="repo-meta">
+                            ${repo.language ? `<span class="repo-lang"><i class="fas fa-circle" style="font-size: 0.7em; vertical-align: middle;"></i> ${repo.language}</span>` : ''}
+                            <span class="repo-stars"><i class="fas fa-star"></i> ${repo.stargazers_count.toLocaleString()}</span>
+                             <span title="Forks"><i class="fas fa-code-fork"></i> ${repo.forks_count.toLocaleString()}</span>
+                             <span title="Last Updated"><i class="fas fa-clock"></i> ${new Date(repo.updated_at).toLocaleDateString()}</span>
+                        </div>
+                    `;
+                    repoList.appendChild(li);
+                });
+            } else {
+                 repoSection.classList.add('hidden');
+             }
+
+            profileContent.classList.remove('hidden');
+        }
+
+        function displayError(message) {
+            profileContent.classList.add('hidden');
+            languageSection.classList.add('hidden');
+            contributionSection.classList.add('hidden');
+            repoSection.classList.add('hidden');
+            errorMessage.textContent = `Error: ${message}`;
+            errorMessage.classList.remove('hidden');
+        }
+
+        // --- Event Listeners ---
+        githubForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            fetchGitHubData(username);
+        });
+
+        // --- ON PAGE LOAD ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('githubProfileTheme') || 'cyberpunk'; // Default theme
+            applyTheme(savedTheme);
+            console.log("GitHub Profile Synthesizer Initialized.");
+            // Optional: Fetch a default profile on load?
+            // fetchGitHubData('octocat');
+        });
+
+    </script>
+
+</body>
+</html>

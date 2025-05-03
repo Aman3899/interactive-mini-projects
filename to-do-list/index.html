@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<!-- Default theme class, JS will manage this -->
+<html lang="en" class="theme-cyberpunk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOVA TASK - Futuristic To-Do</title>
+    <!-- Tailwind CSS v3 (ensure it's v3+ for arbitrary properties) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Base Font */
+        body {
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-rajdhani {
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        /* --- CSS Variables Setup --- */
+        :root,
+        .theme-minimal {
+            --bg-primary: #f3f4f6;
+            /* gray-100 */
+            --bg-secondary: #ffffff;
+            /* white */
+            --bg-gradient-start: var(--bg-primary);
+            --bg-gradient-end: var(--bg-secondary);
+            --text-primary: #1f2937;
+            /* gray-800 */
+            --text-secondary: #4b5563;
+            /* gray-600 */
+            --text-accent: #6b7280;
+            /* gray-500 */
+            --text-completed: #9ca3af;
+            /* gray-400 */
+            --border-color: #e5e7eb;
+            /* gray-200 */
+            --accent-color: #d1d5db;
+            /* gray-300 */
+            --button-bg: var(--accent-color);
+            --button-text: var(--text-primary);
+            --button-hover-bg: #e5e7eb;
+            /* gray-200 */
+            --glow-color: rgba(0, 0, 0, 0.1);
+            --neo-shadow-light: -5px -5px 15px rgba(255, 255, 255, 0.7);
+            --neo-shadow-dark: 5px 5px 15px rgba(0, 0, 0, 0.1);
+            --scrollbar-thumb: rgba(136, 136, 136, 0.5);
+            --scrollbar-thumb-hover: rgba(136, 136, 136, 0.8);
+        }
+
+        .theme-cyberpunk {
+            --bg-primary: #000000;
+            --bg-secondary: #1a1a2e;
+            --bg-gradient-start: var(--bg-primary);
+            --bg-gradient-end: #2d004f;
+            /* Deep purple */
+            --text-primary: #00ffff;
+            /* Cyan */
+            --text-secondary: #a8a8ff;
+            /* Light purple */
+            --text-accent: #ff00ff;
+            /* Magenta */
+            --text-completed: #ff00ff80;
+            --border-color: #00ffff50;
+            --accent-color: #ff00ff;
+            --button-bg: var(--accent-color);
+            --button-text: var(--bg-primary);
+            --button-hover-bg: #ff55ff;
+            --glow-color: rgba(255, 0, 255, 0.6);
+            --neo-shadow-light: -5px -5px 15px rgba(0, 255, 255, 0.1);
+            --neo-shadow-dark: 5px 5px 15px rgba(0, 0, 0, 0.5);
+            --scrollbar-thumb: rgba(0, 255, 255, 0.5);
+            --scrollbar-thumb-hover: rgba(0, 255, 255, 0.8);
+        }
+
+        .theme-darkTech {
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --bg-gradient-start: var(--bg-primary);
+            --bg-gradient-end: var(--bg-secondary);
+            --text-primary: #93c5fd;
+            /* blue-300 */
+            --text-secondary: #9ca3af;
+            /* gray-400 */
+            --text-accent: #60a5fa;
+            /* blue-400 */
+            --text-completed: #6b7280;
+            --border-color: #374151;
+            --accent-color: #3b82f6;
+            /* blue-600 */
+            --button-bg: var(--accent-color);
+            --button-text: #ffffff;
+            --button-hover-bg: #2563eb;
+            /* blue-700 */
+            --glow-color: rgba(59, 130, 246, 0.4);
+            --neo-shadow-light: -5px -5px 15px rgba(75, 85, 99, 0.2);
+            --neo-shadow-dark: 5px 5px 15px rgba(0, 0, 0, 0.3);
+            --scrollbar-thumb: rgba(96, 165, 250, 0.5);
+            --scrollbar-thumb-hover: rgba(96, 165, 250, 0.8);
+        }
+
+        .theme-neonCity {
+            --bg-primary: #1d1135;
+            --bg-secondary: #4a1a5c;
+            --bg-gradient-start: var(--bg-primary);
+            --bg-gradient-end: #3f155e;
+            --text-primary: #39ff14;
+            /* Neon green */
+            --text-secondary: #bc13fe;
+            /* Neon purple */
+            --text-accent: #fdfd33;
+            /* Neon yellow */
+            --text-completed: #bc13fe80;
+            --border-color: #39ff1450;
+            --accent-color: #fdfd33;
+            --button-bg: var(--accent-color);
+            --button-text: var(--bg-primary);
+            --button-hover-bg: #ffff66;
+            --glow-color: rgba(253, 253, 51, 0.6);
+            --neo-shadow-light: -5px -5px 15px rgba(57, 255, 20, 0.1);
+            --neo-shadow-dark: 5px 5px 15px rgba(0, 0, 0, 0.5);
+            --scrollbar-thumb: rgba(57, 255, 20, 0.5);
+            --scrollbar-thumb-hover: rgba(57, 255, 20, 0.8);
+        }
+
+        .theme-midnight {
+            --bg-primary: #0b132b;
+            --bg-secondary: #1c2541;
+            --bg-gradient-start: var(--bg-primary);
+            --bg-gradient-end: #3a506b;
+            --text-primary: #ffffff;
+            --text-secondary: #adb5bd;
+            --text-accent: #5bc0be;
+            --text-completed: #6c757d;
+            --border-color: #3a506b;
+            --accent-color: #5bc0be;
+            --button-bg: var(--accent-color);
+            --button-text: #0b132b;
+            --button-hover-bg: #6fffe9;
+            --glow-color: rgba(91, 192, 190, 0.4);
+            --neo-shadow-light: -5px -5px 15px rgba(91, 192, 190, 0.1);
+            --neo-shadow-dark: 5px 5px 15px rgba(0, 0, 0, 0.4);
+            --scrollbar-thumb: rgba(91, 192, 190, 0.5);
+            --scrollbar-thumb-hover: rgba(91, 192, 190, 0.8);
+        }
+
+        .theme-sunset {
+            --bg-primary: #4c1d95;
+            /* purple-900 */
+            --bg-secondary: #8b5cf6;
+            /* violet-500 */
+            --bg-gradient-start: #f97316;
+            /* orange-500 */
+            --bg-gradient-end: #ec4899;
+            /* pink-500 */
+            --text-primary: #fffbeb;
+            /* yellow-50 */
+            --text-secondary: #fef3c7;
+            /* amber-100 */
+            --text-accent: #fbbf24;
+            /* amber-400 */
+            --text-completed: #fecaca;
+            --border-color: #f9731680;
+            --accent-color: #f59e0b;
+            /* amber-500 */
+            --button-bg: var(--accent-color);
+            --button-text: #4c1d95;
+            --button-hover-bg: #facc15;
+            /* yellow-400 */
+            --glow-color: rgba(251, 191, 36, 0.5);
+            --neo-shadow-light: -5px -5px 15px rgba(255, 255, 255, 0.1);
+            --neo-shadow-dark: 5px 5px 15px rgba(100, 10, 10, 0.3);
+            --scrollbar-thumb: rgba(251, 191, 36, 0.5);
+            --scrollbar-thumb-hover: rgba(251, 191, 36, 0.8);
+        }
+
+        .theme-matrix {
+            --bg-primary: #000000;
+            --bg-secondary: #031a00;
+            --bg-gradient-start: var(--bg-primary);
+            --bg-gradient-end: var(--bg-primary);
+            --text-primary: #00ff00;
+            --text-secondary: #00cc00;
+            --text-accent: #00ff00;
+            --text-completed: #009900;
+            --border-color: #00ff0030;
+            --accent-color: #00ff00;
+            --button-bg: var(--accent-color);
+            --button-text: var(--bg-primary);
+            --button-hover-bg: #33ff33;
+            --glow-color: rgba(0, 255, 0, 0.5);
+            --neo-shadow-light: -5px -5px 15px rgba(0, 255, 0, 0.05);
+            --neo-shadow-dark: 5px 5px 15px rgba(0, 0, 0, 0.5);
+            --scrollbar-thumb: rgba(0, 255, 0, 0.5);
+            --scrollbar-thumb-hover: rgba(0, 255, 0, 0.8);
+        }
+
+        .theme-arctic {
+            --bg-primary: #f0f9ff;
+            --bg-secondary: #ffffff;
+            --bg-gradient-start: #e0f2fe;
+            --bg-gradient-end: #ffffff;
+            --text-primary: #075985;
+            /* sky-800 */
+            --text-secondary: #0c4a6e;
+            /* sky-900 */
+            --text-accent: #38bdf8;
+            /* sky-400 */
+            --text-completed: #7dd3fc;
+            --border-color: #bae6fd;
+            --accent-color: #7dd3fc;
+            /* sky-300 */
+            --button-bg: var(--accent-color);
+            --button-text: var(--text-secondary);
+            --button-hover-bg: #a5e8fe;
+            --glow-color: rgba(56, 189, 248, 0.3);
+            --neo-shadow-light: -5px -5px 15px rgba(255, 255, 255, 0.8);
+            --neo-shadow-dark: 5px 5px 15px rgba(0, 100, 150, 0.1);
+            --scrollbar-thumb: rgba(56, 189, 248, 0.5);
+            --scrollbar-thumb-hover: rgba(56, 189, 248, 0.8);
+        }
+
+        .theme-retrowave {
+            --bg-primary: #2a003d;
+            --bg-secondary: #4f0070;
+            --bg-gradient-start: #ff00c1;
+            --bg-gradient-end: #7a00ff;
+            --text-primary: #ff8d00;
+            /* Orange */
+            --text-secondary: #00f0ff;
+            /* Cyan */
+            --text-accent: #ff00c1;
+            /* Pink */
+            --text-completed: #ff00c180;
+            --border-color: #00f0ff50;
+            --accent-color: #ff00c1;
+            --button-bg: var(--accent-color);
+            --button-text: #ffffff;
+            --button-hover-bg: #ff55d9;
+            --glow-color: rgba(0, 240, 255, 0.5);
+            --neo-shadow-light: -5px -5px 15px rgba(0, 240, 255, 0.1);
+            --neo-shadow-dark: 5px 5px 15px rgba(0, 0, 0, 0.5);
+            --scrollbar-thumb: rgba(0, 240, 255, 0.5);
+            --scrollbar-thumb-hover: rgba(0, 240, 255, 0.8);
+        }
+
+        .theme-cosmos {
+            --bg-primary: #000428;
+            --bg-secondary: #000a4a;
+            --bg-gradient-start: #000428;
+            --bg-gradient-end: #004e92;
+            --text-primary: #a2d2ff;
+            /* Light Blue */
+            --text-secondary: #bde0fe;
+            /* Lighter Blue */
+            --text-accent: #ffafcc;
+            /* Pink */
+            --text-completed: #a2d2ff80;
+            --border-color: #a2d2ff30;
+            --accent-color: #ffafcc;
+            --button-bg: var(--accent-color);
+            --button-text: #000428;
+            --button-hover-bg: #ffc0d8;
+            --glow-color: rgba(255, 175, 204, 0.4);
+            --neo-shadow-light: -5px -5px 15px rgba(189, 224, 254, 0.1);
+            --neo-shadow-dark: 5px 5px 15px rgba(0, 0, 0, 0.4);
+            --scrollbar-thumb: rgba(162, 210, 255, 0.5);
+            --scrollbar-thumb-hover: rgba(162, 210, 255, 0.8);
+        }
+
+        /* --- Base Element Styles using Variables --- */
+        body {
+            background-image: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-primary);
+        }
+
+        #app-title {
+            color: var(--text-primary);
+        }
+
+        #app-subtitle,
+        footer p,
+        label,
+        .task-filter,
+        .counter-text,
+        #clearCompleted {
+            color: var(--text-secondary);
+        }
+
+        input,
+        select {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            caret-color: var(--text-accent);
+        }
+
+        input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--text-accent);
+            box-shadow: 0 0 0 2px var(--glow-color);
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            appearance: none;
+            color: var(--text-secondary);
+        }
+
+        /* Arrow color set */
+        button#addTask,
+        button#clearCompleted {
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            box-shadow: 0 0 10px var(--glow-color);
+        }
+
+        button#addTask:hover,
+        button#clearCompleted:hover {
+            background-color: var(--button-hover-bg);
+        }
+
+        .task-item {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .task-text {
+            color: var(--text-primary);
+        }
+
+        .task-item input[type="checkbox"] {
+            accent-color: var(--accent-color);
+            border-color: var(--border-color);
+        }
+
+        /* Use accent-color for checkbox */
+        .task-item input[type="checkbox"]:checked+.task-text {
+            text-decoration-color: var(--text-completed);
+            color: var(--text-completed);
+        }
+
+        .neo-morphism {
+            box-shadow: var(--neo-shadow-dark), var(--neo-shadow-light);
+            background-color: var(--bg-secondary);
+        }
+
+        .task-filter.active {
+            color: var(--text-primary);
+            font-weight: 700;
+            /* Maybe underline or different style */
+            text-decoration: underline;
+            text-decoration-color: var(--text-accent);
+        }
+
+        .delete-task {
+            color: #ef4444;
+        }
+
+        /* Keep delete red */
+        .delete-task:hover {
+            color: #f87171;
+        }
+
+        .status-indicator {
+            background-color: var(--text-accent);
+        }
+
+        /* Status indicator color */
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--scrollbar-thumb-hover);
+        }
+
+        /* Animations */
+        .theme-transition {
+            transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .task-enter {
+            animation: slideIn 0.4s ease-out forwards;
+            opacity: 0;
+            transform: translateY(15px) scale(0.98);
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .task-exit {
+            animation: fadeOut 0.3s ease-in forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(30px) scale(0.95);
+            }
+        }
+
+        .hover-scale {
+            transition: transform 0.2s ease;
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.03);
+        }
+    </style>
+    <!-- Tailwind Config (Needed for JIT but vars handle colors) -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Not strictly needed if using theme classes, but good practice
+            theme: {
+                extend: {
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="theme-transition min-h-screen flex flex-col">
+    <div class="container mx-auto px-4 py-8 sm:py-12 flex-grow">
+        <div class="max-w-3xl mx-auto">
+            <!-- Header -->
+            <header class="text-center mb-8 sm:mb-10">
+                <h1 id="app-title" class="text-4xl md:text-5xl font-bold mb-2 font-orbitron tracking-wider uppercase">
+                    NOVA TASK</h1>
+                <p id="app-subtitle" class="text-lg opacity-80 font-rajdhani font-light">Futuristic Task Management</p>
+            </header>
+
+            <!-- Controls: Theme Selector & Input/Add -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <!-- Theme Selector (Order 1 on mobile, 2 on desktop) -->
+                <div class="w-full md:w-auto order-2 md:order-1">
+                    <label for="theme-selector" class="sr-only">Select Theme</label>
+                    <div class="neo-morphism rounded-lg p-1 flex items-center">
+                        <select id="theme-selector"
+                            class="bg-transparent outline-none py-2 px-4 rounded-lg font-rajdhani font-medium w-full appearance-none text-center md:text-left">
+                            <option value="cyberpunk">Cyberpunk</option>
+                            <option value="darkTech">Dark Tech</option>
+                            <option value="neonCity">Neon City</option>
+                            <option value="minimal">Minimal Light</option>
+                            <option value="midnight">Midnight</option>
+                            <option value="sunset">Sunset</option>
+                            <option value="matrix">Matrix</option>
+                            <option value="arctic">Arctic</option>
+                            <option value="retrowave">Retrowave</option>
+                            <option value="cosmos">Cosmos</option>
+                        </select>
+                        <i class="fas fa-angle-down -ml-6 pointer-events-none"></i>
+                    </div>
+                </div>
+                <!-- Task Input & Add Button (Order 2 on mobile, 1 on desktop) -->
+                <div class="w-full md:w-auto order-1 md:order-2 flex-grow">
+                    <div class="flex items-center gap-2">
+                        <div class="neo-morphism rounded-lg flex items-center flex-grow">
+                            <input type="text" id="taskInput" placeholder="Initiate new task sequence..."
+                                class="bg-transparent outline-none py-3 px-4 rounded-lg font-rajdhani w-full placeholder-opacity-50">
+                        </div>
+                        <button id="addTask"
+                            class="hover-scale neo-morphism rounded-lg py-3 px-5 font-semibold font-orbitron text-sm tracking-wider flex items-center justify-center whitespace-nowrap">
+                            <i class="fas fa-plus mr-2 text-xs"></i> ADD
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters & Count -->
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="status-indicator h-2.5 w-2.5 rounded-full animate-pulse"></div>
+                    <p class="font-rajdhani font-medium counter-text"><span id="tasks-count">0</span> Active Tasks</p>
+                </div>
+                <div class="neo-morphism rounded-lg p-1 flex items-center gap-1 sm:gap-2">
+                    <button id="filter-all"
+                        class="task-filter px-3 py-1 rounded font-rajdhani font-medium hover-scale text-sm">All</button>
+                    <button id="filter-active"
+                        class="task-filter px-3 py-1 rounded font-rajdhani font-medium hover-scale text-sm">Active</button>
+                    <button id="filter-completed"
+                        class="task-filter px-3 py-1 rounded font-rajdhani font-medium hover-scale text-sm">Completed</button>
+                </div>
+            </div>
+
+            <!-- Task List -->
+            <div id="taskList" class="space-y-3 overflow-y-auto max-h-[55vh] sm:max-h-[60vh] py-1 pr-1">
+                <!-- Tasks will be dynamically added here -->
+                <p id="no-tasks-msg" class="text-center py-6 opacity-60 font-rajdhani hidden">System clear. No tasks
+                    detected.</p>
+            </div>
+
+            <!-- Footer Controls -->
+            <div class="mt-8 flex justify-between items-center border-t pt-4"
+                style="border-color: var(--border-color);">
+                <p class="font-rajdhani text-sm counter-text">
+                    <span id="completed-count">0</span> / <span id="total-count">0</span> Completed
+                </p>
+                <button id="clearCompleted"
+                    class="hover-scale neo-morphism rounded-lg py-2 px-4 text-xs font-orbitron tracking-wider disabled:opacity-50 disabled:cursor-not-allowed">
+                    Purge Completed
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-4 text-center text-sm opacity-60 font-rajdhani">
+        <p>NOVA TASK SYSTEM // STATUS: ONLINE // © 2025</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const taskInput = document.getElementById('taskInput');
+            const addTaskBtn = document.getElementById('addTask');
+            const taskList = document.getElementById('taskList');
+            const themeSelector = document.getElementById('theme-selector');
+            const tasksCountEl = document.getElementById('tasks-count'); // Active count
+            const completedCountEl = document.getElementById('completed-count');
+            const totalCountEl = document.getElementById('total-count');
+            const clearCompletedBtn = document.getElementById('clearCompleted');
+            const filterButtons = document.querySelectorAll('.task-filter');
+            const htmlElement = document.documentElement; // Target <html> for theme class
+            const noTasksMsg = document.getElementById('no-tasks-msg');
+
+            // State
+            let tasks = [];
+            let currentFilter = 'all';
+
+            // Load from localStorage
+            function loadState() {
+                const savedTasks = localStorage.getItem('novaTasks');
+                const savedTheme = localStorage.getItem('novaTaskTheme') || 'cyberpunk'; // Default theme
+
+                tasks = savedTasks ? JSON.parse(savedTasks) : [];
+
+                themeSelector.value = savedTheme;
+                applyTheme(savedTheme); // Apply theme immediately
+
+                renderTasks(); // Render tasks AFTER theme is applied
+                updateCounters();
+                setActiveFilter('all'); // Set initial filter view
+            }
+
+            // Save to localStorage
+            function saveTasks() {
+                localStorage.setItem('novaTasks', JSON.stringify(tasks));
+                updateCounters();
+            }
+
+            // Update task counters
+            function updateCounters() {
+                const total = tasks.length;
+                const completed = tasks.filter(task => task.completed).length;
+                const active = total - completed;
+
+                tasksCountEl.textContent = active; // Show active count in top status
+                completedCountEl.textContent = completed;
+                totalCountEl.textContent = total;
+
+                // Disable "Clear Completed" if none are completed
+                clearCompletedBtn.disabled = completed === 0;
+
+                // Show/hide "no tasks" message
+                noTasksMsg.classList.toggle('hidden', filterTasks().length > 0);
+            }
+
+            // Apply theme by changing class on <html>
+            function applyTheme(themeName) {
+                htmlElement.className = `theme-${themeName}`; // Remove others, add current
+                localStorage.setItem('novaTaskTheme', themeName);
+                // Re-render tasks might be needed if task item background depends on theme directly
+                renderTasks(); // Ensure tasks get correct background/text colors
+            }
+
+            // Add new task
+            function addTask() {
+                const taskText = taskInput.value.trim();
+                if (taskText === '') return;
+
+                const newTask = {
+                    id: Date.now(),
+                    text: taskText,
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                };
+
+                tasks.unshift(newTask); // Add to the beginning
+                taskInput.value = '';
+                saveTasks();
+
+                // Render only the new task with animation
+                renderSingleTask(newTask, true); // true indicates prepend
+                noTasksMsg.classList.add('hidden'); // Hide message if it was visible
+                updateCounters(); // Update counts immediately
+            }
+
+            // Render a single task (can prepend or append)
+            function renderSingleTask(task, prepend = false) {
+                const taskElement = document.createElement('div');
+                taskElement.setAttribute('data-id', task.id);
+                // Base classes + animation class
+                taskElement.className = 'task-item neo-morphism flex items-center justify-between p-3 sm:p-4 rounded-lg border task-enter gap-3'; // Use variables via base class
+
+                const isCompleted = task.completed ? 'checked' : '';
+                const textStyle = task.completed ? 'line-through opacity-60' : ''; // Use opacity for completed text
+
+                taskElement.innerHTML = `
+                    <div class="flex items-center flex-grow min-w-0"> <!-- Added min-w-0 for flex shrink -->
+                        <input type="checkbox" class="form-checkbox task-checkbox h-5 w-5 rounded mr-3 flex-shrink-0 cursor-pointer" ${isCompleted}>
+                        <p class="task-text flex-grow font-rajdhani font-medium truncate ${textStyle}">${task.text}</p> <!-- Added truncate -->
+                    </div>
+                    <button class="delete-task ml-2 text-red-500 hover:text-red-400 transition-colors flex-shrink-0 px-2">
+                        <i class="fas fa-trash-alt fa-sm"></i> <!-- Changed icon -->
+                    </button>
+                `;
+
+                if (prepend) {
+                    taskList.prepend(taskElement);
+                } else {
+                    taskList.appendChild(taskElement);
+                }
+
+                // Allow animation to finish before removing class if needed, but simple add works
+                // setTimeout(() => taskElement.classList.remove('task-enter'), 400);
+
+                // Event Listeners
+                taskElement.querySelector('.task-checkbox').addEventListener('change', () => toggleTaskCompletion(task.id));
+                taskElement.querySelector('.delete-task').addEventListener('click', () => deleteTask(task.id));
+            }
+
+
+            // Render all tasks based on current filter
+            function renderTasks() {
+                taskList.innerHTML = ''; // Clear list first
+                const filtered = filterTasks();
+
+                if (filtered.length === 0) {
+                    noTasksMsg.classList.remove('hidden');
+                } else {
+                    noTasksMsg.classList.add('hidden');
+                    filtered.forEach(task => renderSingleTask(task)); // Render each task
+                }
+                updateCounters(); // Ensure counts are correct after filtering/rendering
+            }
+
+            // Filter tasks based on current filter state
+            function filterTasks() {
+                switch (currentFilter) {
+                    case 'active':
+                        return tasks.filter(task => !task.completed);
+                    case 'completed':
+                        return tasks.filter(task => task.completed);
+                    default: // 'all'
+                        return tasks;
+                }
+            }
+
+            // Toggle task completion status
+            function toggleTaskCompletion(taskId) {
+                const taskIndex = tasks.findIndex(task => task.id === taskId);
+                if (taskIndex !== -1) {
+                    tasks[taskIndex].completed = !tasks[taskIndex].completed;
+                    saveTasks(); // Save before potential UI removal
+
+                    const taskElement = document.querySelector(`.task-item[data-id="${taskId}"]`);
+                    if (!taskElement) return; // Safety check
+
+                    const taskText = taskElement.querySelector('.task-text');
+                    const checkbox = taskElement.querySelector('.task-checkbox'); // Update checkbox state if needed
+
+                    const isCompleted = tasks[taskIndex].completed;
+                    checkbox.checked = isCompleted; // Sync checkbox visually
+
+                    taskText.classList.toggle('line-through', isCompleted);
+                    taskText.classList.toggle('opacity-60', isCompleted);
+
+
+                    // If filtering is active, animate and remove/re-render
+                    if ((currentFilter === 'active' && isCompleted) || (currentFilter === 'completed' && !isCompleted)) {
+                        taskElement.classList.add('task-exit');
+                        // Re-render after animation is more reliable than just hiding
+                        setTimeout(() => renderTasks(), 300);
+                    } else {
+                        updateCounters(); // Just update counters if not filtering out
+                    }
+                }
+            }
+
+            // Delete a task
+            function deleteTask(taskId) {
+                const taskElement = document.querySelector(`.task-item[data-id="${taskId}"]`);
+                if (taskElement) {
+                    taskElement.classList.add('task-exit');
+                    setTimeout(() => {
+                        tasks = tasks.filter(task => task.id !== taskId);
+                        saveTasks(); // Save after filtering
+                        taskElement.remove(); // Remove directly
+                        updateCounters(); // Update counts
+                        // Check if list is now empty after deletion
+                        if (filterTasks().length === 0) {
+                            noTasksMsg.classList.remove('hidden');
+                        }
+                    }, 300);
+                } else {
+                    // Fallback if element not found (shouldn't happen often)
+                    tasks = tasks.filter(task => task.id !== taskId);
+                    saveTasks();
+                    renderTasks();
+                }
+            }
+
+            // Clear all completed tasks
+            function clearCompleted() {
+                const completedTasks = taskList.querySelectorAll('input[type="checkbox"]:checked');
+                completedTasks.forEach(checkbox => {
+                    const taskElement = checkbox.closest('.task-item');
+                    if (taskElement) {
+                        taskElement.classList.add('task-exit');
+                    }
+                });
+
+                // Remove from data source after animation starts
+                setTimeout(() => {
+                    tasks = tasks.filter(task => !task.completed);
+                    saveTasks();
+                    renderTasks(); // Re-render the list based on the new data and filter
+                }, 300);
+            }
+
+            // Set active filter button style and trigger re-render
+            function setActiveFilter(filterType) {
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active', 'font-bold', 'underline');
+                    btn.style.textDecorationColor = 'transparent'; // Reset potential underline color
+                });
+
+                const activeBtn = document.getElementById(`filter-${filterType}`);
+                if (activeBtn) {
+                    activeBtn.classList.add('active', 'font-bold');
+                    // Apply underline using theme's accent color variable
+                    activeBtn.style.textDecoration = 'underline';
+                    activeBtn.style.textDecorationColor = 'var(--text-accent)';
+                    activeBtn.style.textDecorationThickness = '2px';
+                    activeBtn.style.textUnderlineOffset = '3px';
+                }
+                currentFilter = filterType;
+                renderTasks(); // Re-render tasks based on the new filter
+            }
+
+            // --- Initialize ---
+            function init() {
+                loadState(); // Load tasks and theme first
+
+                // Event Listeners
+                addTaskBtn.addEventListener('click', addTask);
+                taskInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addTask(); });
+                themeSelector.addEventListener('change', () => applyTheme(themeSelector.value));
+                clearCompletedBtn.addEventListener('click', clearCompleted);
+                filterButtons.forEach(btn => {
+                    btn.addEventListener('click', () => setActiveFilter(btn.id.split('-')[1]));
+                });
+            }
+
+            init(); // Start the application
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<!-- Default theme class, JS will manage this -->
+<html lang="en" class="theme-dark-nebula">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heavy Theme Switcher</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Exo+2:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Base Font */
+        body {
+            font-family: 'Exo 2', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-exo {
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        /* --- CSS Variables Setup --- */
+        :root,
+        .theme-dark-nebula {
+            /* Default Theme */
+            --bg-gradient-start: #0b021f;
+            --bg-gradient-via: #1a0a3d;
+            --bg-gradient-end: #2a115b;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle fill="%23a855f7" cx="10" cy="10" r="1"/><circle fill="%23ec4899" cx="80" cy="30" r="1"/><circle fill="%2360a5fa" cx="40" cy="70" r=".5"/><circle fill="%23facc15" cx="60" cy="90" r=".75"/><circle fill="%23ffffff" cx="90" cy="60" r=".5"/></svg>');
+            --card-bg: rgba(26, 10, 61, 0.6);
+            --card-border: rgba(168, 85, 247, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(168, 85, 247, 0.3);
+            --text-primary: #e9d5ff;
+            --text-secondary: #c084fc;
+            --text-accent: #fde047;
+            --button-bg: linear-gradient(145deg, #a855f7, #7e22ce);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #c084fc, #9333ea);
+            --button-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+            --select-bg: rgba(42, 17, 91, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --transition-duration: 0.8s;
+        }
+
+        .theme-molten-core {
+            --bg-gradient-start: #1a0000;
+            --bg-gradient-via: #4d0000;
+            --bg-gradient-end: #800000;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 0 50 Q 25 25, 50 50 T 100 50" stroke="%23ff450030" stroke-width="2" fill="none"/><path d="M 0 80 Q 35 60, 70 80 T 100 80" stroke="%23ff8c0020" stroke-width="1" fill="none"/></svg>');
+            --card-bg: rgba(40, 0, 0, 0.7);
+            --card-border: rgba(255, 69, 0, 0.5);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            --card-shadow-glow: 0 0 30px rgba(255, 100, 0, 0.5);
+            --text-primary: #ffcc80;
+            --text-secondary: #ff8c00;
+            --text-accent: #ff4500;
+            --button-bg: linear-gradient(145deg, #ff4500, #cc3700);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #ff6347, #dd4810);
+            --button-shadow: 0 4px 15px rgba(255, 69, 0, 0.5);
+            --select-bg: rgba(80, 0, 0, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-bio-lume {
+            --bg-gradient-start: #013220;
+            --bg-gradient-via: #02402a;
+            --bg-gradient-end: #00553a;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><path d="M 10 10 C 20 20, 40 20, 50 10" stroke="%234ade8030" stroke-width="1" fill="none"/><path d="M 0 30 Q 15 45, 30 30 T 50 30" stroke="%232dd4bf20" stroke-width="1.5" fill="none"/></svg>');
+            --card-bg: rgba(1, 50, 32, 0.7);
+            --card-border: rgba(74, 222, 128, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 20, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(74, 222, 128, 0.4);
+            --text-primary: #a7f3d0;
+            --text-secondary: #4ade80;
+            --text-accent: #2dd4bf;
+            --button-bg: linear-gradient(145deg, #2dd4bf, #14b8a6);
+            --button-text: #013220;
+            --button-hover-bg: linear-gradient(145deg, #5eead4, #2dd4bf);
+            --button-shadow: 0 4px 15px rgba(45, 212, 191, 0.4);
+            --select-bg: rgba(2, 64, 42, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-crystaline {
+            --bg-gradient-start: #e0f2fe;
+            --bg-gradient-via: #ffffff;
+            --bg-gradient-end: #fbcfe8;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><polygon points="50,0 100,50 50,100 0,50" fill="none" stroke="%23a5b4fc30" stroke-width="1"/><line x1="0" y1="0" x2="100" y2="100" stroke="%23f472b620" stroke-width=".5"/><line x1="100" y1="0" x2="0" y2="100" stroke="%2360a5fa20" stroke-width=".5"/></svg>');
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-border: rgba(165, 180, 252, 0.5);
+            --card-shadow: 0 8px 25px rgba(100, 100, 150, 0.15);
+            --card-shadow-glow: 0 0 20px rgba(244, 114, 182, 0.2);
+            --text-primary: #1e3a8a;
+            --text-secondary: #be185d;
+            --text-accent: #7c3aed;
+            --button-bg: linear-gradient(145deg, #a5b4fc, #818cf8);
+            --button-text: #1e3a8a;
+            --button-hover-bg: linear-gradient(145deg, #c7d2fe, #a5b4fc);
+            --button-shadow: 0 4px 15px rgba(129, 140, 248, 0.3);
+            --select-bg: rgba(224, 231, 255, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-primary);
+            --select-arrow: var(--text-secondary);
+            --transition-duration: 0.8s;
+        }
+
+        .theme-retro-circuit {
+            --bg-gradient-start: #00001a;
+            --bg-gradient-via: #1a1a3a;
+            --bg-gradient-end: #00001a;
+            --bg-image: linear-gradient(rgba(0, 220, 220, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 0, 150, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            --card-bg: rgba(10, 10, 30, 0.7);
+            --card-border: rgba(0, 220, 220, 0.5);
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(0, 220, 220, 0.3);
+            --text-primary: #ffcc00;
+            --text-secondary: #00dddd;
+            --text-accent: #ff0099;
+            --button-bg: linear-gradient(145deg, #ff0099, #cc007a);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #ff33aa, #dd0088);
+            --button-shadow: 0 4px 15px rgba(255, 0, 153, 0.4);
+            --select-bg: rgba(20, 20, 50, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        /* New Themes */
+        .theme-cosmic-dust {
+            --bg-gradient-start: #1e1b4b;
+            --bg-gradient-via: #2e1065;
+            --bg-gradient-end: #4c1d95;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle fill="%23ffffff20" cx="20" cy="20" r="2"/><circle fill="%23ffffff10" cx="80" cy="80" r="1.5"/></svg>');
+            --card-bg: rgba(30, 27, 75, 0.6);
+            --card-border: rgba(139, 92, 246, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(139, 92, 246, 0.3);
+            --text-primary: #ddd6fe;
+            --text-secondary: #a78bfa;
+            --text-accent: #f9a8d4;
+            --button-bg: linear-gradient(145deg, #8b5cf6, #6d28d9);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #a78bfa, #8b5cf6);
+            --button-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+            --select-bg: rgba(49, 46, 129, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-solar-flare {
+            --bg-gradient-start: #7f0000;
+            --bg-gradient-via: #b91c1c;
+            --bg-gradient-end: #dc2626;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 0 50 Q 25 30, 50 50 T 100 50" stroke="%23f8717120" stroke-width="2" fill="none"/></svg>');
+            --card-bg: rgba(69, 10, 10, 0.7);
+            --card-border: rgba(239, 68, 68, 0.5);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            --card-shadow-glow: 0 0 30px rgba(239, 68, 68, 0.4);
+            --text-primary: #fee2e2;
+            --text-secondary: #f87171;
+            --text-accent: #facc15;
+            --button-bg: linear-gradient(145deg, #ef4444, #b91c1c);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #f87171, #ef4444);
+            --button-shadow: 0 4px 15px rgba(239, 68, 68, 0.5);
+            --select-bg: rgba(127, 29, 29, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-ocean-depths {
+            --bg-gradient-start: #021b33;
+            --bg-gradient-via: #063c66;
+            --bg-gradient-end: #075985;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 0 50 Q 25 70, 50 50 T 100 50" stroke="%2333b5e520" stroke-width="1.5" fill="none"/></svg>');
+            --card-bg: rgba(2, 27, 51, 0.7);
+            --card-border: rgba(51, 181, 229, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(51, 181, 229, 0.3);
+            --text-primary: #bae6fd;
+            --text-secondary: #33b5e5;
+            --text-accent: #99cc00;
+            --button-bg: linear-gradient(145deg, #33b5e5, #0288d1);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #4fc3f7, #33b5e5);
+            --button-shadow: 0 4px 15px rgba(51, 181, 229, 0.4);
+            --select-bg: rgba(6, 60, 102, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-aurora-glow {
+            --bg-gradient-start: #1e0047;
+            --bg-gradient-via: #3b0764;
+            --bg-gradient-end: #6b21a8;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 0 20 Q 50 80, 100 20" stroke="%23d946ef20" stroke-width="2" fill="none"/></svg>');
+            --card-bg: rgba(30, 0, 71, 0.6);
+            --card-border: rgba(217, 70, 239, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(217, 70, 239, 0.3);
+            --text-primary: #f3e8ff;
+            --text-secondary: #d946ef;
+            --text-accent: #22d3ee;
+            --button-bg: linear-gradient(145deg, #d946ef, #a21caf);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #ec4899, #d946ef);
+            --button-shadow: 0 4px 15px rgba(217, 70, 239, 0.4);
+            --select-bg: rgba(59, 7, 100, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-forest-mist {
+            --bg-gradient-start: #022c22;
+            --bg-gradient-via: #064e3b;
+            --bg-gradient-end: #047857;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><path d="M 10 10 C 20 30, 40 30, 50 10" stroke="%2347b26520" stroke-width="1" fill="none"/></svg>');
+            --card-bg: rgba(2, 44, 34, 0.7);
+            --card-border: rgba(71, 178, 101, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 20, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(71, 178, 101, 0.3);
+            --text-primary: #d1fae5;
+            --text-secondary: #47b265;
+            --text-accent: #f59e0b;
+            --button-bg: linear-gradient(145deg, #47b265, #2f855a);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #6ee7b7, #47b265);
+            --button-shadow: 0 4px 15px rgba(71, 178, 101, 0.4);
+            --select-bg: rgba(6, 78, 59, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-neon-city {
+            --bg-gradient-start: #1e1e2e;
+            --bg-gradient-via: #3b0764;
+            --bg-gradient-end: #7c3aed;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect x="10" y="10" width="80" height="80" fill="none" stroke="%23ec489920" stroke-width="1"/></svg>');
+            --card-bg: rgba(30, 30, 46, 0.7);
+            --card-border: rgba(236, 72, 153, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(236, 72, 153, 0.3);
+            --text-primary: #f5f3ff;
+            --text-secondary: #ec4899;
+            --text-accent: #22d3ee;
+            --button-bg: linear-gradient(145deg, #ec4899, #c026d3);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #f472b6, #ec4899);
+            --button-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+            --select-bg: rgba(59, 7, 100, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-starfield {
+            --bg-gradient-start: #000000;
+            --bg-gradient-via: #0f172a;
+            --bg-gradient-end: #1e293b;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle fill="%23ffffff20" cx="10" cy="10" r="1"/><circle fill="%23ffffff10" cx="90" cy="90" r="0.5"/></svg>');
+            --card-bg: rgba(15, 23, 42, 0.7);
+            --card-border: rgba(59, 130, 246, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(59, 130, 246, 0.3);
+            --text-primary: #e0f2fe;
+            --text-secondary: #3b82f6;
+            --text-accent: #f59e0b;
+            --button-bg: linear-gradient(145deg, #3b82f6, #1e40af);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #60a5fa, #3b82f6);
+            --button-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            --select-bg: rgba(30, 41, 59, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-cyber-punk {
+            --bg-gradient-start: #1c2526;
+            --bg-gradient-via: #2e2e38;
+            --bg-gradient-end: #4b3f72;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><line x1="0" y1="0" x2="100" y2="100" stroke="%23ff006620" stroke-width="1"/></svg>');
+            --card-bg: rgba(28, 37, 38, 0.7);
+            --card-border: rgba(255, 0, 102, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(255, 0, 102, 0.3);
+            --text-primary: #ff99cc;
+            --text-secondary: #ff0066;
+            --text-accent: #00ffcc;
+            --button-bg: linear-gradient(145deg, #ff0066, #cc0052);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #ff3399, #ff0066);
+            --button-shadow: 0 4px 15px rgba(255, 0, 102, 0.4);
+            --select-bg: rgba(75, 63, 114, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-lunar-surface {
+            --bg-gradient-start: #1f2937;
+            --bg-gradient-via: #374151;
+            --bg-gradient-end: #4b5563;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle fill="%23ffffff10" cx="50" cy="50" r="3"/></svg>');
+            --card-bg: rgba(31, 41, 55, 0.7);
+            --card-border: rgba(209, 213, 219, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(209, 213, 219, 0.3);
+            --text-primary: #f3f4f6;
+            --text-secondary: #d1d5db;
+            --text-accent: #60a5fa;
+            --button-bg: linear-gradient(145deg, #d1d5db, #9ca3af);
+            --button-text: #1f2937;
+            --button-hover-bg: linear-gradient(145deg, #e5e7eb, #d1d5db);
+            --button-shadow: 0 4px 15px rgba(209, 213, 219, 0.4);
+            --select-bg: rgba(75, 85, 99, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-vaporwave {
+            --bg-gradient-start: #ff6ec4;
+            --bg-gradient-via: #7873f5;
+            --bg-gradient-end: #4facfe;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 0 50 H 100" stroke="%23ffffff20" stroke-width="2" fill="none"/></svg>');
+            --card-bg: rgba(255, 110, 196, 0.6);
+            --card-border: rgba(120, 115, 245, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(120, 115, 245, 0.3);
+            --text-primary: #f0f9ff;
+            --text-secondary: #7873f5;
+            --text-accent: #ff6ec4;
+            --button-bg: linear-gradient(145deg, #7873f5, #4facfe);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #a5b4fc, #7873f5);
+            --button-shadow: 0 4px 15px rgba(120, 115, 245, 0.4);
+            --select-bg: rgba(255, 110, 196, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-sunset-horizon {
+            --bg-gradient-start: #7c2d12;
+            --bg-gradient-via: #ea580c;
+            --bg-gradient-end: #f97316;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 0 50 Q 50 20, 100 50" stroke="%23ffffff20" stroke-width="2" fill="none"/></svg>');
+            --card-bg: rgba(124, 45, 18, 0.7);
+            --card-border: rgba(251, 146, 60, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(251, 146, 60, 0.3);
+            --text-primary: #ffedd5;
+            --text-secondary: #f97316;
+            --text-accent: #fef08a;
+            --button-bg: linear-gradient(145deg, #f97316, #ea580c);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #fb923c, #f97316);
+            --button-shadow: 0 4px 15px rgba(251, 146, 60, 0.4);
+            --select-bg: rgba(234, 88, 12, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-galactic-core {
+            --bg-gradient-start: #2d033b;
+            --bg-gradient-via: #4a044e;
+            --bg-gradient-end: #6b0876;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle fill="%23ffffff20" cx="50" cy="50" r="2"/></svg>');
+            --card-bg: rgba(45, 3, 59, 0.7);
+            --card-border: rgba(192, 38, 211, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(192, 38, 211, 0.3);
+            --text-primary: #f5d0fe;
+            --text-secondary: #c026d3;
+            --text-accent: #22d3ee;
+            --button-bg: linear-gradient(145deg, #c026d3, #9d174d);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #d946ef, #c026d3);
+            --button-shadow: 0 4px 15px rgba(192, 38, 211, 0.4);
+            --select-bg: rgba(74, 4, 78, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-arctic-frost {
+            --bg-gradient-start: #e5f3ff;
+            --bg-gradient-via: #bfdbfe;
+            --bg-gradient-end: #93c5fd;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><polygon points="50,10 90,90 10,90" fill="none" stroke="%23ffffff30" stroke-width="1"/></svg>');
+            --card-bg: rgba(229, 243, 255, 0.6);
+            --card-border: rgba(147, 197, 253, 0.4);
+            --card-shadow: 0 8px 25px rgba(100, 100, 150, 0.15);
+            --card-shadow-glow: 0 0 20px rgba(147, 197, 253, 0.3);
+            --text-primary: #1e3a8a;
+            --text-secondary: #2563eb;
+            --text-accent: #0284c7;
+            --button-bg: linear-gradient(145deg, #93c5fd, #60a5fa);
+            --button-text: #1e3a8a;
+            --button-hover-bg: linear-gradient(145deg, #bfdbfe, #93c5fd);
+            --button-shadow: 0 4px 15px rgba(147, 197, 253, 0.4);
+            --select-bg: rgba(191, 219, 254, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-primary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-toxic-sludge {
+            --bg-gradient-start: #1a2e05;
+            --bg-gradient-via: #365314;
+            --bg-gradient-end: #4d7c0f;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 0 50 Q 50 80, 100 50" stroke="%23a3e63520" stroke-width="2" fill="none"/></svg>');
+            --card-bg: rgba(26, 46, 5, 0.7);
+            --card-border: rgba(163, 230, 53, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 20, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(163, 230, 53, 0.3);
+            --text-primary: #ecfccb;
+            --text-secondary: #a3e635;
+            --text-accent: #f59e0b;
+            --button-bg: linear-gradient(145deg, #a3e635, #65a30d);
+            --button-text: #1a2e05;
+            --button-hover-bg: linear-gradient(145deg, #bef264, #a3e635);
+            --button-shadow: 0 4px 15px rgba(163, 230, 53, 0.4);
+            --select-bg: rgba(54, 83, 20, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        .theme-plasma-storm {
+            --bg-gradient-start: #4c0519;
+            --bg-gradient-via: #831843;
+            --bg-gradient-end: #be185d;
+            --bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M 10 10 L 90 90" stroke="%23f43f5e20" stroke-width="1.5" fill="none"/></svg>');
+            --card-bg: rgba(76, 5, 25, 0.7);
+            --card-border: rgba(244, 63, 94, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-glow: 0 0 25px rgba(244, 63, 94, 0.3);
+            --text-primary: #fce7f3;
+            --text-secondary: #f43f5e;
+            --text-accent: #22d3ee;
+            --button-bg: linear-gradient(145deg, #f43f5e, #be185d);
+            --button-text: #ffffff;
+            --button-hover-bg: linear-gradient(145deg, #fb7185, #f43f5e);
+            --button-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
+            --select-bg: rgba(131, 24, 67, 0.8);
+            --select-border: var(--card-border);
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+        }
+
+        /* --- Apply Variables with Smoother Transitions --- */
+        body {
+            background-color: var(--bg-gradient-start);
+            background-image: var(--bg-image), linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-via), var(--bg-gradient-end));
+            color: var(--text-primary);
+            transition: background-color var(--transition-duration) ease-in-out, background-image var(--transition-duration) ease-in-out, color var(--transition-duration) ease-in-out;
+        }
+
+        .content-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow), var(--card-shadow-glow);
+            transition: background-color var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out, box-shadow var(--transition-duration) ease-in-out;
+        }
+
+        .content-card h1 {
+            color: var(--text-primary);
+            text-shadow: 0 0 10px var(--text-accent);
+            transition: color var(--transition-duration) ease-in-out, text-shadow var(--transition-duration) ease-in-out;
+        }
+
+        .content-card p {
+            color: var(--text-secondary);
+            transition: color var(--transition-duration) ease-in-out;
+        }
+
+        .styled-button {
+            background-image: var(--button-bg);
+            color: var(--button-text);
+            box-shadow: var(--button-shadow);
+            transition: background-image var(--transition-duration) ease-in-out, transform 0.2s ease, box-shadow var(--transition-duration) ease-in-out, color var(--transition-duration) ease-in-out;
+        }
+
+        .styled-button:hover {
+            background-image: var(--button-hover-bg);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .theme-selector-wrapper {
+            background-color: var(--select-bg);
+            border: 1px solid var(--select-border);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out;
+        }
+
+        #theme-select {
+            background-color: transparent;
+            color: var(--select-text);
+            border: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            color: var(--select-arrow);
+            transition: color var(--transition-duration) ease-in-out;
+        }
+
+        #theme-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--text-accent);
+        }
+
+        /* Base focus style */
+        *:focus-visible {
+            outline: 2px solid var(--text-accent);
+            outline-offset: 2px;
+        }
+    </style>
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        exo: ['Exo 2', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
+
+    <div class="app-container w-full max-w-2xl flex flex-col items-center gap-8">
+
+        <!-- Theme Selector -->
+        <div class="theme-selector-wrapper w-full max-w-xs rounded-xl backdrop-blur-sm">
+            <label for="theme-select" class="sr-only">Select Theme</label>
+            <select id="theme-select"
+                class="w-full p-3 rounded-xl text-center font-semibold cursor-pointer focus:outline-none">
+                <option value="dark-nebula">Dark Nebula</option>
+                <option value="molten-core">Molten Core</option>
+                <option value="bio-lume">Bio-Lume</option>
+                <option value="crystaline">Crystaline</option>
+                <option value="retro-circuit">Retro Circuit</option>
+                <option value="cosmic-dust">Cosmic Dust</option>
+                <option value="solar-flare">Solar Flare</option>
+                <option value="ocean-depths">Ocean Depths</option>
+                <option value="aurora-glow">Aurora Glow</option>
+                <option value="forest-mist">Forest Mist</option>
+                <option value="neon-city">Neon City</option>
+                <option value="starfield">Starfield</option>
+                <option value="cyber-punk">Cyber Punk</option>
+                <option value="lunar-surface">Lunar Surface</option>
+                <option value="vaporwave">Vaporwave</option>
+                <option value="sunset-horizon">Sunset Horizon</option>
+                <option value="galactic-core">Galactic Core</option>
+                <option value="arctic-frost">Arctic Frost</option>
+                <option value="toxic-sludge">Toxic Sludge</option>
+                <option value="plasma-storm">Plasma Storm</option>
+            </select>
+        </div>
+
+        <!-- Content Card -->
+        <div class="content-card w-full rounded-2xl backdrop-blur-md p-8 sm:p-10 text-center shadow-2xl">
+            <h1 class="font-orbitron text-3xl sm:text-4xl font-bold mb-4 tracking-wide uppercase">
+                Themed Experience
+            </h1>
+            <p class="font-exo text-lg sm:text-xl mb-8 opacity-80 leading-relaxed">
+                Select a theme from the dropdown above to dynamically alter the visual style of this interface. Enjoy
+                the transition!
+            </p>
+            <button
+                class="styled-button font-orbitron font-semibold py-3 px-8 rounded-lg text-lg uppercase tracking-wider">
+                Engage Thrusters
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="absolute bottom-4 text-center w-full text-xs opacity-50 font-exo">
+        Powered by CSS Variables & Tailwind CSS
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeSelect = document.getElementById('theme-select');
+            const htmlElement = document.documentElement;
+
+            // Function to apply theme with fade effect
+            function applyTheme(themeName) {
+                // Add transition class for smooth effect
+                htmlElement.classList.add('theme-transition');
+                // Remove existing theme classes
+                htmlElement.className = 'theme-transition';
+                // Add new theme class
+                htmlElement.classList.add(`theme-${themeName}`);
+
+                // Remove transition class after animation
+                setTimeout(() => {
+                    htmlElement.classList.remove('theme-transition');
+                }, 800); // Match --transition-duration
+
+                localStorage.setItem('selectedAppTheme', themeName);
+                if (themeSelect.value !== themeName) {
+                    themeSelect.value = themeName;
+                }
+            }
+
+            // Event Listener for theme selection
+            themeSelect.addEventListener('change', (event) => {
+                applyTheme(event.target.value);
+            });
+
+            // Initialization
+            function initializeApp() {
+                const savedTheme = localStorage.getItem('selectedAppTheme') || 'dark-nebula';
+                applyTheme(savedTheme);
+            }
+
+            initializeApp();
+        });
+    </script>
+</body>
+
+</html>

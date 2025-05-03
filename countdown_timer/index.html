@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stylish Countdown Timer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* --- Animation for Number Flip (Simplified) --- */
+        /* This simulates a quick change effect */
+        @keyframes quick-scale-up {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .animate-tick {
+            animation: quick-scale-up 0.3s ease-out;
+        }
+
+        /* --- Background Animation --- */
+        @keyframes slow-gradient-shift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animated-background {
+            background-size: 200% 200%;
+            animation: slow-gradient-shift 20s ease infinite;
+        }
+
+        /* --- General Styles --- */
+        /* Hide number input spinners */
+        input[type='number']::-webkit-outer-spin-button,
+        input[type='number']::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type='number'] {
+            -moz-appearance: textfield;
+        }
+
+        /* Custom Focus Ring */
+        input:focus,
+        select:focus,
+        button:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+            /* blue-500 focus ring */
+        }
+
+        html.dark input:focus,
+        html.dark select:focus,
+        html.dark button:focus-visible {
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.4);
+            /* blue-400 focus ring */
+        }
+
+        /* Transition for sections */
+        .section {
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .section-hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            height: 0;
+            overflow: hidden;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+    </style>
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(ellipse at center, var(--tw-gradient-stops))',
+                    },
+                    boxShadow: {
+                        'glow-blue-subtle': '0 0 15px rgba(59, 130, 246, 0.2)',
+                        'glow-white-subtle': '0 0 15px rgba(255, 255, 255, 0.1)',
+                    },
+                    animation: {
+                        'tick': 'quick-scale-up 0.3s ease-out', // Reference the keyframe
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body
+    class="animated-background bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 dark:from-gray-900 dark:via-indigo-900 dark:to-purple-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div
+        class="countdown-wrapper w-full max-w-3xl bg-white/60 dark:bg-black/40 backdrop-blur-xl shadow-2xl dark:shadow-glow-blue-subtle rounded-2xl border border-gray-200 dark:border-gray-700/50 p-6 sm:p-10">
+
+        <h1
+            class="text-3xl sm:text-4xl font-bold font-orbitron text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
+            Event Countdown
+        </h1>
+
+        <!-- Input Section -->
+        <div id="input-section" class="section flex flex-col gap-5">
+            <div>
+                <label for="event-title-input"
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Event Title</label>
+                <input type="text" id="event-title-input" placeholder="e.g., New Year's Eve"
+                    class="form-input w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-gray-800/70 text-gray-900 dark:text-gray-100 shadow-sm">
+            </div>
+
+            <div class="grid grid-cols-3 sm:grid-cols-5 gap-3">
+                <div>
+                    <label for="year-input"
+                        class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Year</label>
+                    <input type="number" id="year-input" placeholder="YYYY" min="2024"
+                        class="form-input w-full p-2 text-center rounded-md border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-gray-800/70 text-gray-900 dark:text-gray-100">
+                </div>
+                <div>
+                    <label for="month-input"
+                        class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Month</label>
+                    <input type="number" id="month-input" placeholder="MM" min="1" max="12"
+                        class="form-input w-full p-2 text-center rounded-md border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-gray-800/70 text-gray-900 dark:text-gray-100">
+                </div>
+                <div>
+                    <label for="day-input"
+                        class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Day</label>
+                    <input type="number" id="day-input" placeholder="DD" min="1" max="31"
+                        class="form-input w-full p-2 text-center rounded-md border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-gray-800/70 text-gray-900 dark:text-gray-100">
+                </div>
+                <div>
+                    <label for="hour-input" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Hour
+                        (0-23)</label>
+                    <input type="number" id="hour-input" placeholder="HH" min="0" max="23" value="0"
+                        class="form-input w-full p-2 text-center rounded-md border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-gray-800/70 text-gray-900 dark:text-gray-100">
+                </div>
+                <div>
+                    <label for="minute-input"
+                        class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Minute</label>
+                    <input type="number" id="minute-input" placeholder="MM" min="0" max="59" value="0"
+                        class="form-input w-full p-2 text-center rounded-md border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-gray-800/70 text-gray-900 dark:text-gray-100">
+                </div>
+            </div>
+
+            <button id="start-btn"
+                class="w-full mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                Start Countdown
+            </button>
+        </div>
+
+        <!-- Display Section -->
+        <div id="display-section" class="section section-hidden flex flex-col items-center gap-6 mt-6">
+            <h2 id="event-title-display"
+                class="text-2xl sm:text-3xl font-semibold text-center text-gray-800 dark:text-gray-200">Countdown To
+                Event</h2>
+            <div id="countdown-units" class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 text-center w-full">
+                <!-- Days -->
+                <div
+                    class="unit-block p-4 bg-white/50 dark:bg-black/30 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-gray-700/50 shadow-lg">
+                    <span id="days"
+                        class="time-value font-orbitron text-4xl sm:text-6xl font-bold text-indigo-600 dark:text-indigo-400 block tabular-nums">00</span>
+                    <span
+                        class="time-label text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Days</span>
+                </div>
+                <!-- Hours -->
+                <div
+                    class="unit-block p-4 bg-white/50 dark:bg-black/30 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-gray-700/50 shadow-lg">
+                    <span id="hours"
+                        class="time-value font-orbitron text-4xl sm:text-6xl font-bold text-purple-600 dark:text-purple-400 block tabular-nums">00</span>
+                    <span
+                        class="time-label text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Hours</span>
+                </div>
+                <!-- Minutes -->
+                <div
+                    class="unit-block p-4 bg-white/50 dark:bg-black/30 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-gray-700/50 shadow-lg">
+                    <span id="minutes"
+                        class="time-value font-orbitron text-4xl sm:text-6xl font-bold text-pink-600 dark:text-pink-400 block tabular-nums">00</span>
+                    <span
+                        class="time-label text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Minutes</span>
+                </div>
+                <!-- Seconds -->
+                <div
+                    class="unit-block p-4 bg-white/50 dark:bg-black/30 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-gray-700/50 shadow-lg">
+                    <span id="seconds"
+                        class="time-value font-orbitron text-4xl sm:text-6xl font-bold text-red-600 dark:text-red-400 block tabular-nums">00</span>
+                    <span
+                        class="time-label text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Seconds</span>
+                </div>
+            </div>
+            <button id="reset-btn"
+                class="w-full max-w-xs mt-6 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800">
+                Reset Timer
+            </button>
+        </div>
+
+        <!-- Completion Message -->
+        <div id="completion-message" class="section section-hidden text-center mt-6">
+            <h2 id="completion-title" class="text-3xl sm:text-4xl font-bold text-green-600 dark:text-green-400 mb-4">The
+                Time Has Arrived!</h2>
+            <p id="completion-event-name" class="text-lg text-gray-700 dark:text-gray-300">The countdown for "Event
+                Name" is complete.</p>
+            <button id="reset-complete-btn"
+                class="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800">
+                Set New Countdown
+            </button>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

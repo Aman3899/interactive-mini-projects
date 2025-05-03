@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<!-- Set a default theme class -->
+<html lang="en" class="theme-neonPulse">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Pomodoro Timer</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Base Font & Transitions */
+        body {
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .theme-transition {
+            transition: background 0.6s ease, color 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-rajdhani {
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        /* --- CSS Variables Definitions (Same as previous correct version) --- */
+        :root,
+        .theme-neonPulse {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a23;
+            --text-primary: #00ffff;
+            --text-secondary: #a8a8ff;
+            --text-accent: #ff00ff;
+            --text-inverted: #000000;
+            --display-bg: rgba(0, 10, 20, 0.75);
+            --display-shadow: inset 0 0 25px rgba(0, 0, 0, 0.5);
+            --ring-color: #00ffff;
+            --ring-bg-color: rgba(0, 50, 50, 0.3);
+            --glow-color: rgba(255, 0, 255, 0.5);
+            --button-bg: linear-gradient(145deg, #ff00ff, #cc00cc);
+            --button-hover-bg: linear-gradient(145deg, #ff33ff, #e600e6);
+            --button-text: var(--text-inverted);
+            --button-shadow: 0 4px 15px var(--glow-color);
+            --pill-active-bg: #00ffff;
+            --pill-active-text: #000000;
+            --pill-active-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            --pill-inactive-bg: rgba(0, 20, 30, 0.6);
+            --pill-inactive-text: var(--text-secondary);
+            --select-bg: rgba(0, 10, 20, 0.8);
+            --select-border: rgba(0, 255, 255, 0.3);
+            --select-text: var(--text-primary);
+            --select-arrow: var(--text-primary);
+            --pulse-color: rgba(0, 255, 255, 0.7);
+            --pulse-color-fade: rgba(0, 255, 255, 0);
+        }
+
+        .theme-darkMatter {
+            /* ... other theme vars ... */
+            --bg-primary: #111827;
+            --bg-secondary: #0b132b;
+            --text-primary: #c7d2fe;
+            --text-secondary: #a5b4fc;
+            --text-accent: #818cf8;
+            --text-inverted: #ffffff;
+            --display-bg: rgba(28, 37, 65, 0.75);
+            --display-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
+            --ring-color: var(--text-accent);
+            --ring-bg-color: rgba(58, 80, 107, 0.3);
+            --glow-color: rgba(129, 140, 248, 0.4);
+            --button-bg: linear-gradient(145deg, #6366f1, #4f46e5);
+            --button-hover-bg: linear-gradient(145deg, #818cf8, #6366f1);
+            --button-text: var(--text-inverted);
+            --button-shadow: 0 4px 15px var(--glow-color);
+            --pill-active-bg: #4f46e5;
+            --pill-active-text: #e0e7ff;
+            --pill-active-shadow: 0 0 15px var(--glow-color);
+            --pill-inactive-bg: #1c2541;
+            --pill-inactive-text: #a5b4fc;
+            --select-bg: #1c2541;
+            --select-border: #3a506b;
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --pulse-color: rgba(129, 140, 248, 0.7);
+            --pulse-color-fade: rgba(129, 140, 248, 0);
+        }
+
+        .theme-solarFlare {
+            /* ... other theme vars ... */
+            --bg-primary: #450a0a;
+            --bg-secondary: #7f1d1d;
+            --text-primary: #fef08a;
+            --text-secondary: #fcd34d;
+            --text-accent: #fbbf24;
+            --text-inverted: #ffffff;
+            --display-bg: rgba(127, 29, 29, 0.75);
+            --display-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            --ring-color: #fbbf24;
+            --ring-bg-color: rgba(159, 69, 19, 0.3);
+            --glow-color: rgba(251, 191, 36, 0.5);
+            --button-bg: linear-gradient(145deg, #f59e0b, #d97706);
+            --button-hover-bg: linear-gradient(145deg, #fbbf24, #f59e0b);
+            --button-text: #450a0a;
+            --button-shadow: 0 4px 15px var(--glow-color);
+            --pill-active-bg: #d97706;
+            --pill-active-text: #fef9c3;
+            --pill-active-shadow: 0 0 15px var(--glow-color);
+            --pill-inactive-bg: #9a3412;
+            --pill-inactive-text: #fed7aa;
+            --select-bg: #9a3412;
+            --select-border: #7c2d12;
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --pulse-color: rgba(251, 191, 36, 0.7);
+            --pulse-color-fade: rgba(251, 191, 36, 0);
+        }
+
+        .theme-glacierMint {
+            /* ... other theme vars ... */
+            --bg-primary: #f0fdfa;
+            --bg-secondary: #ccfbf1;
+            --text-primary: #0f766e;
+            --text-secondary: #14b8a6;
+            --text-accent: #2dd4bf;
+            --text-inverted: #ffffff;
+            --display-bg: rgba(204, 251, 241, 0.75);
+            --display-shadow: inset 0 0 15px rgba(0, 100, 80, 0.1);
+            --ring-color: #14b8a6;
+            --ring-bg-color: rgba(153, 246, 228, 0.5);
+            --glow-color: rgba(45, 212, 191, 0.4);
+            --button-bg: linear-gradient(145deg, #14b8a6, #0d9488);
+            --button-hover-bg: linear-gradient(145deg, #2dd4bf, #14b8a6);
+            --button-text: var(--text-inverted);
+            --button-shadow: 0 4px 15px var(--glow-color);
+            --pill-active-bg: #0d9488;
+            --pill-active-text: #f0fdfa;
+            --pill-active-shadow: 0 0 15px var(--glow-color);
+            --pill-inactive-bg: #99f6e4;
+            --pill-inactive-text: #115e59;
+            --select-bg: #99f6e4;
+            --select-border: #5eead4;
+            --select-text: var(--text-primary);
+            --select-arrow: var(--text-primary);
+            --pulse-color: rgba(45, 212, 191, 0.7);
+            --pulse-color-fade: rgba(45, 212, 191, 0);
+        }
+
+        .theme-crimsonCode {
+            /* ... other theme vars ... */
+            --bg-primary: #1a1111;
+            --bg-secondary: #2e1a1a;
+            --text-primary: #fca5a5;
+            --text-secondary: #f87171;
+            --text-accent: #ef4444;
+            --text-inverted: #ffffff;
+            --display-bg: rgba(46, 26, 26, 0.75);
+            --display-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            --ring-color: var(--text-accent);
+            --ring-bg-color: rgba(70, 20, 20, 0.4);
+            --glow-color: rgba(239, 68, 68, 0.4);
+            --button-bg: linear-gradient(145deg, #ef4444, #dc2626);
+            --button-hover-bg: linear-gradient(145deg, #f87171, #ef4444);
+            --button-text: var(--text-inverted);
+            --button-shadow: 0 4px 15px var(--glow-color);
+            --pill-active-bg: #dc2626;
+            --pill-active-text: #fee2e2;
+            --pill-active-shadow: 0 0 15px var(--glow-color);
+            --pill-inactive-bg: #5b2121;
+            --pill-inactive-text: #fca5a5;
+            --select-bg: #5b2121;
+            --select-border: #7f1d1d;
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --pulse-color: rgba(239, 68, 68, 0.7);
+            --pulse-color-fade: rgba(239, 68, 68, 0);
+        }
+
+        .theme-emeraldCircuit {
+            /* ... other theme vars ... */
+            --bg-primary: #064e3b;
+            --bg-secondary: #047857;
+            --text-primary: #6ee7b7;
+            --text-secondary: #34d399;
+            --text-accent: #10b981;
+            --text-inverted: #ffffff;
+            --display-bg: rgba(4, 120, 87, 0.75);
+            --display-shadow: inset 0 0 20px rgba(0, 50, 30, 0.4);
+            --ring-color: var(--text-accent);
+            --ring-bg-color: rgba(5, 100, 70, 0.3);
+            --glow-color: rgba(16, 185, 129, 0.4);
+            --button-bg: linear-gradient(145deg, #10b981, #059669);
+            --button-hover-bg: linear-gradient(145deg, #34d399, #10b981);
+            --button-text: var(--text-inverted);
+            --button-shadow: 0 4px 15px var(--glow-color);
+            --pill-active-bg: #059669;
+            --pill-active-text: #d1fae5;
+            --pill-active-shadow: 0 0 15px var(--glow-color);
+            --pill-inactive-bg: #065f46;
+            --pill-inactive-text: #6ee7b7;
+            --select-bg: #065f46;
+            --select-border: #047857;
+            --select-text: var(--text-secondary);
+            --select-arrow: var(--text-secondary);
+            --pulse-color: rgba(16, 185, 129, 0.7);
+            --pulse-color-fade: rgba(16, 185, 129, 0);
+        }
+
+        .theme-goldenHour {
+            /* ... other theme vars ... */
+            --bg-primary: #fff7ed;
+            --bg-secondary: #ffedd5;
+            --text-primary: #9a3412;
+            --text-secondary: #c2410c;
+            --text-accent: #ea580c;
+            --text-inverted: #ffffff;
+            --display-bg: rgba(255, 237, 213, 0.8);
+            --display-shadow: inset 0 0 15px rgba(200, 100, 0, 0.1);
+            --ring-color: var(--text-accent);
+            --ring-bg-color: rgba(253, 230, 138, 0.5);
+            --glow-color: rgba(249, 115, 22, 0.4);
+            --button-bg: linear-gradient(145deg, #f97316, #ea580c);
+            --button-hover-bg: linear-gradient(145deg, #fb923c, #f97316);
+            --button-text: var(--text-inverted);
+            --button-shadow: 0 4px 15px var(--glow-color);
+            --pill-active-bg: #ea580c;
+            --pill-active-text: #fffbeb;
+            --pill-active-shadow: 0 0 15px var(--glow-color);
+            --pill-inactive-bg: #fed7aa;
+            --pill-inactive-text: #b45309;
+            --select-bg: #fed7aa;
+            --select-border: #fb923c;
+            --select-text: var(--text-primary);
+            --select-arrow: var(--text-primary);
+            --pulse-color: rgba(249, 115, 22, 0.7);
+            --pulse-color-fade: rgba(249, 115, 22, 0);
+        }
+
+        .theme-nebulaMist {
+            /* ... other theme vars ... */
+            --bg-primary: #f5f3ff;
+            --bg-secondary: #ede9fe;
+            --text-primary: #6d28d9;
+            --text-secondary: #7c3aed;
+            --text-accent: #8b5cf6;
+            --text-inverted: #ffffff;
+            --display-bg: rgba(237, 233, 254, 0.8);
+            --display-shadow: inset 0 0 15px rgba(100, 80, 150, 0.1);
+            --ring-color: var(--text-accent);
+            --ring-bg-color: rgba(209, 200, 245, 0.5);
+            --glow-color: rgba(139, 92, 246, 0.4);
+            --button-bg: linear-gradient(145deg, #7c3aed, #6d28d9);
+            --button-hover-bg: linear-gradient(145deg, #8b5cf6, #7c3aed);
+            --button-text: var(--text-inverted);
+            --button-shadow: 0 4px 15px var(--glow-color);
+            --pill-active-bg: #6d28d9;
+            --pill-active-text: #f5f3ff;
+            --pill-active-shadow: 0 0 15px var(--glow-color);
+            --pill-inactive-bg: #ddd6fe;
+            --pill-inactive-text: #5b21b6;
+            --select-bg: #ddd6fe;
+            --select-border: #c4b5fd;
+            --select-text: var(--text-primary);
+            --select-arrow: var(--text-primary);
+            --pulse-color: rgba(139, 92, 246, 0.7);
+            --pulse-color-fade: rgba(139, 92, 246, 0);
+        }
+
+        /* --- Base Styles using Variables --- */
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        #app-title {
+            color: var(--text-primary);
+        }
+
+        #app-subtitle,
+        .stats .opacity-75,
+        footer p {
+            color: var(--text-secondary);
+        }
+
+        #timer,
+        #session-count,
+        #focus-time {
+            color: var(--text-primary);
+        }
+
+        #status {
+            color: var(--text-secondary);
+        }
+
+        .outer-ring {
+            box-shadow: 0 0 25px -5px var(--glow-color);
+            border-radius: 50%;
+            /* Add border-radius here */
+        }
+
+        .timer-display-container {
+            background: var(--display-bg);
+            box-shadow: var(--display-shadow);
+            border-radius: 50%;
+        }
+
+        /* Inner display background */
+        .progress-ring #progress-bg {
+            stroke: var(--ring-bg-color);
+        }
+
+        .progress-ring #progress-indicator {
+            stroke: var(--ring-color);
+            filter: drop-shadow(0 0 5px var(--ring-color));
+        }
+
+        /* Add glow to progress */
+        button.control-button {
+            background-image: var(--button-bg);
+            color: var(--button-text);
+            box-shadow: var(--button-shadow);
+        }
+
+        button.control-button:hover:not(:disabled) {
+            background-image: var(--button-hover-bg);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+
+        .mode-pill {
+            background-color: var(--pill-inactive-bg);
+            color: var(--pill-inactive-text);
+        }
+
+        .mode-pill.active-mode {
+            background-color: var(--pill-active-bg);
+            color: var(--pill-active-text);
+            box-shadow: var(--pill-active-shadow);
+            font-weight: 600;
+        }
+
+        #theme-selector {
+            background-color: var(--select-bg);
+            border: 1px solid var(--select-border);
+            color: var(--select-text);
+        }
+
+        #theme-selector {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            color: var(--select-arrow);
+        }
+
+        #theme-selector:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--glow-color);
+            border-color: var(--ring-color);
+        }
+
+        /* --- Animations & Effects --- */
+        .timer-circle {
+            position: relative;
+            /* Needed for absolute positioning of children */
+            width: 280px;
+            height: 280px;
+            margin-bottom: 2rem;
+            /* Spacing */
+        }
+
+        @media (min-width: 640px) {
+
+            /* sm breakpoint */
+            .timer-circle {
+                width: 320px;
+                height: 320px;
+            }
+        }
+
+        .progress-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        .progress-ring circle {
+            transition: stroke-dashoffset 0.2s linear;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            stroke-linecap: round;
+        }
+
+        .timer-display-container {
+            position: absolute;
+            inset: 10px;
+            /* Creates padding inside the ring */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-radius: 50%;
+            z-index: 10;
+            padding: 1rem;
+            /* Add padding inside */
+        }
+
+        .btn-hover:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 15px var(--button-shadow);
+        }
+
+        .pulse .timer-display-container {
+            animation: pulse 2s infinite;
+        }
+
+        /* Apply pulse to inner container */
+        @keyframes pulse {
+            0% {
+                box-shadow: var(--display-shadow), 0 0 0 0px var(--pulse-color);
+            }
+
+            70% {
+                box-shadow: var(--display-shadow), 0 0 0 15px var(--pulse-color-fade);
+            }
+
+            100% {
+                box-shadow: var(--display-shadow), 0 0 0 0px var(--pulse-color-fade);
+            }
+        }
+
+        .mode-pill {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .mode-pill:hover:not(.active-mode) {
+            transform: translateY(-2px) scale(1.03);
+            opacity: 0.9;
+        }
+    </style>
+    <!-- Tailwind Config -->
+    <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { orbitron: ['Orbitron', 'sans-serif'], rajdhani: ['Rajdhani', 'sans-serif'] } } } }</script>
+</head>
+
+<body class="theme-transition min-h-screen flex flex-col">
+    <div class="container mx-auto px-4 py-8 flex-grow flex flex-col justify-center items-center">
+        <!-- Header -->
+        <header class="text-center mb-6 sm:mb-8 w-full max-w-lg">
+            <h1 id="app-title" class="text-4xl md:text-5xl font-bold mb-3 font-orbitron tracking-wider uppercase">CHRONO
+                FOCUS</h1>
+            <p id="app-subtitle" class="text-lg opacity-80 font-rajdhani mb-4 font-light">Pomodoro Productivity System
+            </p>
+
+            <!-- Mode Pills -->
+            <div class="flex justify-center flex-wrap gap-3 mb-6">
+                <button id="work-pill" data-mode="work"
+                    class="mode-pill py-2 px-5 rounded-full font-rajdhani font-semibold text-sm sm:text-base">FOCUS</button>
+                <button id="short-break-pill" data-mode="shortBreak"
+                    class="mode-pill py-2 px-5 rounded-full font-rajdhani font-semibold text-sm sm:text-base">SHORT
+                    BREAK</button>
+                <button id="long-break-pill" data-mode="longBreak"
+                    class="mode-pill py-2 px-5 rounded-full font-rajdhani font-semibold text-sm sm:text-base">LONG
+                    BREAK</button>
+            </div>
+
+            <!-- Theme Selector -->
+            <div class="flex justify-center mb-6">
+                <label for="theme-selector" class="sr-only">Select Theme</label>
+                <select id="theme-selector"
+                    class="theme-transition py-2 px-4 rounded-lg font-rajdhani font-medium outline-none cursor-pointer shadow-inner text-sm">
+                    <option value="neonPulse">Neon Pulse</option>
+                    <option value="darkMatter">Dark Matter</option>
+                    <option value="solarFlare">Solar Flare</option>
+                    <option value="glacierMint">Glacier Mint</option>
+                    <option value="crimsonCode">Crimson Code</option>
+                    <option value="emeraldCircuit">Emerald Circuit</option>
+                    <option value="goldenHour">Golden Hour</option>
+                    <option value="nebulaMist">Nebula Mist</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Main Timer -->
+        <main class="flex flex-col items-center">
+            <!-- CORRECTED: Timer Circle containing SVG and Display -->
+            <div id="timer-container" class="timer-circle outer-ring">
+                <!-- SVG Progress Ring -->
+                <svg class="progress-ring" viewBox="0 0 300 300">
+                    <circle id="progress-bg" cx="150" cy="150" r="140" stroke-width="12" fill="transparent"></circle>
+                    <circle id="progress-indicator" cx="150" cy="150" r="140" stroke-width="12" fill="transparent"
+                        stroke-dasharray="880" stroke-dashoffset="880"></circle>
+                </svg>
+                <!-- Timer Display Container (Absolutely Positioned INSIDE timer-circle) -->
+                <div class="timer-display-container">
+                    <div id="timer" class="text-5xl sm:text-6xl font-orbitron font-bold mb-2 tabular-nums">25:00</div>
+                    <div id="status"
+                        class="text-lg sm:text-xl font-rajdhani uppercase tracking-wider opacity-75 font-semibold">Ready
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls flex gap-6 mt-6">
+                <button id="start-btn"
+                    class="control-button theme-transition btn-hover py-3 px-8 rounded-lg font-orbitron text-base sm:text-lg font-semibold tracking-wider">START</button>
+                <button id="reset-btn"
+                    class="control-button theme-transition btn-hover py-3 px-8 rounded-lg font-orbitron text-base sm:text-lg font-semibold opacity-80 hover:opacity-100">RESET</button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats mt-10 font-rajdhani">
+                <div class="flex gap-8 sm:gap-12 text-center">
+                    <div>
+                        <div id="session-count" class="text-3xl sm:text-4xl font-bold tabular-nums">0</div>
+                        <div class="opacity-75 text-sm">Sessions</div>
+                    </div>
+                    <div>
+                        <div id="focus-time" class="text-3xl sm:text-4xl font-bold tabular-nums">0:00</div>
+                        <div class="opacity-75 text-sm">Focus Time (h:mm)</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="py-4 text-center text-sm opacity-60 font-rajdhani">
+        <p>CHRONO FOCUS // SYSTEM STATUS: OPERATIONAL // © 2025</p>
+    </footer>
+
+    <script>
+        // JavaScript remains exactly the same as the previous correct version
+        // No changes needed here if the previous JS was working correctly
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements (Ensure all IDs match HTML)
+            const appBody = document.body; // Target body for theme class
+            const timerDisplay = document.getElementById('timer');
+            const statusDisplay = document.getElementById('status');
+            const startBtn = document.getElementById('start-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const themeSelector = document.getElementById('theme-selector');
+            const progressIndicator = document.getElementById('progress-indicator');
+            const progressBg = document.getElementById('progress-bg');
+            const timerContainer = document.getElementById('timer-container');
+            const timerDisplayContainer = timerContainer.querySelector('.timer-display-container'); // Get inner display
+            const sessionCountEl = document.getElementById('session-count');
+            const focusTimeEl = document.getElementById('focus-time');
+            const modePills = document.querySelectorAll('.mode-pill'); // Select all pills
+
+            // Audio Notification (Optional - Create or find a short sound)
+            let notificationSound;
+            try {
+                notificationSound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU' + Array(1e3).join('123')); // Simple tone
+            } catch (e) {
+                console.warn("Could not create notification sound.");
+                notificationSound = { play: () => { } }; // Dummy object if Audio fails
+            }
+
+
+            // Timer settings
+            const timerModes = {
+                work: { minutes: 25, label: "Focus" },
+                shortBreak: { minutes: 5, label: "Short Break" },
+                longBreak: { minutes: 15, label: "Long Break" }
+            };
+
+            // State variables
+            let currentMode = 'work';
+            let timerRunning = false;
+            let timerInterval = null;
+            let remainingSeconds = timerModes.work.minutes * 60;
+            let totalSecondsInMode = timerModes.work.minutes * 60; // Total seconds for the current mode
+            let completedSessions = 0;
+            let totalFocusSeconds = 0;
+
+            // Calculate circle circumference (Approximate for 140 radius)
+            const radius = 140;
+            const circumference = 2 * Math.PI * radius; // Around 879.6
+
+            // Set progress indicator start position
+            progressIndicator.style.strokeDasharray = `${circumference}`;
+            progressIndicator.style.strokeDashoffset = `${circumference}`; // Start empty
+
+
+            // Load saved data from localStorage
+            function loadUserData() {
+                const savedData = localStorage.getItem('chronoFocusData');
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    completedSessions = data.sessions || 0;
+                    totalFocusSeconds = data.focusSeconds || 0;
+                    updateStats();
+                }
+
+                const savedTheme = localStorage.getItem('chronoFocusTheme') || 'neonPulse';
+                applyTheme(savedTheme); // Apply theme and update select
+            }
+
+            // Save user data to localStorage
+            function saveUserData() {
+                const data = {
+                    sessions: completedSessions,
+                    focusSeconds: totalFocusSeconds
+                };
+                localStorage.setItem('chronoFocusData', JSON.stringify(data));
+            }
+
+            // Format time as mm:ss
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            // Format total focus time as h:mm
+            function formatFocusTime(seconds) {
+                const hours = Math.floor(seconds / 3600);
+                const mins = Math.floor((seconds % 3600) / 60);
+                return `${hours}:${mins.toString().padStart(2, '0')}`;
+            }
+
+            // Update the timer display & progress ring
+            function updateDisplay() {
+                timerDisplay.textContent = formatTime(remainingSeconds);
+
+                // Update progress ring (fill up from empty)
+                const progressRatio = (totalSecondsInMode - remainingSeconds) / totalSecondsInMode;
+                // Ensure ratio is between 0 and 1
+                const clampedRatio = Math.max(0, Math.min(1, progressRatio));
+                const dashoffset = circumference * (1 - clampedRatio);
+                // Add small epsilon to prevent flicker at 0/full
+                progressIndicator.style.strokeDashoffset = Math.max(0.1, dashoffset);
+
+
+                // Update browser title
+                document.title = `${formatTime(remainingSeconds)} - ${timerModes[currentMode].label} | Chrono Focus`;
+            }
+
+
+            // Update stats display
+            function updateStats() {
+                sessionCountEl.textContent = completedSessions;
+                focusTimeEl.textContent = formatFocusTime(totalFocusSeconds);
+            }
+
+            // Apply theme by changing class on <html> or body
+            function applyTheme(themeName) {
+                // Remove any existing theme- class before adding new one
+                const classList = document.documentElement.classList;
+                for (let i = classList.length - 1; i >= 0; i--) {
+                    if (classList[i].startsWith('theme-')) {
+                        classList.remove(classList[i]);
+                    }
+                }
+                document.documentElement.classList.add(`theme-${themeName}`); // Add to HTML element
+
+                localStorage.setItem('chronoFocusTheme', themeName);
+                if (themeSelector.value !== themeName) themeSelector.value = themeName; // Sync dropdown
+
+                // Re-apply pill styles as variables might have changed
+                updateModePills();
+            }
+
+
+            // Set the timer mode and reset
+            function setMode(mode) {
+                if (timerRunning) {
+                    clearInterval(timerInterval);
+                    timerRunning = false;
+                }
+
+                currentMode = mode;
+                totalSecondsInMode = timerModes[mode].minutes * 60;
+                remainingSeconds = totalSecondsInMode;
+
+                updateDisplay(); // Update timer and ring
+                statusDisplay.textContent = "Ready";
+                startBtn.textContent = "START";
+                // timerContainer.classList.remove('pulse');
+                timerDisplayContainer.classList.remove('pulse'); // Pulse the inner display
+                updateModePills(); // Update which pill is active
+
+                // Reset browser title
+                document.title = "Chrono Focus";
+            }
+
+            // Update mode pills visual state
+            function updateModePills() {
+                modePills.forEach(pill => {
+                    // Remove existing inline styles first to let CSS vars take over
+                    pill.style.backgroundColor = '';
+                    pill.style.color = '';
+                    pill.style.boxShadow = '';
+                    pill.classList.remove('active-mode'); // Ensure class is removed
+
+                    if (pill.dataset.mode === currentMode) {
+                        pill.classList.add('active-mode'); // Add class for active state
+                    }
+                });
+            }
+
+
+            // --- Timer Control Functions ---
+            function startTimer() {
+                if (remainingSeconds <= 0) {
+                    setMode(currentMode); // Reset if timer was finished
+                }
+
+                if (timerRunning) {
+                    // Pause
+                    clearInterval(timerInterval);
+                    timerRunning = false;
+                    startBtn.textContent = "RESUME";
+                    statusDisplay.textContent = "Paused";
+                    // timerContainer.classList.remove('pulse');
+                    timerDisplayContainer.classList.remove('pulse'); // Stop pulsing inner display
+                    document.title = "Paused | Chrono Focus";
+                } else {
+                    // Start/Resume
+                    timerRunning = true;
+                    startBtn.textContent = "PAUSE";
+                    statusDisplay.textContent = timerModes[currentMode].label;
+                    // timerContainer.classList.add('pulse');
+                    timerDisplayContainer.classList.add('pulse'); // Pulse inner display
+
+                    timerInterval = setInterval(() => {
+                        remainingSeconds--;
+
+                        if (currentMode === 'work') {
+                            totalFocusSeconds++;
+                            if (remainingSeconds % 60 === 0) saveUserData(); // Save every minute
+                        }
+
+                        updateDisplay();
+
+                        if (remainingSeconds < 0) {
+                            timerComplete();
+                        }
+                    }, 1000);
+                }
+            }
+
+            function resetTimer() {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                setMode(currentMode); // Resets time to current mode's default
+            }
+
+            function timerComplete() {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                notificationSound.play().catch(e => console.warn("Audio play failed:", e));
+
+                startBtn.textContent = "START";
+                // timerContainer.classList.remove('pulse');
+                timerDisplayContainer.classList.remove('pulse'); // Stop pulsing inner
+                document.title = "Finished! | Chrono Focus";
+
+                if (currentMode === 'work') {
+                    completedSessions++;
+                    saveUserData();
+                    updateStats();
+
+                    statusDisplay.textContent = "Break Time!";
+                    const nextMode = (completedSessions > 0 && completedSessions % 4 === 0) ? 'longBreak' : 'shortBreak';
+                    setMode(nextMode);
+                } else {
+                    statusDisplay.textContent = "Work Time!";
+                    setMode('work');
+                }
+
+                // Reset progress ring fully after completion animation (optional)
+                setTimeout(() => {
+                    progressIndicator.style.transition = 'none'; // Disable transition for reset
+                    progressIndicator.style.strokeDashoffset = circumference;
+                    setTimeout(() => {
+                        progressIndicator.style.transition = 'stroke-dashoffset 0.2s linear'; // Re-enable
+                    }, 50);
+                }, 300); // Delay slightly after completion
+            }
+
+
+            // --- Event Listeners ---
+            startBtn.addEventListener('click', startTimer);
+            resetBtn.addEventListener('click', resetTimer);
+            themeSelector.addEventListener('change', () => applyTheme(themeSelector.value));
+            modePills.forEach(pill => {
+                pill.addEventListener('click', () => setMode(pill.dataset.mode));
+            });
+
+            // --- Initialization ---
+            loadUserData(); // Load saved data and theme
+            setMode(currentMode); // Initialize display for the default mode
+
+
+        }); // End DOMContentLoaded
+
+    </script>
+</body>
+
+</html>

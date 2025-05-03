@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Fact or Word</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .animate-pulse-slow {
+            animation: pulse 4s ease-in-out infinite;
+        }
+        .theme-transition {
+            transition: all 0.5s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-['Poppins'] theme-transition bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
+    <div id="app-container" class="container mx-auto px-4 py-8 flex flex-col min-h-screen">
+        <!-- Header -->
+        <header class="text-center mb-8 animate-fade-in" style="animation-delay: 0.1s;">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2 animate-float">Daily Wisdom</h1>
+            <p class="text-lg opacity-80">A new fact or word every day</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow flex flex-col items-center justify-center">
+            <!-- Card -->
+            <div id="fact-card" class="w-full max-w-2xl bg-white/10 backdrop-blur-lg rounded-2xl p-6 md:p-8 shadow-2xl animate-fade-in animate-pulse-slow" style="animation-delay: 0.3s;">
+                <div class="mb-4 flex justify-between items-center">
+                    <span id="date-display" class="text-sm md:text-base font-medium opacity-80"></span>
+                    <span id="type-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-white/20">FACT OF THE DAY</span>
+                </div>
+                
+                <h2 id="fact-title" class="text-2xl md:text-3xl font-bold mb-3"></h2>
+                <p id="fact-content" class="text-base md:text-lg leading-relaxed mb-6"></p>
+                
+                <div class="flex justify-between items-center">
+                    <button id="share-btn" class="px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition-all flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                        </svg>
+                        Share
+                    </button>
+                    <button id="refresh-btn" class="px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition-all flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        New Fact
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Theme Selector -->
+        <div class="mt-8 animate-fade-in" style="animation-delay: 0.5s;">
+            <h3 class="text-center text-lg font-semibold mb-4">Choose a Theme</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 max-w-4xl mx-auto">
+                <button data-theme="default" class="theme-btn active p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-sm font-medium hover:opacity-90 transition-all">Default</button>
+                <button data-theme="cyberpunk" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-yellow-400 to-pink-600 text-black text-sm font-medium hover:opacity-90 transition-all">Cyberpunk</button>
+                <button data-theme="witcher" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 text-amber-400 text-sm font-medium hover:opacity-90 transition-all">Witcher</button>
+                <button data-theme="got" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-blue-900 to-gray-800 text-blue-200 text-sm font-medium hover:opacity-90 transition-all">Game of Thrones</button>
+                <button data-theme="starwars" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-gray-900 to-yellow-900 text-yellow-400 text-sm font-medium hover:opacity-90 transition-all">Star Wars</button>
+                <button data-theme="marvel" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-red-600 to-blue-700 text-white text-sm font-medium hover:opacity-90 transition-all">Marvel</button>
+                <button data-theme="potter" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-amber-700 to-red-900 text-amber-200 text-sm font-medium hover:opacity-90 transition-all">Harry Potter</button>
+                <button data-theme="breaking" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-green-800 to-green-900 text-green-300 text-sm font-medium hover:opacity-90 transition-all">Breaking Bad</button>
+                <button data-theme="stranger" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-red-800 to-black text-red-400 text-sm font-medium hover:opacity-90 transition-all">Stranger Things</button>
+                <button data-theme="minecraft" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-green-600 to-green-800 text-amber-200 text-sm font-medium hover:opacity-90 transition-all">Minecraft</button>
+                <button data-theme="zelda" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-green-500 to-blue-600 text-yellow-300 text-sm font-medium hover:opacity-90 transition-all">Zelda</button>
+                <button data-theme="souls" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 text-amber-700 text-sm font-medium hover:opacity-90 transition-all">Dark Souls</button>
+                <button data-theme="lotr" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-green-700 to-yellow-800 text-yellow-200 text-sm font-medium hover:opacity-90 transition-all">Lord of the Rings</button>
+                <button data-theme="matrix" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-green-900 to-black text-green-400 text-sm font-medium hover:opacity-90 transition-all">The Matrix</button>
+                <button data-theme="dune" class="theme-btn p-2 rounded-lg bg-gradient-to-br from-amber-700 to-amber-900 text-amber-100 text-sm font-medium hover:opacity-90 transition-all">Dune</button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-sm opacity-70 animate-fade-in" style="animation-delay: 0.7s;">
+            <p>© 2023 Daily Wisdom App | Refresh daily for new content</p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme configurations
+        const themes = {
+            default: {
+                background: 'bg-gradient-to-br from-indigo-500 to-purple-600',
+                card: 'bg-white/10',
+                text: 'text-white',
+                button: 'bg-white/20 hover:bg-white/30',
+                badge: 'bg-white/20'
+            },
+            cyberpunk: {
+                background: 'bg-gradient-to-br from-black to-yellow-900',
+                card: 'bg-black/40',
+                text: 'text-yellow-400',
+                button: 'bg-yellow-500/30 hover:bg-yellow-500/40',
+                badge: 'bg-yellow-500/30'
+            },
+            witcher: {
+                background: 'bg-gradient-to-br from-gray-700 to-gray-900',
+                card: 'bg-gray-800/60',
+                text: 'text-amber-400',
+                button: 'bg-amber-900/30 hover:bg-amber-900/40',
+                badge: 'bg-amber-900/30'
+            },
+            got: {
+                background: 'bg-gradient-to-br from-blue-900 to-gray-800',
+                card: 'bg-blue-900/40',
+                text: 'text-blue-200',
+                button: 'bg-blue-700/30 hover:bg-blue-700/40',
+                badge: 'bg-blue-700/30'
+            },
+            starwars: {
+                background: 'bg-gradient-to-br from-gray-900 to-yellow-900',
+                card: 'bg-gray-900/60',
+                text: 'text-yellow-400',
+                button: 'bg-yellow-600/30 hover:bg-yellow-600/40',
+                badge: 'bg-yellow-600/30'
+            },
+            marvel: {
+                background: 'bg-gradient-to-br from-red-600 to-blue-700',
+                card: 'bg-blue-900/40',
+                text: 'text-white',
+                button: 'bg-red-500/30 hover:bg-red-500/40',
+                badge: 'bg-red-500/30'
+            },
+            potter: {
+                background: 'bg-gradient-to-br from-amber-700 to-red-900',
+                card: 'bg-amber-900/40',
+                text: 'text-amber-200',
+                button: 'bg-amber-600/30 hover:bg-amber-600/40',
+                badge: 'bg-amber-600/30'
+            },
+            breaking: {
+                background: 'bg-gradient-to-br from-green-800 to-green-900',
+                card: 'bg-green-900/40',
+                text: 'text-green-300',
+                button: 'bg-green-700/30 hover:bg-green-700/40',
+                badge: 'bg-green-700/30'
+            },
+            stranger: {
+                background: 'bg-gradient-to-br from-red-800 to-black',
+                card: 'bg-red-900/40',
+                text: 'text-red-400',
+                button: 'bg-red-700/30 hover:bg-red-700/40',
+                badge: 'bg-red-700/30'
+            },
+            minecraft: {
+                background: 'bg-gradient-to-br from-green-600 to-green-800',
+                card: 'bg-green-800/40',
+                text: 'text-amber-200',
+                button: 'bg-green-700/30 hover:bg-green-700/40',
+                badge: 'bg-green-700/30'
+            },
+            zelda: {
+                background: 'bg-gradient-to-br from-green-500 to-blue-600',
+                card: 'bg-green-700/40',
+                text: 'text-yellow-300',
+                button: 'bg-green-600/30 hover:bg-green-600/40',
+                badge: 'bg-green-600/30'
+            },
+            souls: {
+                background: 'bg-gradient-to-br from-gray-800 to-gray-900',
+                card: 'bg-gray-900/40',
+                text: 'text-amber-700',
+                button: 'bg-amber-900/30 hover:bg-amber-900/40',
+                badge: 'bg-amber-900/30'
+            },
+            lotr: {
+                background: 'bg-gradient-to-br from-green-700 to-yellow-800',
+                card: 'bg-green-900/40',
+                text: 'text-yellow-200',
+                button: 'bg-green-800/30 hover:bg-green-800/40',
+                badge: 'bg-green-800/30'
+            },
+            matrix: {
+                background: 'bg-gradient-to-br from-green-900 to-black',
+                card: 'bg-black/40',
+                text: 'text-green-400',
+                button: 'bg-green-800/30 hover:bg-green-800/40',
+                badge: 'bg-green-800/30'
+            },
+            dune: {
+                background: 'bg-gradient-to-br from-amber-700 to-amber-900',
+                card: 'bg-amber-900/40',
+                text: 'text-amber-100',
+                button: 'bg-amber-800/30 hover:bg-amber-800/40',
+                badge: 'bg-amber-800/30'
+            }
+        };
+
+        // Facts and words database
+        const factsAndWords = [
+            {
+                type: "FACT",
+                title: "Honey Never Spoils",
+                content: "Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible. The unique chemical composition of honey makes it virtually immune to bacteria and spoilage."
+            },
+            {
+                type: "WORD",
+                title: "Petrichor",
+                content: "The pleasant, earthy smell that accompanies the first rain after a long period of dry weather. It comes from an oil produced by plants during dry periods that is released into the air when it rains."
+            },
+            {
+                type: "FACT",
+                title: "Octopus Intelligence",
+                content: "Octopuses are incredibly intelligent creatures. They can solve puzzles, use tools, and even escape from closed containers. They have approximately 500 million neurons, with two-thirds of them distributed in their arms rather than their brain."
+            },
+            {
+                type: "WORD",
+                title: "Serendipity",
+                content: "The occurrence and development of events by chance in a happy or beneficial way. Finding something good without looking for it. Many scientific discoveries happened through serendipity, including penicillin and X-rays."
+            },
+            {
+                type: "FACT",
+                title: "Space Smell",
+                content: "Astronauts report that space has a distinct smell. When they return from spacewalks, they describe the smell on their suits as similar to seared steak, hot metal, or welding fumes. This is likely due to high-energy UV rays reacting with oxygen."
+            },
+            {
+                type: "WORD",
+                title: "Vellichor",
+                content: "The strange wistfulness of used bookstores, which are somehow infused with the passage of time. That familiar scent of aging paper and the feeling of browsing through stories from different eras."
+            },
+            {
+                type: "FACT",
+                title: "Immortal Jellyfish",
+                content: "The Turritopsis dohrnii jellyfish is biologically immortal. When facing environmental stress or physical damage, it can revert back to its juvenile polyp stage and begin its life cycle all over again, potentially indefinitely."
+            },
+            {
+                type: "WORD",
+                title: "Sonder",
+                content: "The realization that each random passerby is living a life as vivid and complex as your own. Each with their own ambitions, friends, routines, worries and inherited craziness."
+            },
+            {
+                type: "FACT",
+                title: "Penguin Proposals",
+                content: "Male penguins 'propose' to female penguins by presenting them with a pebble. If the female accepts the pebble, they become mates. These pebbles are also used to build nests for their future offspring."
+            },
+            {
+                type: "WORD",
+                title: "Fernweh",
+                content: "A German word that describes the feeling of homesickness for a place you've never been to. It's a longing for far-off places, a craving for travel and exploration of the unknown."
+            },
+            {
+                type: "FACT",
+                title: "Tree Communication",
+                content: "Trees communicate with each other through an underground network of fungi called the 'Wood Wide Web.' They use this network to share resources, warn of threats, and even nurture their offspring."
+            },
+            {
+                type: "WORD",
+                title: "Apricity",
+                content: "The warmth of the sun in winter. This obsolete word from the 17th century perfectly captures that delightful feeling when sunlight provides comfort during cold winter days."
+            },
+            {
+                type: "FACT",
+                title: "Cosmic Perspective",
+                content: "If the history of Earth were compressed into a single year, humans would appear on December 31st at 11:58 PM, and all of recorded history would occur in the last 10 seconds of the year."
+            },
+            {
+                type: "WORD",
+                title: "Tsundoku",
+                content: "A Japanese word for the habit of buying books and letting them pile up unread. It combines elements of 'tsunde' (to stack things) and 'oku' (to leave for a while)."
+            },
+            {
+                type: "FACT",
+                title: "Butterfly Memory",
+                content: "Caterpillars completely dissolve into a liquid inside their cocoon before reforming as butterflies. Amazingly, studies have shown that butterflies can retain memories from their caterpillar days despite this radical transformation."
+            }
+        ];
+
+        // DOM elements
+        const dateDisplay = document.getElementById('date-display');
+        const typeBadge = document.getElementById('type-badge');
+        const factTitle = document.getElementById('fact-title');
+        const factContent = document.getElementById('fact-content');
+        const factCard = document.getElementById('fact-card');
+        const shareBtn = document.getElementById('share-btn');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        const appContainer = document.getElementById('app-container');
+
+        // Set current date
+        function updateDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateDisplay.textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Get fact based on date
+        function getFactOfTheDay() {
+            const now = new Date();
+            const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+            const factIndex = dayOfYear % factsAndWords.length;
+            return factsAndWords[factIndex];
+        }
+
+        // Get random fact
+        function getRandomFact() {
+            const randomIndex = Math.floor(Math.random() * factsAndWords.length);
+            return factsAndWords[randomIndex];
+        }
+
+        // Update fact display
+        function updateFactDisplay(fact) {
+            // Add fade-out effect
+            factCard.style.opacity = '0';
+            factCard.style.transform = 'translateY(10px)';
+            
+            setTimeout(() => {
+                typeBadge.textContent = fact.type + ' OF THE DAY';
+                factTitle.textContent = fact.title;
+                factContent.textContent = fact.content;
+                
+                // Add fade-in effect
+                factCard.style.opacity = '1';
+                factCard.style.transform = 'translateY(0)';
+            }, 300);
+        }
+
+        // Apply theme
+        function applyTheme(themeName) {
+            const theme = themes[themeName] || themes.default;
+            
+            // Remove all existing theme classes
+            document.body.className = document.body.className
+                .replace(/bg-gradient-to-br from-\w+-\d+ to-\w+-\d+/g, '')
+                .trim();
+            
+            // Add new theme classes
+            document.body.classList.add(...theme.background.split(' '));
+            document.body.classList.add(theme.text);
+            
+            // Update card
+            factCard.className = factCard.className
+                .replace(/bg-\w+\/\d+/g, '')
+                .trim();
+            factCard.classList.add(theme.card);
+            factCard.classList.add('backdrop-blur-lg', 'rounded-2xl', 'p-6', 'md:p-8', 'shadow-2xl', 'animate-pulse-slow', 'w-full', 'max-w-2xl');
+            
+            // Update buttons
+            const buttons = document.querySelectorAll('#share-btn, #refresh-btn');
+            buttons.forEach(btn => {
+                btn.className = btn.className
+                    .replace(/bg-\w+\/\d+ hover:bg-\w+\/\d+/g, '')
+                    .trim();
+                btn.classList.add(...theme.button.split(' '));
+                btn.classList.add('px-4', 'py-2', 'rounded-lg', 'transition-all', 'flex', 'items-center', 'gap-2');
+            });
+            
+            // Update badge
+            typeBadge.className = typeBadge.className
+                .replace(/bg-\w+\/\d+/g, '')
+                .trim();
+            typeBadge.classList.add(theme.badge);
+            typeBadge.classList.add('px-3', 'py-1', 'rounded-full', 'text-xs', 'font-semibold');
+            
+            // Update active theme button
+            themeButtons.forEach(btn => {
+                btn.classList.remove('active', 'ring-2', 'ring-white', 'ring-opacity-70');
+                if (btn.dataset.theme === themeName) {
+                    btn.classList.add('active', 'ring-2', 'ring-white', 'ring-opacity-70');
+                }
+            });
+        }
+
+        // Initialize
+        function init() {
+            updateDate();
+            const todaysFact = getFactOfTheDay();
+            updateFactDisplay(todaysFact);
+            
+            // Event listeners
+            refreshBtn.addEventListener('click', () => {
+                const randomFact = getRandomFact();
+                updateFactDisplay(randomFact);
+            });
+            
+            shareBtn.addEventListener('click', () => {
+                if (navigator.share) {
+                    navigator.share({
+                        title: factTitle.textContent,
+                        text: factContent.textContent,
+                        url: window.location.href
+                    })
+                    .catch(err => {
+                        alert('Sharing failed: ' + err);
+                    });
+                } else {
+                    alert('Web Share API not supported in your browser. Try copying the text manually.');
+                }
+            });
+            
+            // Theme buttons
+            themeButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const themeName = btn.dataset.theme;
+                    applyTheme(themeName);
+                    
+                    // Add ripple effect
+                    const ripple = document.createElement('span');
+                    ripple.classList.add('absolute', 'inset-0', 'bg-white', 'rounded-lg', 'opacity-30', 'scale-0');
+                    ripple.style.transform = 'scale(0)';
+                    ripple.style.animation = 'ripple 0.6s linear';
+                    ripple.addEventListener('animationend', () => ripple.remove());
+                    
+                    btn.style.position = 'relative';
+                    btn.style.overflow = 'hidden';
+                    btn.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.style.transform = 'scale(4)';
+                        ripple.style.opacity = '0';
+                    }, 0);
+                });
+            });
+            
+            // Apply default theme
+            applyTheme('default');
+        }
+
+        // Start the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
