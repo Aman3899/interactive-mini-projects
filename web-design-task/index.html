@@ -6,35 +6,260 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KUHN | Agricultural Machinery</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Scrollbar for Dropdown */
+        .kuhn-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .kuhn-scrollbar::-webkit-scrollbar-thumb {
+            background: #e53e3e;
+            border-radius: 8px;
+        }
+        /* Arrow for submenu */
+        .with-arrow:after {
+            content: '›';
+            color: #e53e3e;
+            margin-left: 8px;
+            font-weight: bold;
+        }
+        .submenu-arrow:after {
+            content: '›';
+            color: #fff;
+            margin-left: 8px;
+            font-weight: bold;
+        }
+        .kuhn-arrow {
+            font-weight: bold;
+            color: #E53E3E;
+            margin-left: 8px;
+        }
+        .kuhn-active {
+            background: #fff !important;
+            color: #E53E3E !important;
+            font-weight: bold !important;
+        }
+        .kuhn-col { min-width: 240px; }
+        /* Mobile Menu Styles */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 60px; /* Below the fixed nav bar */
+            left: 0;
+            right: 0;
+            background: white;
+            z-index: 20;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+        .mobile-menu.open {
+            display: block;
+        }
+        .mobile-menu-item {
+            padding: 10px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: bold;
+            color: #374151;
+        }
+        .mobile-menu-item.active {
+            background-color: #fef2f2;
+            color: #e53e3e;
+        }
+        .mobile-submenu {
+            display: none;
+            padding-left: 20px;
+        }
+        .mobile-submenu.open {
+            display: block;
+        }
+        .mobile-submenu-item {
+            padding: 8px 20px;
+            color: #4b5563;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .mobile-submenu-item a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .mobile-submenu-item a:hover {
+            color: #e53e3e;
+        }
+        /* Hide dropdown by default, show on hover */
+        .group:hover .mega-dropdown {
+            display: flex !important;
+        }
+        /* Background image for Agricultural Machinery dropdown */
+        .kuhn-mega-dropdown {
+            background: url('https://th.bing.com/th/id/R.ab1318d217f37f979cc195e12fa6974b?rik=Gy%2f7vOQcKo3iiw&pid=ImgRaw&r=0') center right/cover;
+            background-size: cover;
+            background-position: center;
+        }
+        .kuhn-mega-dropdown div {
+            background: rgba(255, 255, 255, 0.4); /* Semi-transparent white overlay for readability */
+        }
+    </style>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
             const mobileSearchBtn = document.getElementById('mobile-search-btn');
             const mobileSearchBar = document.getElementById('mobile-search-bar');
-            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-            
-            if (mobileMenuBtn && mobileMenu) {
-                mobileMenuBtn.addEventListener('click', function() {
-                    mobileMenu.classList.toggle('hidden');
-                    mobileSearchBar.classList.add('hidden');
-                });
-            }
-            
-            if (mobileSearchBtn && mobileSearchBar) {
-                mobileSearchBtn.addEventListener('click', function() {
-                    mobileSearchBar.classList.toggle('hidden');
-                    mobileMenu.classList.add('hidden');
-                });
-            }
-            
-            dropdownToggles.forEach(toggle => {
-                toggle.addEventListener('click', function(e) {
+
+            // Toggle Mobile Menu
+            mobileMenuBtn.addEventListener('click', function () {
+                mobileMenu.classList.toggle('open');
+                mobileSearchBar.classList.remove('open');
+                if (mobileMenu.classList.contains('open')) {
+                    mobileMenuBtn.querySelector('svg').innerHTML = `
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    `; // Change to close icon (X)
+                } else {
+                    mobileMenuBtn.querySelector('svg').innerHTML = `
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    `; // Change back to menu icon
+                }
+            });
+
+            // Toggle Mobile Search Bar
+            mobileSearchBtn.addEventListener('click', function () {
+                mobileSearchBar.classList.toggle('open');
+                mobileMenu.classList.remove('open');
+            });
+
+            // Handle Mobile Menu Navigation
+            const menuItems = document.querySelectorAll('.mobile-menu-item');
+            let activeMenu = null;
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function (e) {
                     e.preventDefault();
-                    const dropdown = this.nextElementSibling;
-                    dropdown.classList.toggle('hidden');
+                    const submenu = this.nextElementSibling;
+                    const isActive = this.classList.contains('active');
+
+                    // Close any open submenu
+                    if (activeMenu && activeMenu !== this) {
+                        activeMenu.classList.remove('active');
+                        activeMenu.nextElementSibling.classList.remove('open');
+                    }
+
+                    // Toggle current submenu
+                    if (submenu && !isActive) {
+                        this.classList.add('active');
+                        submenu.classList.add('open');
+                        activeMenu = this;
+                    } else if (isActive) {
+                        this.classList.remove('active');
+                        submenu.classList.remove('open');
+                        activeMenu = null;
+                    }
                 });
             });
+
+            // Agricultural Machinery Dynamic Menu
+            const megaMenu = document.querySelector('.kuhn-mega-dropdown');
+            if (megaMenu) {
+                let state = { col1: 0, col2: 0, col3: 0 };
+
+                const data = [
+                    {
+                        label: "Crop", children: [
+                            {
+                                label: "Ploughs", children: [
+                                    { label: "MASTER 103", url: "/crop/ploughs/mounted/master-103" },
+                                    { label: "MASTER 113", url: "/crop/ploughs/mounted/master-113" },
+                                    { label: "MASTER 123", url: "/crop/ploughs/mounted/master-123" },
+                                    { label: "MASTER 153", url: "/crop/ploughs/mounted/master-153" },
+                                    { label: "MASTER L", url: "/crop/ploughs/mounted/master-l" },
+                                    { label: "MASTER 183", url: "/crop/ploughs/mounted/master-183" }
+                                ]
+                            },
+                            {
+                                label: "Tillage Implements", children: [
+                                    { label: "Cultivators", url: "/crop/tillage/cultivators" },
+                                    { label: "Disc Harrows", url: "/crop/tillage/disc-harrows" }
+                                ]
+                            },
+                            { label: "Seed Drills", url: "/crop/seed-drills" },
+                            { label: "Fertiliser Spreaders", url: "/crop/fertiliser-spreaders" },
+                            { label: "Sprayers", url: "/crop/sprayers" },
+                            { label: "Flail Mowers", url: "/crop/flail-mowers" },
+                            { label: "Grain Cart", url: "/crop/grain-cart" },
+                            { label: "Mechanical weeding", url: "/crop/mechanical-weeding" }
+                        ]
+                    },
+                    { label: "Hay & Forage", url: "/hay-forage" },
+                    { label: "Livestock", url: "/livestock" },
+                    { label: "Landscape and Road Maintenance", url: "/landscape-road-maintenance" },
+                    { label: "Electronics & Connected Solutions", url: "/electronics-connected-solutions" },
+                ];
+
+                function renderMenu() {
+                    const c1 = state.col1;
+                    const c2 = state.col2;
+                    const c3 = state.col3;
+
+                    // Column 1: Main categories
+                    let html1 = data.map((item, idx) =>
+                        `<div class="px-6 py-4 text-lg font-bold cursor-pointer transition ${c1 === idx ? "kuhn-active" : "text-gray-800 hover:text-red-500"}"
+                          data-c1="${idx}">
+                          <a href="${item.url || '#'}" class="block">${item.label}</a>
+                        </div>`
+                    ).join('');
+
+                    // Column 2: Sub-categories
+                    let html2 = "";
+                    if (typeof data[c1]?.children !== "undefined") {
+                        html2 = data[c1].children.map((item, idx) =>
+                            `<div class="px-6 py-4 text-base flex items-center cursor-pointer transition group ${c2 === idx ? "kuhn-active" : "text-gray-800 hover:text-red-500"}"
+                              data-c2="${idx}">
+                              <span><a href="${item.url || '#'}" class="block">${item.label}</a></span>
+                              ${item.children ? `<span class="kuhn-arrow ml-auto">›</span>` : ""}
+                            </div>`
+                        ).join('');
+                    }
+
+                    // Column 3: 3rd level
+                    let html3 = "";
+                    if (typeof data[c1]?.children?.[c2]?.children !== "undefined") {
+                        html3 = data[c1].children[c2].children.map((item, idx) =>
+                            `<div class="px-6 py-4 text-base flex items-center cursor-pointer transition group ${c3 === idx ? "kuhn-active" : "text-gray-800 hover:text-red-500"}"
+                              data-c3="${idx}">
+                              <span><a href="${item.url || '#'}" class="block">${item.label}</a></span>
+                              ${item.children ? `<span class="kuhn-arrow ml-auto">›</span>` : ""}
+                            </div>`
+                        ).join('');
+                    }
+
+                    megaMenu.querySelector('[data-menu-col="1"]').innerHTML = html1;
+                    megaMenu.querySelector('[data-menu-col="2"]').innerHTML = html2;
+                    megaMenu.querySelector('[data-menu-col="3"]').innerHTML = html3;
+                }
+
+                renderMenu();
+
+                megaMenu.addEventListener('mouseover', function (e) {
+                    let t = e.target.closest('[data-c1],[data-c2],[data-c3]');
+                    if (!t) return;
+                    if (t.hasAttribute('data-c1')) {
+                        state.col1 = parseInt(t.getAttribute('data-c1'));
+                        state.col2 = 0;
+                        state.col3 = 0;
+                    } else if (t.hasAttribute('data-c2')) {
+                        state.col2 = parseInt(t.getAttribute('data-c2'));
+                        state.col3 = 0;
+                    } else if (t.hasAttribute('data-c3')) {
+                        state.col3 = parseInt(t.getAttribute('data-c3'));
+                    }
+                    renderMenu();
+                });
+
+                megaMenu.addEventListener('click', function (e) {
+                    let t = e.target.closest('[data-c1],[data-c2],[data-c3]');
+                    if (!t) return;
+                    alert('Clicked: ' + t.querySelector('a').innerText.trim());
+                });
+            }
         });
     </script>
 </head>
@@ -56,7 +281,7 @@
     </nav>
 
     <!-- Mobile Search Bar -->
-    <div id="mobile-search-bar" class="lg:hidden hidden fixed z-10 bg-white shadow-lg w-full pt-16 px-4 pb-4">
+    <div id="mobile-search-bar" class="lg:hidden fixed z-10 bg-white shadow-lg w-full pt-16 px-4 pb-4 hidden">
         <div class="flex items-center border shadow-md px-3 py-2 bg-white">
             <input type="text" placeholder="Search..." class="flex-grow outline-none text-sm placeholder-gray-500" />
             <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Search" class="h-4 w-4 ml-2 opacity-70" />
@@ -64,61 +289,39 @@
     </div>
 
     <!-- Mobile Menu Panel -->
-    <div id="mobile-menu" class="lg:hidden hidden fixed z-10 bg-white shadow-lg w-full pt-20 pb-4 px-6">
-        <div class="border-b border-gray-200 pb-4">
-            <div class="relative">
-                <a href="#" class="dropdown-toggle flex items-center justify-between py-2">
-                    <span class="font-bold text-gray-800">AGRICULTURAL MACHINERY</span>
-                    <svg xmlns="http://www.w3.org/2000 patched="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-                <div class="hidden pl-4 bg-white shadow-md">
-                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Tractors</a>
-                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Harvesters</a>
-                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Sprayers</a>
-                </div>
-            </div>
-            <div class="relative">
-                <a href="#" class="dropdown-toggle flex items-center justify-between py-2">
-                    <span class="font-bold text-gray-800">SERVICES & PARTS</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-                <div class="hidden pl-4 bg-white shadow-md">
-                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Maintenance</a>
-                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Spare Parts</a>
-                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Warranty</a>
-                </div>
-            </div>
-            <div class="relative">
-                <a href="#" class="dropdown-toggle flex items-center justify-between py-2">
-                    <span class="font-bold text-gray-800">ABOUT KUHN</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-                <div class="hidden pl-4 bg-white shadow-md">
-                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Our History</a>
-                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Our Values</a>
-                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Contact Us</a>
-                </div>
-            </div>
+    <div id="mobile-menu" class="mobile-menu">
+        <div class="mobile-menu-item" data-menu="agricultural">AGRICULTURAL MACHINERY</div>
+        <div class="mobile-submenu" data-submenu="agricultural">
+            <div class="mobile-submenu-item"><a href="/crop">Crop</a></div>
+            <div class="mobile-submenu-item"><a href="/hay-forage">Hay & Forage</a></div>
+            <div class="mobile-submenu-item"><a href="/livestock">Livestock</a></div>
+            <div class="mobile-submenu-item"><a href="/landscape-road-maintenance">Landscape and Road Maintenance</a></div>
+            <div class="mobile-submenu-item"><a href="/electronics-connected-solutions">Electronics & Connected Solutions</a></div>
         </div>
-        <div class="pt-4">
-            <a href="#" class="flex items-center space-x-2 py-2">
-                <img src="https://cdn-icons-png.flaticon.com/128/3083/3083741.png" alt="Icon of World" class="h-4 w-4" />
-                <span class="text-sm">CHANGE REGION</span>
-            </a>
-            <a href="#" class="flex items-center space-x-2 py-2">
-                <img src="https://cdn-icons-png.flaticon.com/128/447/447031.png" alt="Icon of Maps" class="h-4 w-4" />
-                <span class="text-sm">FIND A DISTRIBUTOR</span>
-            </a>
-            <a href="#" class="flex items-center space-x-2 py-2">
-                <img src="https://cdn-icons-png.flaticon.com/128/11183/11183371.png" alt="Icon of User" class="h-4 w-4" />
-                <span class="text-sm">PORTAL LOGIN</span>
-            </a>
+        <div class="mobile-menu-item" data-menu="services">SERVICES & PARTS</div>
+        <div class="mobile-submenu" data-submenu="services">
+            <div class="mobile-submenu-item"><a href="/services/parts/genuine">Genuine Parts</a></div>
+            <div class="mobile-submenu-item"><a href="/services/parts/carbide">Carbide Wearing Parts</a></div>
+            <div class="mobile-submenu-item"><a href="/services/parts/catalogue">Online Parts Catalogue</a></div>
+            <div class="mobile-submenu-item"><a href="/services/online/select-apps">Select Assistance Apps</a></div>
+            <div class="mobile-submenu-item"><a href="/services/online/config-apps">Configuration Assistance Apps</a></div>
+            <div class="mobile-submenu-item"><a href="/services/online/data-exchange">Easy Data Exchange</a></div>
+            <div class="mobile-submenu-item"><a href="/mykuhn/space">Your Online Space MyKUHN</a></div>
+            <div class="mobile-submenu-item"><a href="/mykuhn/free">Get MyKUHN for Free</a></div>
+        </div>
+        <div class="mobile-menu-item" data-menu="about">ABOUT KUHN</div>
+        <div class="mobile-submenu" data-submenu="about">
+            <div class="mobile-submenu-item"><a href="/about/who-we-are">Who We Are</a></div>
+            <div class="mobile-submenu-item"><a href="/about/history">KUHN Group History</a></div>
+            <div class="mobile-submenu-item"><a href="/about/manufacturing">Manufacturing and Distribution Centers</a></div>
+            <div class="mobile-submenu-item"><a href="/about/innovation">Innovation & Technology</a></div>
+            <div class="mobile-submenu-item"><a href="/about/sustainability">Sustainability</a></div>
+            <div class="mobile-submenu-item"><a href="/careers/why-kuhn">Why KUHN?</a></div>
+            <div class="mobile-submenu-item"><a href="/careers/paths">Career Paths</a></div>
+            <div class="mobile-submenu-item"><a href="/careers/team">Meet Our Team</a></div>
+            <div class="mobile-submenu-item"><a href="/careers/working">Working at KUHN</a></div>
+            <div class="mobile-submenu-item"><a href="/news/latest">Read the Latest News</a></div>
+            <div class="mobile-submenu-item"><a href="/news/press">Press Area</a></div>
         </div>
     </div>
 
@@ -127,22 +330,19 @@
         <div class="w-1/6 pt-2 z-10">
             <img src="https://www.kuhn.com/themes/custom/kuhn_group/images/kuhn_logotype.svg" alt="KUHN Logo" class="h-20 ml-28" />
         </div>
-
         <div class="flex flex-col w-5/6">
             <div class="flex justify-between items-center px-20 bg-gradient-to-r from-white via-gray-200 to-gray-300 py-3">
-                <a href="#" class="flex items-center space-x-1">
+                <a href="/region" class="flex items-center space-x-1">
                     <img src="https://cdn-icons-png.flaticon.com/128/3083/3083741.png" alt="Icon of World" class="h-4 w-4" />
                     <p>CHANGE REGION</p>
                 </a>
-
                 <div class="flex items-center space-x-4">
                     <div class="flex space-x-4">
-                        <a href="#" class="flex items-center space-x-2">
+                        <a href="/distributors" class="flex items-center space-x-2">
                             <p>FIND A DISTRIBUTOR</p>
                             <img src="https://cdn-icons-png.flaticon.com/128/447/447031.png" alt="Icon of Maps" class="h-4 w-4" />
                         </a>
-
-                        <a href="#" class="flex items-center space-x-2">
+                        <a href="/login" class="flex items-center space-x-2">
                             <img src="https://cdn-icons-png.flaticon.com/128/11183/11183371.png" alt="Icon of User" class="h-4 w-4" />
                             <p>PORTAL LOGIN</p>
                             <img src="https://cdn-icons-png.flaticon.com/128/32/32195.png" alt="Icon of Dropdown" class="h-4 w-4" />
@@ -150,37 +350,200 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex justify-between items-center mt-3 px-20">
                 <div class="">
                     <ul class="flex space-x-12">
+                        <!-- Agricultural Machinery Dropdown -->
                         <li class="relative group">
-                            <a href="#" class="font-bold block hover:text-red-500">AGRICULTURAL<br>MACHINERY</a>
-                            <div class="absolute hidden group-hover:block bg-white shadow-md p-2 min-w-[200px]">
-                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Tractors</a>
-                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Harvesters</a>
-                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Sprayers</a>
+                            <a href="/agricultural-machinery" class="font-bold block hover:text-red-500 text-lg leading-tight">AGRICULTURAL<br>MACHINERY</a>
+                            <div class="kuhn-mega-dropdown mega-dropdown absolute left-0 top-full hidden z-50 w-[1100px] min-h-[430px] flex-row shadow-2xl rounded-b-lg border-t-4 border-red-500">
+                                <!-- Column 1 -->
+                                <div data-menu-col="1" class="kuhn-col w-[350px] pt-8 pb-4 border-r-2 border-gray-200 flex flex-col text-left"></div>
+                                <!-- Column 2 -->
+                                <div data-menu-col="2" class="kuhn-col w-[300px] pt-8 pb-4 border-r-2 border-gray-200 flex flex-col text-left"></div>
+                                <!-- Column 3 -->
+                                <div data-menu-col="3" class="kuhn-col w-[340px] pt-8 pb-4 flex flex-col text-left"></div>
+                            </div>
+                            <!-- Bottom bar -->
+                            <div class="absolute left-0 top-[430px] hidden group-hover:flex w-[1100px] h-[100px] z-50">
+                                <div class="bg-red-700 text-white flex items-center px-8 w-[350px]">
+                                    <svg class="h-10 w-10 mr-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 12.414a4 4 0 10-1.414 1.414l4.243 4.243a1 1 0 001.414-1.414z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    <div>
+                                        <span class="font-bold"><a href="/distributors" class="block text-white hover:text-gray-200">Find a distributor</a></span><br>
+                                        <span class="text-base"><a href="/distributors/contact" class="block text-white hover:text-gray-200">Contact your nearest distributor</a></span>
+                                    </div>
+                                </div>
+                                <div class="bg-[#f5f3ee] flex items-center px-8 w-[350px] border-r border-gray-200">
+                                    <svg class="h-8 w-8 mr-3 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <rect width="20" height="14" x="2" y="5" rx="2" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 9h8M8 13h8"/>
+                                    </svg>
+                                    <div>
+                                        <span class="font-bold"><a href="/machines" class="block hover:text-red-500">Discover our machines</a></span>
+                                    </div>
+                                </div>
+                                <div class="bg-[#f5f3ee] flex items-center px-8 w-[400px]">
+                                    <svg class="h-8 w-8 mr-3 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <rect width="20" height="14" x="2" y="5" rx="2" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 9h8M8 13h8"/>
+                                    </svg>
+                                    <div>
+                                        <span class="font-bold"><a href="/alpine-range" class="block hover:text-red-500">Alpine Range</a></span>
+                                    </div>
+                                </div>
                             </div>
                         </li>
+                        <!-- SERVICES & PARTS Dropdown -->
                         <li class="relative group">
-                            <a href="#" class="font-bold block hover:text-red-500">SERVICES<br>& PARTS</a>
-                            <div class="absolute hidden group-hover:block bg-white shadow-md p-2 min-w-[200px]">
-                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Maintenance</a>
-                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Spare Parts</a>
-                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Warranty</a>
+                            <a href="/services-parts" class="font-bold block hover:text-red-500 text-lg leading-tight">SERVICES<br>& PARTS</a>
+                            <div class="mega-dropdown absolute left-0 top-full hidden z-50 w-[1100px] min-h-[430px] flex flex-row shadow-2xl rounded-b-lg border-t-4 border-red-500 bg-white">
+                                <div class="flex flex-col w-[350px] px-10 py-10 border-r-2 border-gray-200">
+                                    <div>
+                                        <h2 class="text-red-600 text-2xl font-bold mb-2">Agricultural Spare Parts</h2>
+                                        <ul class="space-y-2 mb-6">
+                                            <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/services/parts/genuine" class="hover:text-red-500">Genuine Parts</a></li>
+                                            <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/services/parts/carbide" class="hover:text-red-500">Carbide wearing parts</a></li>
+                                            <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/services/parts/catalogue" class="hover:text-red-500">Online parts catalogue</a></li>
+                                        </ul>
+                                        <h2 class="text-red-600 text-2xl font-bold mb-2 mt-4">Online services</h2>
+                                        <ul class="space-y-2">
+                                            <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/services/online/select-apps" class="hover:text-red-500">Select assistance apps</a></li>
+                                            <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/services/online/config-apps" class="hover:text-red-500">Configuration assistance apps</a></li>
+                                            <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/services/online/data-exchange" class="hover:text-red-500">Easy data exchange</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col w-[300px] px-10 py-10 border-r-2 border-gray-200">
+                                    <h2 class="text-red-600 text-2xl font-bold mb-2">MyKUHN</h2>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/mykuhn/space" class="hover:text-red-500">Your online space MyKUHN</a></li>
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/mykuhn/free" class="hover:text-red-500">Get MyKUHN for free</a></li>
+                                    </ul>
+                                </div>
+                                <div class="flex flex-col w-[340px] p-10 items-center justify-center">
+                                    <div class="bg-white rounded shadow-lg p-8 w-full">
+                                        <h2 class="text-gray-800 text-2xl font-bold mb-4">Your MyKUHN portal</h2>
+                                        <p class="text-gray-700 mb-6 text-base">
+                                            New online customer portal where you can have quick access to operator manuals and spare parts catalogs. Subscribe now.
+                                        </p>
+                                        <button class="border border-gray-800 text-gray-800 rounded p-2 flex items-center hover:bg-gray-100 transition">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="absolute left-0 top-[430px] hidden group-hover:flex w-[1100px] h-[100px] z-50">
+                                <div class="bg-red-700 text-white flex items-center px-8 w-[350px]">
+                                    <svg class="h-10 w-10 mr-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4m0 0V8m0 4h4m-4 0H8"/>
+                                    </svg>
+                                    <div>
+                                        <span class="font-bold"><a href="/mykuhn" class="block text-white hover:text-gray-200">MyKUHN customer portal</a></span><br>
+                                        <span class="text-base"><a href="/mykuhn/advantages" class="block text-white hover:text-gray-200">Discover all advantages</a></span>
+                                    </div>
+                                </div>
+                                <div class="bg-[#f5f3ee] flex items-center px-8 w-[350px] border-r border-gray-200">
+                                    <svg class="h-8 w-8 mr-3 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 12.414a4 4 0 10-1.414 1.414l4.243 4.243a1 1 0 001.414-1.414z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    <div>
+                                        <span class="font-bold"><a href="/distributors" class="block hover:text-red-500">Find a distributor</a></span>
+                                    </div>
+                                </div>
+                                <div class="bg-[#f5f3ee] flex items-center px-8 w-[400px]">
+                                    <svg class="h-8 w-8 mr-3 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <rect width="20" height="14" x="2" y="5" rx="2" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 9h8M8 13h8"/>
+                                    </svg>
+                                    <div>
+                                        <span class="font-bold"><a href="/news" class="block hover:text-red-500">Latest news</a></span>
+                                    </div>
+                                </div>
                             </div>
                         </li>
+                        <!-- ABOUT KUHN Dropdown -->
                         <li class="relative group">
-                            <a href="#" class="font-bold block hover:text-red-500">ABOUT<br>KUHN</a>
-                            <div class="absolute hidden group-hover:block bg-white shadow-md p-2 min-w-[200px]">
-                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Our History</a>
-                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Our Values</a>
-                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Contact Us</a>
+                            <a href="/about-kuhn" class="font-bold block hover:text-red-500 text-lg leading-tight">ABOUT<br>KUHN</a>
+                            <div class="mega-dropdown absolute left-0 top-full hidden z-50 w-[1000px] min-h-[400px] flex flex-row shadow-2xl rounded-b-lg border-t-4 border-red-500 bg-white">
+                                <div class="flex flex-col w-[320px] px-10 py-10 border-r-2 border-gray-200">
+                                    <h2 class="text-red-600 text-2xl font-bold mb-2">About Us</h2>
+                                    <ul class="space-y-2 mb-6">
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/about/who-we-are" class="hover:text-red-500">Who we are</a></li>
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/about/history" class="hover:text-red-500">KUHN Group History</a></li>
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/about/manufacturing" class="hover:text-red-500">Manufacturing and Distribution Centers</a></li>
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/about/innovation" class="hover:text-red-500">Innovation & Technology</a></li>
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/about/sustainability" class="hover:text-red-500">Sustainability</a></li>
+                                    </ul>
+                                    <div class="mt-6">
+                                        <span class="text-red-600 text-xl font-bold block mb-4"><a href="/distributors/become" class="hover:text-red-800">Become a distributor</a></span>
+                                        <span class="text-red-600 text-xl font-bold block"><a href="/testimonials" class="hover:text-red-800">Testimonials</a></span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col w-[320px] px-10 py-10 border-r-2 border-gray-200">
+                                    <h2 class="text-red-600 text-2xl font-bold mb-2">Work at KUHN</h2>
+                                    <ul class="space-y-2 mb-6">
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/careers/why-kuhn" class="hover:text-red-500">Why KUHN?</a></li>
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/careers/paths" class="hover:text-red-500">Career Paths</a></li>
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/careers/team" class="hover:text-red-500">Meet our Team</a></li>
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/careers/working" class="hover:text-red-500">Working at KUHN</a></li>
+                                    </ul>
+                                    <h2 class="text-red-600 text-2xl font-bold mb-2">News</h2>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/news/latest" class="hover:text-red-500">Read the latest news</a></li>
+                                        <li class="flex items-center text-gray-800 text-base"><span class="mr-2">›</span> <a href="/news/press" class="hover:text-red-500">Press Area</a></li>
+                                    </ul>
+                                </div>
+                                <div class="flex flex-col w-[320px] p-8 items-center justify-center">
+                                    <div class="bg-white rounded shadow-lg w-full overflow-hidden">
+                                        <img src="https://www.kuhn.com/sites/default/files/styles/media_270x140/public/media-images/VENTA---30-years_0.jpg.webp?itok=_t12sLEM" alt="VENTA pneumatic seed drill" class="w-full h-40 object-cover mb-4">
+                                        <div class="p-4">
+                                            <h3 class="text-gray-800 text-lg font-bold">
+                                                The VENTA pneumatic seed drill celebrates its 30th anniversary!
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="absolute left-0 top-[400px] hidden group-hover:flex w-[1000px] h-[90px] z-50">
+                                <div class="bg-gradient-to-r from-red-600 to-red-700 text-white flex items-center px-8 w-[350px]">
+                                    <svg class="h-10 w-10 mr-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4m0 0V8m0 4h4m-4 0H8"/>
+                                    </svg>
+                                    <div>
+                                        <span class="font-bold"><a href="/careers" class="block text-white hover:text-gray-200">Join the KUHN Family</a></span><br>
+                                        <span class="text-base"><a href="/careers/opportunities" class="block text-white hover:text-gray-200">Check out our career opportunities</a></span>
+                                    </div>
+                                </div>
+                                <div class="bg-[#f5f3ee] flex items-center px-8 w-[320px] border-r border-gray-200">
+                                    <svg class="h-8 w-8 mr-3 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 01-8 0 4 4 0 018 0z"/>
+                                    </svg>
+                                    <div>
+                                        <span class="font-bold"><a href="/mykuhn" class="block hover:text-red-500">Discover MyKUHN portal</a></span>
+                                    </div>
+                                </div>
+                                <div class="bg-[#f5f3ee] flex items-center px-8 w-[330px]">
+                                    <svg class="h-8 w-8 mr-3 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <rect width="20" height="14" x="2" y="5" rx="2" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 9h8M8 13h8"/>
+                                    </svg>
+                                    <div>
+                                        <span class="font-bold"><a href="/news" class="block hover:text-red-500">Latest KUHN news</a></span>
+                                    </div>
+                                </div>
                             </div>
                         </li>
                     </ul>
                 </div>
-
                 <div class="flex items-center border shadow-md px-3 py-2 w-64 bg-white">
                     <input type="text" placeholder="Search..." class="flex-grow outline-none text-sm placeholder-gray-500" />
                     <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Search" class="h-4 w-4 ml-2 opacity-70" />
@@ -191,13 +554,9 @@
 
     <!-- Main Content Area -->
     <main class="relative pt-16 lg:pt-28 h-screen">
-        <!-- Hero Image Section -->
         <div class="relative h-full">
             <img src="https://th.bing.com/th/id/R.ab1318d217f37f979cc195e12fa6974b?rik=Gy%2f7vOQcKo3iiw&pid=ImgRaw&r=0" alt="Hero Section Image" class="w-full h-5/6 object-cover max-sm:h-3/6" />
-
-            <!-- MYKUHN Banner - Visible on all devices -->
             <div class="absolute bottom-0 md:bottom-24 left-0 right-0">
-                <!-- Mobile version -->
                 <div class="block md:hidden bg-black bg-opacity-70 text-white px-6 py-3 mb-[300px] flex max-sm:flex-row">
                     <div class="text-center max-sm:text-start">
                         <h2 class="text-2xl font-bold mb-2 max-sm:text-lg">MYKUHN CUSTOMER PORTAL</h2>
@@ -209,15 +568,12 @@
                         </button>
                     </div>
                 </div>
-                
-                <!-- Tablet/Desktop version -->
                 <div class="hidden md:block">
                     <div class="flex items-center justify-between w-full mb-2 rounded-tl-full bg-black bg-opacity-50 text-white text-center pt-6 md:pt-8 pb-12 md:pb-24 px-6 md:px-36 border-2 border-white border-b-0 border-r-0">
                         <div class="w-full md:w-2/3">
                             <h1 class="text-3xl md:text-5xl font-bold py-2 md:py-4 text-left md:text-justify">MYKUHN CUSTOMER PORTAL</h1>
                             <p class="text-sm md:text-lg text-left md:text-justify">Do you own KUHN equipment? If so, be sure to sign up for MyKUHN and receive a number of benefits from the new online customer portal.</p>
                         </div>
-                        
                         <div class="hidden md:block">
                             <button class="mt-4 bg-red-500 text-white font-bold px-6 py-6 hover:bg-red-700 transition duration-300 rounded-sm shadow-md">
                                 SIGN UP NOW!
