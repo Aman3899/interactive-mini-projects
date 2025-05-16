@@ -4,23 +4,134 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KUHN | Argicultural Machinery</title>
+    <title>KUHN | Agricultural Machinery</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileSearchBtn = document.getElementById('mobile-search-btn');
+            const mobileSearchBar = document.getElementById('mobile-search-bar');
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                    mobileSearchBar.classList.add('hidden');
+                });
+            }
+            
+            if (mobileSearchBtn && mobileSearchBar) {
+                mobileSearchBtn.addEventListener('click', function() {
+                    mobileSearchBar.classList.toggle('hidden');
+                    mobileMenu.classList.add('hidden');
+                });
+            }
+            
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const dropdown = this.nextElementSibling;
+                    dropdown.classList.toggle('hidden');
+                });
+            });
+        });
+    </script>
 </head>
 
-<body>
-    <nav class="flex items-center bg-white shadow-md pb-4 fixed w-full z-10">
-        <div class="w-1/6 pt-2">
-            <img src="https://www.kuhn.com/themes/custom/kuhn_group/images/kuhn_logotype.svg" alt="KUHN Logo"
-                class="h-20 ml-28" />
+<body class="font-sans">
+    <!-- Mobile Navigation -->
+    <nav class="lg:hidden flex items-center justify-between bg-white shadow-md py-3 px-4 fixed w-full z-20">
+        <button id="mobile-menu-btn" class="text-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        <img src="https://www.kuhn.com/themes/custom/kuhn_group/images/kuhn_logotype.svg" alt="KUHN Logo" class="h-10" />
+        <button id="mobile-search-btn" class="text-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Mobile Search Bar -->
+    <div id="mobile-search-bar" class="lg:hidden hidden fixed z-10 bg-white shadow-lg w-full pt-16 px-4 pb-4">
+        <div class="flex items-center border shadow-md px-3 py-2 bg-white">
+            <input type="text" placeholder="Search..." class="flex-grow outline-none text-sm placeholder-gray-500" />
+            <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Search" class="h-4 w-4 ml-2 opacity-70" />
+        </div>
+    </div>
+
+    <!-- Mobile Menu Panel -->
+    <div id="mobile-menu" class="lg:hidden hidden fixed z-10 bg-white shadow-lg w-full pt-20 pb-4 px-6">
+        <div class="border-b border-gray-200 pb-4">
+            <div class="relative">
+                <a href="#" class="dropdown-toggle flex items-center justify-between py-2">
+                    <span class="font-bold text-gray-800">AGRICULTURAL MACHINERY</span>
+                    <svg xmlns="http://www.w3.org/2000 patched="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <div class="hidden pl-4 bg-white shadow-md">
+                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Tractors</a>
+                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Harvesters</a>
+                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Sprayers</a>
+                </div>
+            </div>
+            <div class="relative">
+                <a href="#" class="dropdown-toggle flex items-center justify-between py-2">
+                    <span class="font-bold text-gray-800">SERVICES & PARTS</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <div class="hidden pl-4 bg-white shadow-md">
+                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Maintenance</a>
+                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Spare Parts</a>
+                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Warranty</a>
+                </div>
+            </div>
+            <div class="relative">
+                <a href="#" class="dropdown-toggle flex items-center justify-between py-2">
+                    <span class="font-bold text-gray-800">ABOUT KUHN</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <div class="hidden pl-4 bg-white shadow-md">
+                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Our History</a>
+                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Our Values</a>
+                    <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Contact Us</a>
+                </div>
+            </div>
+        </div>
+        <div class="pt-4">
+            <a href="#" class="flex items-center space-x-2 py-2">
+                <img src="https://cdn-icons-png.flaticon.com/128/3083/3083741.png" alt="Icon of World" class="h-4 w-4" />
+                <span class="text-sm">CHANGE REGION</span>
+            </a>
+            <a href="#" class="flex items-center space-x-2 py-2">
+                <img src="https://cdn-icons-png.flaticon.com/128/447/447031.png" alt="Icon of Maps" class="h-4 w-4" />
+                <span class="text-sm">FIND A DISTRIBUTOR</span>
+            </a>
+            <a href="#" class="flex items-center space-x-2 py-2">
+                <img src="https://cdn-icons-png.flaticon.com/128/11183/11183371.png" alt="Icon of User" class="h-4 w-4" />
+                <span class="text-sm">PORTAL LOGIN</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden lg:flex items-center bg-white shadow-md pb-4 fixed w-full z-10">
+        <div class="w-1/6 pt-2 z-10">
+            <img src="https://www.kuhn.com/themes/custom/kuhn_group/images/kuhn_logotype.svg" alt="KUHN Logo" class="h-20 ml-28" />
         </div>
 
         <div class="flex flex-col w-5/6">
-            <div
-                class="flex justify-between items-center px-20 bg-gradient-to-r from-white via-gray-200 to-gray-300 py-3">
+            <div class="flex justify-between items-center px-20 bg-gradient-to-r from-white via-gray-200 to-gray-300 py-3">
                 <a href="#" class="flex items-center space-x-1">
-                    <img src="https://cdn-icons-png.flaticon.com/128/3083/3083741.png" alt="Icon of World"
-                        class="h-4 w-4" />
+                    <img src="https://cdn-icons-png.flaticon.com/128/3083/3083741.png" alt="Icon of World" class="h-4 w-4" />
                     <p>CHANGE REGION</p>
                 </a>
 
@@ -28,16 +139,13 @@
                     <div class="flex space-x-4">
                         <a href="#" class="flex items-center space-x-2">
                             <p>FIND A DISTRIBUTOR</p>
-                            <img src="https://cdn-icons-png.flaticon.com/128/447/447031.png" alt="Icon of Maps"
-                                class="h-4 w-4" />
+                            <img src="https://cdn-icons-png.flaticon.com/128/447/447031.png" alt="Icon of Maps" class="h-4 w-4" />
                         </a>
 
                         <a href="#" class="flex items-center space-x-2">
-                            <img src="https://cdn-icons-png.flaticon.com/128/11183/11183371.png" alt="Icon of Maps"
-                                class="h-4 w-4" />
+                            <img src="https://cdn-icons-png.flaticon.com/128/11183/11183371.png" alt="Icon of User" class="h-4 w-4" />
                             <p>PORTAL LOGIN</p>
-                            <img src="https://cdn-icons-png.flaticon.com/128/32/32195.png" alt="Icon of Dropdown"
-                                class="h-4 w-4" />
+                            <img src="https://cdn-icons-png.flaticon.com/128/32/32195.png" alt="Icon of Dropdown" class="h-4 w-4" />
                         </a>
                     </div>
                 </div>
@@ -46,41 +154,80 @@
             <div class="flex justify-between items-center mt-3 px-20">
                 <div class="">
                     <ul class="flex space-x-12">
-                        <li><a href="#" class="font-bold">ARCHITECTURE <br> MACHINERY</a></li>
-                        <li><a href="#" class="font-bold">SERVCIES<br> & PARTS</a></li>
-                        <li><a href="#" class="font-bold">ABOUT<br> KUHN</a></li>
+                        <li class="relative group">
+                            <a href="#" class="font-bold block hover:text-red-500">AGRICULTURAL<br>MACHINERY</a>
+                            <div class="absolute hidden group-hover:block bg-white shadow-md p-2 min-w-[200px]">
+                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Tractors</a>
+                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Harvesters</a>
+                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Sprayers</a>
+                            </div>
+                        </li>
+                        <li class="relative group">
+                            <a href="#" class="font-bold block hover:text-red-500">SERVICES<br>& PARTS</a>
+                            <div class="absolute hidden group-hover:block bg-white shadow-md p-2 min-w-[200px]">
+                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Maintenance</a>
+                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Spare Parts</a>
+                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Warranty</a>
+                            </div>
+                        </li>
+                        <li class="relative group">
+                            <a href="#" class="font-bold block hover:text-red-500">ABOUT<br>KUHN</a>
+                            <div class="absolute hidden group-hover:block bg-white shadow-md p-2 min-w-[200px]">
+                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Our History</a>
+                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Our Values</a>
+                                <a href="#" class="block py-2 px-4 text-sm hover:bg-red-500 hover:text-white">Contact Us</a>
+                            </div>
+                        </li>
                     </ul>
                 </div>
 
                 <div class="flex items-center border shadow-md px-3 py-2 w-64 bg-white">
-                    <input type="text" placeholder="Search..."
-                        class="flex-grow outline-none text-sm placeholder-gray-500" />
-                    <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Search"
-                        class="h-4 w-4 ml-2 opacity-70" />
+                    <input type="text" placeholder="Search..." class="flex-grow outline-none text-sm placeholder-gray-500" />
+                    <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Search" class="h-4 w-4 ml-2 opacity-70" />
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="relative h-screen pt-28">
-        <img src="https://th.bing.com/th/id/R.ab1318d217f37f979cc195e12fa6974b?rik=Gy%2f7vOQcKo3iiw&pid=ImgRaw&r=0"
-            alt="Hero Section Image" class="w-full h-full object-cover" />
+    <!-- Main Content Area -->
+    <main class="relative pt-16 lg:pt-28 h-screen">
+        <!-- Hero Image Section -->
+        <div class="relative h-full">
+            <img src="https://th.bing.com/th/id/R.ab1318d217f37f979cc195e12fa6974b?rik=Gy%2f7vOQcKo3iiw&pid=ImgRaw&r=0" alt="Hero Section Image" class="w-full h-5/6 object-cover max-sm:h-3/6" />
 
-        
-        <div class="absolute bottom-0 flex items-center justify-between w-full rounded-tl-full bg-black bg-opacity-50 text-white text-center pt-8 pb-24 px-36 border-2 border-white border-b-0 border-r-0">
-            <div class="w-2/3">
-                <h1 class="text-5xl font-bold py-4 text-justify">MYKUHN CUSTOMER PORTAL</h1>
-                <p class="text-lg text-justify">Do you own KUHN equipment? If so, be sure to sign up for MyKUHN and receive a number of benefits from the new online customer portal.</p>
-            </div>
-            
-            <div>
-                <button class="mt-4 bg-red-500 text-white font-bold px-6 py-6 hover:bg-red-700 transition duration-300 rounded-sm shadow-md">
-                    SIGN UP NOW!
-                </button>
+            <!-- MYKUHN Banner - Visible on all devices -->
+            <div class="absolute bottom-0 md:bottom-24 left-0 right-0">
+                <!-- Mobile version -->
+                <div class="block md:hidden bg-black bg-opacity-70 text-white px-6 py-3 mb-[300px] flex max-sm:flex-row">
+                    <div class="text-center max-sm:text-start">
+                        <h2 class="text-2xl font-bold mb-2 max-sm:text-lg">MYKUHN CUSTOMER PORTAL</h2>
+                        <p class="text-sm max-sm:hidden">Do you own KUHN equipment? Sign up for MyKUHN and receive benefits from the new online customer portal.</p>
+                    </div>
+                    <div class="text-center">
+                        <button class="bg-red-500 text-white font-bold px-4 py-3 hover:bg-red-700 transition duration-300 rounded-sm shadow-md max-sm:px-1 max-sm:py-1 max-sm:text-sm">
+                            SIGN UP NOW!
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Tablet/Desktop version -->
+                <div class="hidden md:block">
+                    <div class="flex items-center justify-between w-full mb-2 rounded-tl-full bg-black bg-opacity-50 text-white text-center pt-6 md:pt-8 pb-12 md:pb-24 px-6 md:px-36 border-2 border-white border-b-0 border-r-0">
+                        <div class="w-full md:w-2/3">
+                            <h1 class="text-3xl md:text-5xl font-bold py-2 md:py-4 text-left md:text-justify">MYKUHN CUSTOMER PORTAL</h1>
+                            <p class="text-sm md:text-lg text-left md:text-justify">Do you own KUHN equipment? If so, be sure to sign up for MyKUHN and receive a number of benefits from the new online customer portal.</p>
+                        </div>
+                        
+                        <div class="hidden md:block">
+                            <button class="mt-4 bg-red-500 text-white font-bold px-6 py-6 hover:bg-red-700 transition duration-300 rounded-sm shadow-md">
+                                SIGN UP NOW!
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
-
 </body>
 
 </html>
