@@ -44,7 +44,7 @@
         .mobile-menu {
             display: none;
             position: fixed;
-            top: 60px; /* Below the fixed nav bar */
+            top: 60px;
             left: 0;
             right: 0;
             background: white;
@@ -96,7 +96,29 @@
             background-position: center;
         }
         .kuhn-mega-dropdown div {
-            background: rgba(255, 255, 255, 0.4); /* Semi-transparent white overlay for readability */
+            background: rgba(255, 255, 255, 0.4);
+        }
+        /* Category Panel Styles */
+        #category-menu-panel {
+            background: #fff;
+            min-height: 100vh;
+        }
+        #category-menu-panel .border-b {
+            background: #f7f4ea;
+        }
+        #category-menu-panel .border-t {
+            background: #f7f4ea;
+        }
+        #category-links a {
+            font-size: 1.12rem;
+            letter-spacing: 0.01em;
+        }
+        #category-links a.text-red-700 {
+            color: #e53e3e;
+        }
+        #category-menu-title {
+            font-size: 1.18rem;
+            letter-spacing: 0.04em;
         }
     </style>
     <script>
@@ -113,11 +135,11 @@
                 if (mobileMenu.classList.contains('open')) {
                     mobileMenuBtn.querySelector('svg').innerHTML = `
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    `; // Change to close icon (X)
+                    `;
                 } else {
                     mobileMenuBtn.querySelector('svg').innerHTML = `
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    `; // Change back to menu icon
+                    `;
                 }
             });
 
@@ -127,33 +149,88 @@
                 mobileMenu.classList.remove('open');
             });
 
-            // Handle Mobile Menu Navigation
-            const menuItems = document.querySelectorAll('.mobile-menu-item');
-            let activeMenu = null;
+            // Mobile Menu Navigation for Category Pages
+            const mainMenuPanel = document.getElementById('main-menu-panel');
+            const categoryMenuPanel = document.getElementById('category-menu-panel');
+            const categoryMenuTitle = document.getElementById('category-menu-title');
+            const categoryLinks = document.getElementById('category-links');
+            const seeAllCategoryLink = document.getElementById('see-all-category-link');
+            const seeAllCategoryLabel = document.getElementById('see-all-category-label');
+            const categoryMenuBack = document.getElementById('category-menu-back');
 
-            menuItems.forEach(item => {
-                item.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const submenu = this.nextElementSibling;
-                    const isActive = this.classList.contains('active');
+            // Define categories and subcategories
+            const mobileMenus = {
+                agricultural: {
+                    title: "AGRICULTURAL MACHINERY",
+                    seeAllUrl: "/agricultural-machinery",
+                    seeAllLabel: "AGRICULTURAL MACHINERY",
+                    links: [
+                        { label: "CROP", url: "/crop", hasChild: true },
+                        { label: "HAY & FORAGE", url: "/hay-forage", hasChild: true },
+                        { label: "LIVESTOCK", url: "/livestock", hasChild: true },
+                        { label: "LANDSCAPE AND ROAD MAINTENANCE", url: "/landscape-road-maintenance", hasChild: true },
+                        { label: "ELECTRONICS & CONNECTED SOLUTIONS", url: "/electronics-connected-solutions", hasChild: true },
+                    ]
+                },
+                services: {
+                    title: "SERVICES & PARTS",
+                    seeAllUrl: "/services-parts",
+                    seeAllLabel: "SERVICES & PARTS",
+                    links: [
+                        { label: "GENUINE PARTS", url: "/services/parts/genuine", hasChild: false },
+                        { label: "CARBIDE WEARING PARTS", url: "/services/parts/carbide", hasChild: false },
+                        { label: "ONLINE PARTS CATALOGUE", url: "/services/parts/catalogue", hasChild: false },
+                        { label: "SELECT ASSISTANCE APPS", url: "/services/online/select-apps", hasChild: false },
+                        { label: "CONFIGURATION ASSISTANCE APPS", url: "/services/online/config-apps", hasChild: false },
+                        { label: "EASY DATA EXCHANGE", url: "/services/online/data-exchange", hasChild: false },
+                        { label: "YOUR ONLINE SPACE MYKUHN", url: "/mykuhn/space", hasChild: false },
+                        { label: "GET MYKUHN FOR FREE", url: "/mykuhn/free", hasChild: false },
+                    ]
+                },
+                about: {
+                    title: "ABOUT KUHN",
+                    seeAllUrl: "/about-kuhn",
+                    seeAllLabel: "ABOUT KUHN",
+                    links: [
+                        { label: "WHO WE ARE", url: "/about/who-we-are", hasChild: false },
+                        { label: "KUHN GROUP HISTORY", url: "/about/history", hasChild: false },
+                        { label: "MANUFACTURING AND DISTRIBUTION CENTERS", url: "/about/manufacturing", hasChild: false },
+                        { label: "INNOVATION & TECHNOLOGY", url: "/about/innovation", hasChild: false },
+                        { label: "SUSTAINABILITY", url: "/about/sustainability", hasChild: false },
+                        { label: "WHY KUHN?", url: "/careers/why-kuhn", hasChild: false },
+                        { label: "CAREER PATHS", url: "/careers/paths", hasChild: false },
+                        { label: "MEET OUR TEAM", url: "/careers/team", hasChild: false },
+                        { label: "WORKING AT KUHN", url: "/careers/working", hasChild: false },
+                        { label: "READ THE LATEST NEWS", url: "/news/latest", hasChild: false },
+                        { label: "PRESS AREA", url: "/news/press", hasChild: false },
+                    ]
+                }
+            };
 
-                    // Close any open submenu
-                    if (activeMenu && activeMenu !== this) {
-                        activeMenu.classList.remove('active');
-                        activeMenu.nextElementSibling.classList.remove('open');
-                    }
-
-                    // Toggle current submenu
-                    if (submenu && !isActive) {
-                        this.classList.add('active');
-                        submenu.classList.add('open');
-                        activeMenu = this;
-                    } else if (isActive) {
-                        this.classList.remove('active');
-                        submenu.classList.remove('open');
-                        activeMenu = null;
-                    }
+            // Handler for clicking main category
+            document.querySelectorAll('.mobile-menu-item[data-menu]').forEach(item => {
+                item.addEventListener('click', function () {
+                    const key = this.getAttribute('data-menu');
+                    const menu = mobileMenus[key];
+                    if (!menu) return;
+                    mainMenuPanel.classList.add('hidden');
+                    categoryMenuPanel.classList.remove('hidden');
+                    categoryMenuTitle.textContent = menu.title;
+                    seeAllCategoryLink.href = menu.seeAllUrl;
+                    seeAllCategoryLabel.textContent = menu.seeAllLabel;
+                    categoryLinks.innerHTML = menu.links.map(link =>
+                        `<div class="border-b border-gray-200">
+                            <a href="${link.url}" class="block px-4 py-4 ${link.hasChild ? 'text-red-700' : 'text-gray-800'} font-bold flex justify-between items-center">
+                                ${link.label} ${link.hasChild ? '<span>›</span>' : ''}
+                            </a>
+                        </div>`).join('');
                 });
+            });
+
+            // Handler for back button
+            categoryMenuBack.addEventListener('click', function () {
+                categoryMenuPanel.classList.add('hidden');
+                mainMenuPanel.classList.remove('hidden');
             });
 
             // Agricultural Machinery Dynamic Menu
@@ -199,7 +276,6 @@
                     const c2 = state.col2;
                     const c3 = state.col3;
 
-                    // Column 1: Main categories
                     let html1 = data.map((item, idx) =>
                         `<div class="px-6 py-4 text-lg font-bold cursor-pointer transition ${c1 === idx ? "kuhn-active" : "text-gray-800 hover:text-red-500"}"
                           data-c1="${idx}">
@@ -207,7 +283,6 @@
                         </div>`
                     ).join('');
 
-                    // Column 2: Sub-categories
                     let html2 = "";
                     if (typeof data[c1]?.children !== "undefined") {
                         html2 = data[c1].children.map((item, idx) =>
@@ -219,7 +294,6 @@
                         ).join('');
                     }
 
-                    // Column 3: 3rd level
                     let html3 = "";
                     if (typeof data[c1]?.children?.[c2]?.children !== "undefined") {
                         html3 = data[c1].children[c2].children.map((item, idx) =>
@@ -290,38 +364,118 @@
 
     <!-- Mobile Menu Panel -->
     <div id="mobile-menu" class="mobile-menu">
-        <div class="mobile-menu-item" data-menu="agricultural">AGRICULTURAL MACHINERY</div>
-        <div class="mobile-submenu" data-submenu="agricultural">
-            <div class="mobile-submenu-item"><a href="/crop">Crop</a></div>
-            <div class="mobile-submenu-item"><a href="/hay-forage">Hay & Forage</a></div>
-            <div class="mobile-submenu-item"><a href="/livestock">Livestock</a></div>
-            <div class="mobile-submenu-item"><a href="/landscape-road-maintenance">Landscape and Road Maintenance</a></div>
-            <div class="mobile-submenu-item"><a href="/electronics-connected-solutions">Electronics & Connected Solutions</a></div>
+        <!-- Main Menu (visible by default) -->
+        <div id="main-menu-panel">
+            <div class="mobile-menu-item" data-menu="agricultural">AGRICULTURAL MACHINERY</div>
+            <div class="mobile-menu-item" data-menu="services">SERVICES & PARTS</div>
+            <div class="mobile-menu-item" data-menu="about">ABOUT KUHN</div>
+            <!-- Bottom Section -->
+            <div class="mt-4 p-0">
+                <!-- Distributors Portal block -->
+                <div class="bg-red-600 px-6 py-4 flex items-center gap-4">
+                    <svg class="h-10 w-10 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4" stroke="white" stroke-width="2" fill="none"/>
+                        <path stroke="white" stroke-width="2" d="M4 20c0-4 4-7 8-7s8 3 8 7"/>
+                    </svg>
+                    <div>
+                        <span class="text-white font-bold block text-lg">Distributors Portal</span>
+                        <span class="text-white text-sm block">Login to your account</span>
+                    </div>
+                </div>
+                <!-- Find Distributor -->
+                <div class="bg-[#232833] px-6 py-4 flex items-center gap-4">
+                    <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke="white" stroke-width="2" d="M12 2C7 2 2 7 2 12c0 5 10 10 10 10s10-5 10-10c0-5-5-10-10-10z"/>
+                        <circle cx="12" cy="12" r="4" stroke="white" stroke-width="2" fill="none"/>
+                    </svg>
+                    <span class="text-white text-base">FIND YOUR<br>LOCAL DISTRIBUTOR</span>
+                </div>
+                <!-- Login to MyKUHN -->
+                <div class="bg-[#232833] px-6 py-4 flex items-center gap-4">
+                    <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4" stroke="white" stroke-width="2" fill="none"/>
+                        <path stroke="white" stroke-width="2" d="M4 20c0-4 4-7 8-7s8 3 8 7"/>
+                    </svg>
+                    <span class="text-white text-base">LOGIN TO<br>MYKUHN</span>
+                </div>
+                <!-- Social Media Links -->
+                <div class="bg-[#232833] px-6 py-4">
+                    <span class="text-yellow-400 block mb-2">Follow us on our Social Media</span>
+                    <div class="flex gap-4 mb-2">
+                        <a href="#" class="text-white"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" class="h-6 w-6"></a>
+                        <a href="#" class="text-white"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" class="h-6 w-6"></a>
+                        <a href="#" class="text-white"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" class="h-6 w-6"></a>
+                        <a href="#" class="text-white"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn" class="h-6 w-6"></a>
+                    </div>
+                    <span class="text-yellow-400 block mb-1">Stay connected with us!</span>
+                    <div class="bg-transparent text-white font-semibold">Subscribe to KUHN newsletter</div>
+                </div>
+            </div>
         </div>
-        <div class="mobile-menu-item" data-menu="services">SERVICES & PARTS</div>
-        <div class="mobile-submenu" data-submenu="services">
-            <div class="mobile-submenu-item"><a href="/services/parts/genuine">Genuine Parts</a></div>
-            <div class="mobile-submenu-item"><a href="/services/parts/carbide">Carbide Wearing Parts</a></div>
-            <div class="mobile-submenu-item"><a href="/services/parts/catalogue">Online Parts Catalogue</a></div>
-            <div class="mobile-submenu-item"><a href="/services/online/select-apps">Select Assistance Apps</a></div>
-            <div class="mobile-submenu-item"><a href="/services/online/config-apps">Configuration Assistance Apps</a></div>
-            <div class="mobile-submenu-item"><a href="/services/online/data-exchange">Easy Data Exchange</a></div>
-            <div class="mobile-submenu-item"><a href="/mykuhn/space">Your Online Space MyKUHN</a></div>
-            <div class="mobile-submenu-item"><a href="/mykuhn/free">Get MyKUHN for Free</a></div>
-        </div>
-        <div class="mobile-menu-item" data-menu="about">ABOUT KUHN</div>
-        <div class="mobile-submenu" data-submenu="about">
-            <div class="mobile-submenu-item"><a href="/about/who-we-are">Who We Are</a></div>
-            <div class="mobile-submenu-item"><a href="/about/history">KUHN Group History</a></div>
-            <div class="mobile-submenu-item"><a href="/about/manufacturing">Manufacturing and Distribution Centers</a></div>
-            <div class="mobile-submenu-item"><a href="/about/innovation">Innovation & Technology</a></div>
-            <div class="mobile-submenu-item"><a href="/about/sustainability">Sustainability</a></div>
-            <div class="mobile-submenu-item"><a href="/careers/why-kuhn">Why KUHN?</a></div>
-            <div class="mobile-submenu-item"><a href="/careers/paths">Career Paths</a></div>
-            <div class="mobile-submenu-item"><a href="/careers/team">Meet Our Team</a></div>
-            <div class="mobile-submenu-item"><a href="/careers/working">Working at KUHN</a></div>
-            <div class="mobile-submenu-item"><a href="/news/latest">Read the Latest News</a></div>
-            <div class="mobile-submenu-item"><a href="/news/press">Press Area</a></div>
+        <!-- Submenu Panel for Category (hidden by default) -->
+        <div id="category-menu-panel" class="hidden">
+            <div class="flex items-center px-4 py-4 border-b-2 border-red-500 bg-[#f3f3f3]">
+                <button id="category-menu-back" class="mr-3">
+                    <svg class="h-6 w-6 text-gray-800" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <span id="category-menu-title" class="text-gray-800 font-bold text-lg tracking-wider"></span>
+            </div>
+            <!-- Dynamic list of subcategories -->
+            <div id="category-links" class="bg-[#f7f4ea]">
+                <!-- Example for "Agricultural Machinery" -->
+                <!--
+                <div class="border-b border-gray-200">
+                    <a href="#" class="block px-4 py-4 text-red-700 font-bold flex justify-between items-center">CROP <span>›</span></a>
+                </div>
+                -->
+            </div>
+            <div class="border-t border-gray-200">
+                <a id="see-all-category-link" href="#" class="block px-4 py-4 text-center text-red-500 font-semibold text-base">SEE ALL <span id="see-all-category-label">CATEGORY</span></a>
+            </div>
+            <!-- Bottom Section -->
+            <div class="mt-0 p-0">
+                <!-- Distributors Portal block -->
+                <div class="bg-red-600 px-6 py-4 flex items-center gap-4">
+                    <svg class="h-10 w-10 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4" stroke="white" stroke-width="2" fill="none"/>
+                        <path stroke="white" stroke-width="2" d="M4 20c0-4 4-7 8-7s8 3 8 7"/>
+                    </svg>
+                    <div>
+                        <span class="text-white font-bold block text-lg">Distributors Portal</span>
+                        <span class="text-white text-sm block">Login to your account</span>
+                    </div>
+                </div>
+                <!-- Find Distributor -->
+                <div class="bg-[#232833] px-6 py-4 flex items-center gap-4">
+                    <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke="white" stroke-width="2" d="M12 2C7 2 2 7 2 12c0 5 10 10 10 10s10-5 10-10c0-5-5-10-10-10z"/>
+                        <circle cx="12" cy="12" r="4" stroke="white" stroke-width="2" fill="none"/>
+                    </svg>
+                    <span class="text-white text-base">FIND YOUR<br>LOCAL DISTRIBUTOR</span>
+                </div>
+                <!-- Login to MyKUHN -->
+                <div class="bg-[#232833] px-6 py-4 flex items-center gap-4">
+                    <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4" stroke="white" stroke-width="2" fill="none"/>
+                        <path stroke="white" stroke-width="2" d="M4 20c0-4 4-7 8-7s8 3 8 7"/>
+                    </svg>
+                    <span class="text-white text-base">LOGIN TO<br>MYKUHN</span>
+                </div>
+                <!-- Social Media Links -->
+                <div class="bg-[#232833] px-6 py-4">
+                    <span class="text-yellow-400 block mb-2">Follow us on our Social Media</span>
+                    <div class="flex gap-4 mb-2">
+                        <a href="#" class="text-white"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" class="h-6 w-6"></a>
+                        <a href="#" class="text-white"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" class="h-6 w-6"></a>
+                        <a href="#" class="text-white"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" class="h-6 w-6"></a>
+                        <a href="#" class="text-white"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn" class="h-6 w-6"></a>
+                    </div>
+                    <span class="text-yellow-400 block mb-1">Stay connected with us!</span>
+                    <div class="bg-transparent text-white font-semibold">Subscribe to KUHN newsletter</div>
+                </div>
+            </div>
         </div>
     </div>
 
